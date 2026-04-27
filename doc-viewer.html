@@ -287,7 +287,7 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;backgro
 </div>
 
 <!-- ========== 引导卡片 ========== -->
-<div class="guide-card" id="guideCard" style="display:none;">
+<div class="guide-card" id="guideCard">
   <div class="gc-header">
     <div class="gc-header-top">
       <span class="gc-badge">AI 智能识别</span>
@@ -332,9 +332,7 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;backgro
 
 <script>
 // ========== 引导卡片 ==========
-setTimeout(() => {
-  document.getElementById('guideCard').style.display = 'block';
-}, 1000);
+// 引导卡片立即显示（无延迟）
 
 function closeGuide() {
   document.getElementById('guideCard').style.display = 'none';
