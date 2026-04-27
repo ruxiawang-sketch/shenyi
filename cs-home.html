@@ -40,7 +40,7 @@ a { text-decoration: none; color: inherit; }
 
 .topbar-right { display: flex; align-items: center; gap: 20px; }
 .topbar-right .lang { font-size: 13px; color: #666; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.topbar-right .icon-btn { font-size: 18px; color: #666; cursor: pointer; position: relative; z-index: 95; }
+.topbar-right .icon-btn { font-size: 18px; color: #666; cursor: pointer; position: relative; }
 .topbar-right .icon-btn:hover { color: #00c4b4; }
 .topbar-right .user { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #666; cursor: pointer; }
 .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: #ffc107; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
@@ -211,41 +211,6 @@ a { text-decoration: none; color: inherit; }
     <div class="icon-btn" id="notifBell" onclick="toggleNotif()">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 15a2 2 0 004 0" stroke="currentColor" stroke-width="1.2"/><path d="M14 12c-.6-.6-1-1.5-1-3V7.5a4 4 0 10-8 0V9c0 1.5-.4 2.4-1 3h10z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
       <span class="badge-dot" id="badgeDot"></span>
-      <!-- 消息弹窗 -->
-      <div class="notif-popup" id="notifPopup">
-        <div class="notif-header">
-          <h3>消息通知</h3>
-          <span class="mark-read" onclick="event.stopPropagation();markAllRead()">全部已读</span>
-        </div>
-        <div class="notif-list">
-          <!-- AI 审计上新通知 -->
-          <div class="notif-item unread" id="auditNotif" onclick="event.stopPropagation();handleAuditNotif()">
-            <div class="notif-icon-wrap" style="background:linear-gradient(135deg,#e6f9f7,#b2f0e8);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z" fill="#00c4b4" opacity=".2" stroke="#00c4b4" stroke-width="1.5"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="notif-content">
-              <div class="notif-title">AI 审计助手正式上线！<span class="notif-new-badge">NEW</span></div>
-              <div class="notif-desc">全新 AI 审计工具已上线，支持智能异常检测、跨单据核对、风险识别，助力审计提效 10 倍。点击立即体验 →</div>
-              <div class="notif-time">刚刚</div>
-            </div>
-          </div>
-          <!-- 其他通知（弱化） -->
-          <div class="notif-item" style="opacity:.45;">
-            <div class="notif-icon-wrap" style="background:#f3e8ff;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#9333ea" opacity=".15"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#9333ea">P</text></svg></div>
-            <div class="notif-content">
-              <div class="notif-title">AI PPT 功能升级</div>
-              <div class="notif-desc">AI PPT 新增 20+ 模板，支持一键生成专业演示文稿</div>
-              <div class="notif-time">2小时前</div>
-            </div>
-          </div>
-          <div class="notif-item" style="opacity:.45;">
-            <div class="notif-icon-wrap" style="background:#e8f0fe;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V7l-5-5z" stroke="#4285f4" stroke-width="1.5"/><path d="M14 2v5h5" stroke="#4285f4" stroke-width="1.5"/></svg></div>
-            <div class="notif-content">
-              <div class="notif-title">文档存储空间提醒</div>
-              <div class="notif-desc">您的存储空间已使用 7%，可免费扩容至 20GB</div>
-              <div class="notif-time">昨天</div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="user"><div class="user-avatar"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" fill="#fff"/><path d="M1.5 13c0-3 2.5-5 5.5-5s5.5 2 5.5 5" fill="#fff"/></svg></div> 17610307930 ▾</div>
   </div>
@@ -414,6 +379,40 @@ a { text-decoration: none; color: inherit; }
 
 <!-- 通知蒙层 -->
 <div class="notif-overlay" id="notifOverlay" onclick="closeNotif()"></div>
+
+<!-- 消息弹窗（独立于顶栏，避免 stacking context 问题） -->
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-header">
+    <h3>消息通知</h3>
+    <span class="mark-read" onclick="markAllRead()">全部已读</span>
+  </div>
+  <div class="notif-list">
+    <div class="notif-item unread" id="auditNotif" onclick="handleAuditNotif()">
+      <div class="notif-icon-wrap" style="background:linear-gradient(135deg,#e6f9f7,#b2f0e8);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z" fill="#00c4b4" opacity=".2" stroke="#00c4b4" stroke-width="1.5"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="notif-content">
+        <div class="notif-title">AI 审计助手正式上线！<span class="notif-new-badge">NEW</span></div>
+        <div class="notif-desc">全新 AI 审计工具已上线，支持智能异常检测、跨单据核对、风险识别，助力审计提效 10 倍。点击立即体验 →</div>
+        <div class="notif-time">刚刚</div>
+      </div>
+    </div>
+    <div class="notif-item" style="opacity:.45;">
+      <div class="notif-icon-wrap" style="background:#f3e8ff;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#9333ea" opacity=".15"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#9333ea">P</text></svg></div>
+      <div class="notif-content">
+        <div class="notif-title">AI PPT 功能升级</div>
+        <div class="notif-desc">AI PPT 新增 20+ 模板，支持一键生成专业演示文稿</div>
+        <div class="notif-time">2小时前</div>
+      </div>
+    </div>
+    <div class="notif-item" style="opacity:.45;">
+      <div class="notif-icon-wrap" style="background:#e8f0fe;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V7l-5-5z" stroke="#4285f4" stroke-width="1.5"/><path d="M14 2v5h5" stroke="#4285f4" stroke-width="1.5"/></svg></div>
+      <div class="notif-content">
+        <div class="notif-title">文档存储空间提醒</div>
+        <div class="notif-desc">您的存储空间已使用 7%，可免费扩容至 20GB</div>
+        <div class="notif-time">昨天</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- 遮罩层 -->
 <div class="overlay" id="overlay" onclick="closeGuide()"></div>
