@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>模拟审计课题 — 星辰科技年度审计</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f8fafc;color:#1e293b;padding:40px;line-height:1.8;}
+.container{max-width:900px;margin:0 auto;}
+h1{font-size:28px;margin-bottom:8px;color:#4f46e5;}
+.subtitle{color:#64748b;margin-bottom:32px;font-size:15px;}
+h2{font-size:18px;color:#1e293b;margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;}
+h3{font-size:15px;color:#4f46e5;margin:16px 0 8px;}
+.card{background:#fff;border-radius:12px;padding:24px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;}
+.badge-red{background:#fef2f2;color:#dc2626;}
+.badge-yellow{background:#fffbeb;color:#d97706;}
+.badge-green{background:#f0fdf4;color:#16a34a;}
+.badge-blue{background:#eff6ff;color:#2563eb;}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;}
+th,td{border:1px solid #e2e8f0;padding:8px 12px;text-align:left;}
+th{background:#f8fafc;font-weight:600;}
+.amount{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;}
+.highlight{background:#fef3c7;padding:2px 4px;border-radius:3px;}
+.anomaly{background:#fef2f2;border-left:3px solid #dc2626;padding:12px 16px;border-radius:0 8px 8px 0;margin:8px 0;font-size:13px;}
+.step{display:flex;gap:12px;margin:12px 0;align-items:flex-start;}
+.step-num{width:28px;height:28px;border-radius:50%;background:#4f46e5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-content{flex:1;}
+.doc-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+.doc-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:13px;}
+.doc-item .doc-name{font-weight:600;margin-bottom:4px;}
+.doc-item .doc-desc{color:#64748b;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🔍 模拟审计课题</h1>
+<p class="subtitle">上海星辰科技有限公司 · 2024年度财务报表审计 · 预设5个异常待发现</p>
+
+<h2>📋 一、审计背景</h2>
+<div class="card">
+  <h3>被审计单位</h3>
+  <table>
+    <tr><td style="width:140px;font-weight:600;">公司名称</td><td>上海星辰科技有限公司</td></tr>
+    <tr><td style="font-weight:600;">统一社会信用代码</td><td>91310115MA1K4L8X29</td></tr>
+    <tr><td style="font-weight:600;">主营业务</td><td>信息技术服务（云计算、软件开发、运维）</td></tr>
+    <tr><td style="font-weight:600;">年收入规模</td><td>约 2,800 万元</td></tr>
+    <tr><td style="font-weight:600;">开户银行</td><td>中国工商银行上海张江支行</td></tr>
+    <tr><td style="font-weight:600;">银行账号</td><td>1001 2345 6789 0123 456</td></tr>
+    <tr><td style="font-weight:600;">审计期间</td><td>2024年1月1日 — 2024年12月31日</td></tr>
+    <tr><td style="font-weight:600;">审计目标</td><td>对2024年度财务报表发表审计意见</td></tr>
+  </table>
+
+  <h3>审计重点科目</h3>
+  <table>
+    <tr><th>科目</th><th>期末余额</th><th>重要性水平</th><th>审计关注点</th></tr>
+    <tr><td>营业收入</td><td class="amount">28,450,000.00</td><td>高</td><td>收入确认时点、跨期</td></tr>
+    <tr><td>应收账款</td><td class="amount">6,230,000.00</td><td>高</td><td>坏账准备、回款</td></tr>
+    <tr><td>应付账款</td><td class="amount">3,150,000.00</td><td>中</td><td>完整性</td></tr>
+    <tr><td>银行存款</td><td class="amount">4,580,000.00</td><td>高</td><td>银行余额调节</td></tr>
+    <tr><td>管理费用</td><td class="amount">5,620,000.00</td><td>中</td><td>合理性、关联交易</td></tr>
+  </table>
+</div>
+
+<h2>📄 二、测试单据清单（共12张）</h2>
+<div class="card">
+  <p style="font-size:13px;color:#64748b;margin-bottom:12px;">以下单据已生成为可截图的 HTML 文件，打开后 Cmd+Shift+4 截图，然后在审易平台 Cmd+V 粘贴即可。</p>
+
+  <h3>A 组 — 收入循环（发票 + 回单 核对）</h3>
+  <div class="doc-list">
+    <div class="doc-item">
+      <div class="doc-name">📄 A1-发票-云智信息技术.html</div>
+      <div class="doc-desc">增值税专用发票 · 杭州云智 → 星辰科技<br>金额 ¥532,000 + 税额 ¥31,920 = <strong>¥563,920</strong></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 A2-回单-云智信息技术.html</div>
+      <div class="doc-desc">银行回单 · 星辰科技付款<br>金额 <strong>¥563,920</strong> <span class="badge badge-green">金额一致</span></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 A3-发票-蓝海数据.html</div>
+      <div class="doc-desc">增值税专用发票 · 蓝海数据 → 星辰科技<br>金额 ¥180,000 + 税额 ¥10,800 = <strong>¥190,800</strong></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 A4-回单-蓝海数据.html</div>
+      <div class="doc-desc">银行回单 · 星辰科技付款<br>金额 <strong class="highlight">¥198,000</strong> <span class="badge badge-red">异常 #1：多付 ¥7,200</span></div>
+    </div>
+  </div>
+
+  <h3>B 组 — 费用报销（发票 + 回单 核对）</h3>
+  <div class="doc-list">
+    <div class="doc-item">
+      <div class="doc-name">📄 B1-发票-差旅费.html</div>
+      <div class="doc-desc">增值税普通发票 · 某酒店<br>金额 <strong>¥12,600</strong></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 B2-回单-差旅费.html</div>
+      <div class="doc-desc">银行回单 · 员工报销<br>金额 <strong>¥12,600</strong> <span class="badge badge-green">金额一致</span></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 B3-发票-咨询费.html</div>
+      <div class="doc-desc">增值税专用发票 · 某咨询公司<br>金额 ¥150,000 + 税额 ¥9,000 = <strong>¥159,000</strong><br><span class="badge badge-red">异常 #2：收款方是法人亲属公司</span></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 B4-回单-咨询费.html</div>
+      <div class="doc-desc">银行回单 · 星辰科技付款<br>金额 <strong>¥159,000</strong> · 金额一致但<span class="badge badge-yellow">关联交易</span></div>
+    </div>
+  </div>
+
+  <h3>C 组 — 银行余额调节</h3>
+  <div class="doc-list">
+    <div class="doc-item">
+      <div class="doc-name">📄 C1-银行对账单-12月.html</div>
+      <div class="doc-desc">工行12月对账单<br>期末余额 <strong class="highlight">¥4,623,450.00</strong><br><span class="badge badge-red">异常 #3：与账面 ¥4,580,000 差 ¥43,450</span></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 C2-回单-未达账.html</div>
+      <div class="doc-desc">12月31日转账 · 对方已收<br>金额 <strong>¥43,450</strong>（银行已扣、企业未记账）</div>
+    </div>
+  </div>
+
+  <h3>D 组 — 收入跨期</h3>
+  <div class="doc-list">
+    <div class="doc-item">
+      <div class="doc-name">📄 D1-发票-跨期收入.html</div>
+      <div class="doc-desc">增值税专用发票 · 2024-12-28 开票<br>金额 <strong>¥380,000</strong><br><span class="badge badge-red">异常 #4：服务期间为2025年1-3月</span></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-name">📄 D2-回单-跨期收入.html</div>
+      <div class="doc-desc">银行回单 · 2025-01-05 收款<br>金额 <strong>¥402,800</strong></div>
+    </div>
+  </div>
+</div>
+
+<h2>⚠️ 三、预设异常清单（5个）</h2>
+<div class="card">
+  <div class="anomaly">
+    <strong>#1 付款金额差异</strong> — A3发票 ¥190,800 vs A4回单 ¥198,000，多付 ¥7,200<br>
+    <em>审计判断：可能是重复付款、错误金额、或包含其他未开票费用</em>
+  </div>
+  <div class="anomaly">
+    <strong>#2 关联交易</strong> — B3咨询费发票的收款方「上海明远管理咨询」法人代表张明，是星辰科技法人代表张建明的弟弟<br>
+    <em>审计判断：¥15万咨询费是否真实、定价是否公允、是否需要披露</em>
+  </div>
+  <div class="anomaly">
+    <strong>#3 银行余额调节差异</strong> — 银行对账单 ¥4,623,450 vs 账面 ¥4,580,000，差额 ¥43,450<br>
+    <em>审计判断：存在未达账项（C2回单），需编制银行余额调节表确认</em>
+  </div>
+  <div class="anomaly">
+    <strong>#4 收入跨期</strong> — D1发票12月28日开具，但服务期间是2025年1-3月，收入应归属2025年<br>
+    <em>审计判断：提前确认收入 ¥380,000，影响利润表真实性</em>
+  </div>
+  <div class="anomaly">
+    <strong>#5 大额整数费用</strong> — B3咨询费 ¥150,000 为大额整数，无具体服务明细<br>
+    <em>审计判断：结合异常#2，高度可疑，需进一步检查合同和交付物</em>
+  </div>
+</div>
+
+<h2>🚀 四、审计操作流程</h2>
+<div class="card">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <strong>资料采集</strong> — 打开12个单据 HTML，逐一截图后在审易平台 Cmd+V 粘贴上传<br>
+      <span style="color:#64748b;font-size:12px;">验证：自动命名是否准确，OCR 识别是否正确</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <strong>智能核对</strong> — 切到「智能核对」页，点一键核对<br>
+      <span style="color:#64748b;font-size:12px;">预期：发现 A组金额一致、B组金额一致、A3/A4 存在 ¥7,200 差异</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <strong>异常排查</strong> — 切到「异常检测」页<br>
+      <span style="color:#64748b;font-size:12px;">预期：标注金额差异、大额整数、跨期收入等异常</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <strong>AI 咨询</strong> — 向 AI 助手提问<br>
+      <span style="color:#64748b;font-size:12px;">示例："发现付款金额大于发票金额，可能原因有哪些？" "如何审计关联方交易？"</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <strong>资料归档</strong> — 检查「资料收纳箱」和「处理记录」<br>
+      <span style="color:#64748b;font-size:12px;">验证：所有单据自动归集、操作有完整记录</span>
+    </div>
+  </div>
+</div>
+
+<h2>💡 五、可以问 AI 助手的问题</h2>
+<div class="card" style="font-size:13px;">
+  <ul style="padding-left:20px;">
+    <li>付款金额大于发票金额 ¥7,200，可能是什么原因？审计上应该怎么处理？</li>
+    <li>发现一笔 15万的咨询费，收款方疑似法人亲属公司，审计程序怎么做？</li>
+    <li>12月底开票但服务期间在次年，收入确认是否合规？引用什么准则？</li>
+    <li>银行余额调节表差额 ¥43,450，需要做哪些审计程序？</li>
+    <li>帮我列一个应收账款函证的审计程序清单</li>
+    <li>什么情况下需要出具保留意见的审计报告？</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

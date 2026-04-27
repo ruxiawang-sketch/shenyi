@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>国内_0b57HB... - 扫描全能王</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:#f0f0f0;overflow:hidden;height:100vh;display:flex;flex-direction:column;color:#333;font-size:14px;}
+
+/* ========== Top Header Bar ========== */
+.top-bar{height:48px;background:#fff;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0;z-index:10;position:relative;}
+.cs-logo{width:30px;height:30px;background:#2cc5a0;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;}
+.cs-dropdown{font-size:11px;color:#666;margin-left:-4px;cursor:pointer;}
+.doc-name{font-size:14px;color:#333;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:4px;}
+.icon-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;color:#666;font-size:16px;flex-shrink:0;}
+.icon-btn:hover{background:#f5f5f5;}
+.tag-btn{display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid #e0e0e0;border-radius:4px;font-size:13px;color:#666;cursor:pointer;background:#fff;}
+.tag-btn:hover{border-color:#ccc;}
+.sync-icon{color:#2cc5a0;font-size:18px;}
+.top-spacer{flex:1;}
+
+.top-tabs{display:flex;gap:0;height:100%;position:absolute;left:50%;transform:translateX(-50%);}
+.top-tab{padding:0 20px;height:100%;display:flex;align-items:center;font-size:14px;color:#666;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.top-tab:hover{color:#333;}
+.top-tab.active{color:#2cc5a0;border-bottom-color:#2cc5a0;font-weight:500;}
+
+.top-right{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.top-right .icon-btn{font-size:18px;}
+.btn-share{display:flex;align-items:center;gap:4px;padding:6px 14px;border:1px solid #e0e0e0;border-radius:4px;font-size:13px;color:#666;cursor:pointer;background:#fff;}
+.btn-share:hover{border-color:#ccc;}
+.btn-save{display:flex;align-items:center;gap:4px;padding:6px 16px;border:none;border-radius:4px;font-size:13px;color:#fff;cursor:pointer;background:#2cc5a0;font-weight:500;}
+.btn-save:hover{background:#26b593;}
+
+/* ========== Toolbar ========== */
+.toolbar{height:44px;background:#fff;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;justify-content:center;padding:0 16px;gap:4px;flex-shrink:0;}
+.tool-sep{width:1px;height:20px;background:#e8e8e8;margin:0 8px;}
+.tool-btn{height:32px;padding:0 12px;display:flex;align-items:center;gap:6px;border-radius:4px;cursor:pointer;font-size:13px;color:#666;border:none;background:transparent;}
+.tool-btn:hover{background:#f5f5f5;}
+.tool-btn.active{background:#f0faf7;color:#2cc5a0;}
+.tool-btn svg{width:18px;height:18px;}
+.tool-icon{font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;color:#666;}
+.tool-icon:hover{background:#f5f5f5;}
+.tool-icon.active{color:#2cc5a0;background:#f0faf7;}
+
+/* ========== Main Layout ========== */
+.main{flex:1;display:flex;overflow:hidden;}
+
+/* ========== Left Sidebar ========== */
+.sidebar{width:200px;background:#f8f8f8;border-right:1px solid #e8e8e8;display:flex;flex-direction:column;padding:12px;gap:12px;overflow-y:auto;flex-shrink:0;}
+.thumb-card{border:2px solid #2cc5a0;border-radius:6px;overflow:hidden;cursor:pointer;background:#fff;}
+.thumb-card img,.thumb-card .thumb-placeholder{width:100%;aspect-ratio:0.707;object-fit:contain;display:block;}
+.thumb-placeholder{background:#fff;display:flex;align-items:center;justify-content:center;padding:8px;}
+.thumb-placeholder img{width:100%;height:100%;object-fit:contain;}
+.thumb-num{text-align:center;padding:4px 0;font-size:13px;color:#2cc5a0;font-weight:500;}
+.upload-card{border:2px dashed #d0d0d0;border-radius:6px;aspect-ratio:0.707;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;gap:8px;transition:border-color .2s;}
+.upload-card:hover{border-color:#2cc5a0;}
+.upload-plus{font-size:36px;color:#ccc;line-height:1;}
+.upload-text{font-size:12px;color:#999;}
+
+/* ========== Document Viewer ========== */
+.viewer{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;background:#e8e8e8;position:relative;}
+.doc-frame{border:2px solid #2cc5a0;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.12);max-height:calc(100vh - 180px);display:flex;align-items:center;justify-content:center;}
+.doc-content{padding:20px;max-width:620px;width:100%;}
+
+/* Document content styling */
+.doc-header{text-align:center;font-size:18px;font-weight:700;margin-bottom:12px;letter-spacing:1px;}
+.doc-customer{font-size:13px;margin-bottom:12px;padding-left:20px;}
+.doc-table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;}
+.doc-table th,.doc-table td{border:1px solid #333;padding:4px 6px;text-align:center;}
+.doc-table th{font-weight:600;font-size:11px;}
+.doc-table td{font-size:12px;}
+.doc-stamp{position:relative;margin-top:10px;display:flex;justify-content:space-between;align-items:flex-end;}
+.stamp-img{width:100px;height:100px;border:3px solid #cc3333;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#cc3333;font-size:10px;font-weight:700;transform:rotate(-15deg);opacity:0.7;text-align:center;line-height:1.3;}
+.doc-date{font-size:12px;color:#666;text-align:right;}
+
+/* ========== Bottom Bar ========== */
+.bottom-bar{height:40px;background:#fff;border-top:1px solid #e8e8e8;display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0;padding:0 16px;}
+.page-nav{display:flex;align-items:center;gap:4px;}
+.page-nav-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;color:#999;font-size:14px;}
+.page-nav-btn:hover{background:#f5f5f5;color:#666;}
+.page-info{font-size:13px;color:#666;padding:0 8px;}
+.zoom-controls{display:flex;align-items:center;gap:4px;margin-left:20px;}
+.zoom-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;color:#666;font-size:16px;}
+.zoom-btn:hover{background:#f5f5f5;}
+.zoom-value{font-size:13px;color:#666;padding:0 4px;display:flex;align-items:center;gap:2px;cursor:pointer;}
+.zoom-dropdown{font-size:10px;color:#999;}
+.bottom-right{display:flex;align-items:center;gap:4px;margin-left:20px;}
+.bottom-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;color:#999;font-size:16px;}
+.bottom-icon:hover{background:#f5f5f5;color:#666;}
+
+/* ========== 引导卡片 ========== */
+.guide-card{position:fixed;top:104px;right:20px;width:320px;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04);z-index:100;overflow:hidden;animation:guideIn .4s cubic-bezier(.16,1,.3,1);}
+.guide-card .gc-header{padding:20px 20px 14px;background:linear-gradient(135deg,#ecfdf5 0%,#f0f9ff 100%);}
+.guide-card .gc-header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.guide-card .gc-badge{font-size:10px;background:linear-gradient(135deg,#2cc5a0,#10b981);color:#fff;padding:3px 10px;border-radius:10px;font-weight:700;letter-spacing:.5px;}
+.guide-card .gc-close{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;color:#94a3b8;font-size:16px;transition:all .15s;}
+.guide-card .gc-close:hover{background:rgba(0,0,0,.06);color:#475569;}
+.guide-card .gc-title{font-size:16px;font-weight:700;color:#0f172a;line-height:1.4;}
+.guide-card .gc-title em{font-style:normal;color:#059669;}
+.guide-card .gc-sub{font-size:12px;color:#64748b;margin-top:6px;line-height:1.5;}
+
+.guide-card .gc-body{padding:6px 20px 2px;}
+.gc-step{display:flex;gap:12px;padding:10px 0;align-items:flex-start;}
+.gc-step-num{width:22px;height:22px;border-radius:50%;background:#f0fdf4;border:1.5px solid #86efac;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#059669;flex-shrink:0;margin-top:1px;}
+.gc-step-text{flex:1;}
+.gc-step-title{font-size:13px;font-weight:600;color:#1e293b;}
+.gc-step-desc{font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.4;}
+.gc-arrow{text-align:center;color:#d1d5db;font-size:10px;margin:-4px 0;padding-left:3px;}
+
+.guide-card .gc-footer{padding:14px 20px 18px;}
+.gc-btn{width:100%;padding:11px;background:linear-gradient(135deg,#2cc5a0,#10b981);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.gc-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(16,185,129,.3);}
+.gc-btn svg{flex-shrink:0;}
+.gc-dismiss{width:100%;text-align:center;padding:8px;font-size:12px;color:#94a3b8;cursor:pointer;border:none;background:none;margin-top:6px;}
+.gc-dismiss:hover{color:#64748b;}
+
+@keyframes guideIn{from{transform:translateY(-12px) scale(.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+<!-- ========== Top Bar ========== -->
+<div class="top-bar">
+  <div class="cs-logo">CS</div>
+  <span class="cs-dropdown">▾</span>
+  <span class="doc-name">国内_0b57HB...</span>
+  <div class="icon-btn" title="重命名">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+  </div>
+  <div class="tag-btn">标签 ＋</div>
+  <span class="sync-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2cc5a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </span>
+
+  <div class="top-spacer"></div>
+
+  <div class="top-tabs">
+    <div class="top-tab active">阅读</div>
+    <div class="top-tab">图片处理</div>
+    <div class="top-tab">批注</div>
+    <div class="top-tab">页面</div>
+    <div class="top-tab">格式转换</div>
+  </div>
+
+  <div class="top-right">
+    <div class="icon-btn" title="下载">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </div>
+    <div class="icon-btn" title="打印">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    </div>
+    <button class="btn-share">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      分享
+    </button>
+    <button class="btn-save">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      保存
+    </button>
+  </div>
+</div>
+
+<!-- ========== Toolbar ========== -->
+<div class="toolbar">
+  <div class="tool-icon active" title="选择">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l7.07 17 2.51-7.39L21 11.07z" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1.8"/><path d="M4 4l7.07 17 2.51-7.39L21 11.07z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+  </div>
+  <div class="tool-icon" title="拖拽">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 00-4 0"/><path d="M14 10V4a2 2 0 00-4 0v6"/><path d="M10 9.5V6a2 2 0 00-4 0v8"/><path d="M18 8a2 2 0 012 2v7a5 5 0 01-5 5H9a5 5 0 01-5-5v-1l3-3"/></svg>
+  </div>
+  <div class="tool-sep"></div>
+  <div class="tool-btn" title="连续视图">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="8" rx="1.5"/><rect x="4" y="14" width="16" height="8" rx="1.5"/></svg>
+    连续视图
+  </div>
+  <div class="tool-btn active" title="单页">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+    单页
+  </div>
+  <div class="tool-btn" title="双页">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="9" height="18" rx="1.5"/><rect x="13" y="3" width="9" height="18" rx="1.5"/></svg>
+    双页
+  </div>
+  <div class="tool-btn" title="演示模式">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    演示模式
+  </div>
+  <div class="tool-btn" title="AI 文档助手">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 10h.01M15 10h.01"/><path d="M9.5 15a5 5 0 005 0"/></svg>
+    AI 文档助手
+  </div>
+</div>
+
+<!-- ========== Main ========== -->
+<div class="main">
+  <!-- Left Sidebar -->
+  <div class="sidebar">
+    <div>
+      <div class="thumb-card">
+        <div class="thumb-placeholder" id="thumbArea">
+          <canvas id="thumbCanvas" width="176" height="249" style="width:100%;height:auto;"></canvas>
+        </div>
+      </div>
+      <div class="thumb-num">1</div>
+    </div>
+    <div class="upload-card">
+      <div class="upload-plus">+</div>
+      <div class="upload-text">拖拽或点击上传</div>
+    </div>
+  </div>
+
+  <!-- Document Viewer -->
+  <div class="viewer">
+    <div class="doc-frame">
+      <div class="doc-content" id="docContent">
+        <div class="doc-header">河北国控供应链管理有限公司对账单</div>
+        <div class="doc-customer">客户：宁晋县朝赫金属线材有限公司</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">序号</th>
+              <th style="width:70px;">业务日期</th>
+              <th>货物</th>
+              <th>吨数</th>
+              <th>装卸费</th>
+              <th>已收费</th>
+              <th>余额</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>5月28日</td><td>钢杆</td><td>31.637</td><td>632.74</td><td>632.74</td><td></td></tr>
+            <tr><td>2</td><td>6月11日</td><td>钢杆</td><td>31.67</td><td>633.40</td><td>633.40</td><td></td></tr>
+            <tr><td>3</td><td>6月12日</td><td>钢杆</td><td>31.734</td><td>634.68</td><td>634.68</td><td></td></tr>
+            <tr><td>4</td><td>6月13日</td><td>钢杆</td><td>31.933</td><td>638.66</td><td>638.66</td><td></td></tr>
+            <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>7</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>9</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr style="font-weight:700;"><td>合计</td><td></td><td></td><td style="color:#cc3333;">126.974</td><td>2539.48</td><td>2539.48</td><td></td></tr>
+          </tbody>
+        </table>
+        <div class="doc-stamp">
+          <div class="stamp-img">河北国控供应链<br>管理有限公司<br>仓储专用章</div>
+          <div class="doc-date">日期：2024.5.26-2024.6.25</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Bottom Bar ========== -->
+<div class="bottom-bar">
+  <div class="page-nav">
+    <div class="page-nav-btn">⏮</div>
+    <div class="page-nav-btn">◀</div>
+  </div>
+  <div class="page-info">1 / 1</div>
+  <div class="page-nav">
+    <div class="page-nav-btn">▶</div>
+    <div class="page-nav-btn">⏭</div>
+  </div>
+  <div class="zoom-controls">
+    <div class="zoom-btn">−</div>
+    <div class="zoom-value">50% <span class="zoom-dropdown">▾</span></div>
+    <div class="zoom-btn">+</div>
+  </div>
+  <div class="bottom-right">
+    <div class="bottom-icon" title="适合页面">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </div>
+    <div class="bottom-icon" title="适合宽度">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+    </div>
+    <div class="bottom-icon" title="单页视图">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
+    </div>
+    <div class="bottom-icon" title="双页视图">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/></svg>
+    </div>
+    <div class="bottom-icon" title="全屏">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 引导卡片 ========== -->
+<div class="guide-card" id="guideCard" style="display:none;">
+  <div class="gc-header">
+    <div class="gc-header-top">
+      <span class="gc-badge">AI 智能识别</span>
+      <div class="gc-close" onclick="closeGuide()">&times;</div>
+    </div>
+    <div class="gc-title">这份<em>财务单据</em>，可以直接提取处理</div>
+    <div class="gc-sub">AI 已识别到对账单内容，3 步完成从纸质单据到账务处理</div>
+  </div>
+  <div class="gc-body">
+    <div class="gc-step">
+      <div class="gc-step-num">1</div>
+      <div class="gc-step-text">
+        <div class="gc-step-title">识别财务文档</div>
+        <div class="gc-step-desc">发票、回单、对账单、凭证，拍照或粘贴即可识别</div>
+      </div>
+    </div>
+    <div class="gc-arrow">↓</div>
+    <div class="gc-step">
+      <div class="gc-step-num">2</div>
+      <div class="gc-step-text">
+        <div class="gc-step-title">自动提取内容</div>
+        <div class="gc-step-desc">表格、金额、日期、往来方，结构化提取到表格中</div>
+      </div>
+    </div>
+    <div class="gc-arrow">↓</div>
+    <div class="gc-step">
+      <div class="gc-step-num">3</div>
+      <div class="gc-step-text">
+        <div class="gc-step-title">AI 账务处理</div>
+        <div class="gc-step-desc">交叉核对、异常检测、余额调节，AI 自动完成</div>
+      </div>
+    </div>
+  </div>
+  <div class="gc-footer">
+    <button class="gc-btn" onclick="goToExtract()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      立即提取这份对账单
+    </button>
+    <button class="gc-dismiss" onclick="closeGuide()">以后再说</button>
+  </div>
+</div>
+
+<script>
+// ========== 引导卡片 ==========
+setTimeout(() => {
+  document.getElementById('guideCard').style.display = 'block';
+}, 1000);
+
+function closeGuide() {
+  document.getElementById('guideCard').style.display = 'none';
+}
+
+async function goToExtract() {
+  const btn = document.querySelector('.gc-btn');
+  if (btn) { btn.textContent = '正在截取文档...'; btn.disabled = true; }
+
+  try {
+    const el = document.getElementById('docContent');
+    const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#fff', useCORS: true });
+    const dataUrl = canvas.toDataURL('image/png');
+    sessionStorage.setItem('docViewerImage', dataUrl);
+    sessionStorage.setItem('docViewerName', document.querySelector('.doc-name')?.textContent?.trim() || '对账单');
+  } catch (e) {
+    console.error('截图失败:', e);
+  }
+  window.location.href = '/index.html#extract';
+}
+
+// Draw a mini version on the thumbnail canvas
+const canvas = document.getElementById('thumbCanvas');
+const ctx = canvas.getContext('2d');
+ctx.fillStyle = '#fff';
+ctx.fillRect(0, 0, 176, 249);
+
+// Title
+ctx.fillStyle = '#333';
+ctx.font = 'bold 7px sans-serif';
+ctx.textAlign = 'center';
+ctx.fillText('河北国控供应链管理有限公司对账单', 88, 20);
+
+// Table lines
+ctx.strokeStyle = '#999';
+ctx.lineWidth = 0.5;
+const startY = 35;
+const rowH = 12;
+const cols = [15, 40, 70, 95, 115, 140, 165];
+for (let r = 0; r <= 11; r++) {
+  ctx.beginPath();
+  ctx.moveTo(10, startY + r * rowH);
+  ctx.lineTo(170, startY + r * rowH);
+  ctx.stroke();
+}
+cols.forEach(x => {
+  ctx.beginPath();
+  ctx.moveTo(x, startY);
+  ctx.lineTo(x, startY + 11 * rowH);
+  ctx.stroke();
+});
+
+// Stamp circle
+ctx.beginPath();
+ctx.arc(60, 200, 22, 0, Math.PI * 2);
+ctx.strokeStyle = '#cc3333';
+ctx.lineWidth = 1.5;
+ctx.globalAlpha = 0.5;
+ctx.stroke();
+ctx.globalAlpha = 1;
+
+// Tab hover effects
+document.querySelectorAll('.top-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.tool-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

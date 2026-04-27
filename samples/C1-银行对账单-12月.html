@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>银行对账单 - 2024年12月</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#fff;display:flex;justify-content:center;padding:40px;font-family:'SimSun','STSong',serif;}
+.statement{width:850px;border:2px solid #1a4b8c;padding:25px 35px;position:relative;}
+.bank-logo{text-align:center;margin-bottom:10px;}
+.bank-name{font-size:22px;font-weight:bold;color:#1a4b8c;letter-spacing:4px;}
+.statement-title{text-align:center;font-size:20px;font-weight:bold;color:#333;margin:12px 0;border-bottom:2px solid #1a4b8c;padding-bottom:10px;letter-spacing:3px;}
+.account-info{font-size:13px;line-height:2;margin:15px 0;padding:10px 15px;background:#f0f4fa;border:1px solid #d0d8e8;}
+.account-info span{margin-right:30px;}
+.txn-table{width:100%;border-collapse:collapse;font-size:13px;margin:15px 0;}
+.txn-table th{background:#1a4b8c;color:#fff;padding:8px 10px;text-align:center;font-weight:bold;}
+.txn-table td{padding:7px 10px;border:1px solid #ccc;text-align:center;}
+.txn-table tr:nth-child(even){background:#f8fafd;}
+.txn-table .debit{color:#c00;font-weight:bold;}
+.txn-table .credit{color:#060;font-weight:bold;}
+.summary{display:flex;justify-content:space-between;font-size:14px;font-weight:bold;margin-top:15px;padding:12px 15px;background:#f0f4fa;border:1px solid #d0d8e8;}
+.footer{display:flex;justify-content:space-between;margin-top:20px;font-size:12px;color:#666;}
+.stamp{position:absolute;bottom:50px;right:50px;width:140px;height:140px;border:3px solid #1a4b8c;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1a4b8c;font-size:13px;font-weight:bold;transform:rotate(-10deg);opacity:0.5;text-align:center;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="statement">
+  <div class="bank-logo">
+    <div class="bank-name">中国工商银行</div>
+    <div style="font-size:12px;color:#666;letter-spacing:2px;">INDUSTRIAL AND COMMERCIAL BANK OF CHINA</div>
+  </div>
+  <div class="statement-title">银 行 对 账 单</div>
+
+  <div class="account-info">
+    <div>
+      <span>账户名称：上海星辰科技有限公司</span>
+      <span>账号：1001 2345 6789 0123 456</span>
+    </div>
+    <div>
+      <span>开户行：中国工商银行上海张江支行</span>
+      <span>币种：人民币</span>
+    </div>
+    <div>
+      <span>对账期间：2024年12月01日 至 2024年12月31日</span>
+      <span>打印日期：2025年01月03日</span>
+    </div>
+  </div>
+
+  <table class="txn-table">
+    <thead>
+      <tr>
+        <th>日期</th>
+        <th>摘要</th>
+        <th>对方户名</th>
+        <th>借方金额（支出）</th>
+        <th>贷方金额（收入）</th>
+        <th>余额</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>12-01</td>
+        <td>上期余额</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>5,128,700.00</td>
+      </tr>
+      <tr>
+        <td>12-03</td>
+        <td>收到软件服务费</td>
+        <td>苏州恒信电子有限公司</td>
+        <td>-</td>
+        <td class="credit">280,000.00</td>
+        <td>5,408,700.00</td>
+      </tr>
+      <tr>
+        <td>12-05</td>
+        <td>支付办公租金</td>
+        <td>上海张江集团有限公司</td>
+        <td class="debit">85,000.00</td>
+        <td>-</td>
+        <td>5,323,700.00</td>
+      </tr>
+      <tr>
+        <td>12-10</td>
+        <td>支付员工工资</td>
+        <td>代发工资</td>
+        <td class="debit">623,500.00</td>
+        <td>-</td>
+        <td>4,700,200.00</td>
+      </tr>
+      <tr>
+        <td>12-12</td>
+        <td>收到技术服务费</td>
+        <td>广州数联科技有限公司</td>
+        <td>-</td>
+        <td class="credit">156,000.00</td>
+        <td>4,856,200.00</td>
+      </tr>
+      <tr>
+        <td>12-15</td>
+        <td>支付社保公积金</td>
+        <td>上海社保中心</td>
+        <td class="debit">198,750.00</td>
+        <td>-</td>
+        <td>4,657,450.00</td>
+      </tr>
+      <tr>
+        <td>12-20</td>
+        <td>支付服务器托管费</td>
+        <td>上海电信</td>
+        <td class="debit">36,000.00</td>
+        <td>-</td>
+        <td>4,621,450.00</td>
+      </tr>
+      <tr>
+        <td>12-25</td>
+        <td>收到项目尾款</td>
+        <td>南京云途信息技术有限公司</td>
+        <td>-</td>
+        <td class="credit">45,450.00</td>
+        <td>4,666,900.00</td>
+      </tr>
+      <tr>
+        <td>12-31</td>
+        <td>支付IDC机房托管预付款</td>
+        <td>上海电信</td>
+        <td class="debit">43,450.00</td>
+        <td>-</td>
+        <td>4,623,450.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="summary">
+    <span>本期借方合计：¥986,700.00</span>
+    <span>本期贷方合计：¥481,450.00</span>
+    <span>期末余额：¥4,623,450.00</span>
+  </div>
+
+  <div class="footer">
+    <span>对账单编号：ICBC-ZJ-2024-12-00356</span>
+    <span>此对账单由系统自动生成，与银行留存记录一致</span>
+  </div>
+
+  <div class="stamp">中国工商银行<br>上海张江支行<br>对账专用章</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>增值税专用发票样例</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#fff;display:flex;justify-content:center;padding:40px;font-family:'SimSun','STSong',serif;}
+.invoice{width:800px;border:2px solid #c00;padding:20px 30px;position:relative;}
+.invoice-title{text-align:center;color:#c00;font-size:24px;font-weight:bold;letter-spacing:6px;margin-bottom:15px;}
+.invoice-sub{text-align:center;font-size:12px;color:#666;margin-bottom:15px;}
+.row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.row .left{color:#333;} .row .right{color:#333;}
+.section{border:1px solid #c00;margin:10px 0;padding:10px 15px;font-size:13px;line-height:2;}
+.section-title{color:#c00;font-weight:bold;font-size:12px;margin-bottom:4px;}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+table th,table td{border:1px solid #c00;padding:6px 8px;text-align:center;}
+table th{background:#fff5f5;color:#c00;font-weight:bold;}
+.amount-row{display:flex;justify-content:space-between;font-size:14px;font-weight:bold;border-top:2px solid #c00;padding-top:10px;margin-top:10px;}
+.seal{position:absolute;bottom:60px;right:60px;width:120px;height:120px;border:3px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#c00;font-size:14px;font-weight:bold;transform:rotate(-15deg);opacity:0.6;}
+</style>
+</head>
+<body>
+<div class="invoice">
+  <div class="invoice-title">增 值 税 专 用 发 票</div>
+  <div class="invoice-sub">（第一联：记账联）</div>
+  <div class="row">
+    <span class="left">发票代码：3100 2130 40</span>
+    <span class="right">发票号码：08956723</span>
+  </div>
+  <div class="row">
+    <span class="left">开票日期：2024年06月15日</span>
+    <span class="right">校验码：83920 47281 63059 17342</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">购买方</div>
+    <div>名称：上海星辰科技有限公司</div>
+    <div>纳税人识别号：91310115MA1K4L8X29</div>
+    <div>地址、电话：上海市浦东新区张江高科技园区碧波路690号 021-58956123</div>
+    <div>开户行及账号：中国工商银行上海张江支行 1001 2345 6789 0123 456</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>货物或应税劳务名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th>数量</th>
+        <th>单价（元）</th>
+        <th>金额（元）</th>
+        <th>税率</th>
+        <th>税额（元）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>*信息技术服务*云计算服务费</td>
+        <td>-</td>
+        <td>项</td>
+        <td>1</td>
+        <td>150,000.00</td>
+        <td>150,000.00</td>
+        <td>6%</td>
+        <td>9,000.00</td>
+      </tr>
+      <tr>
+        <td>*信息技术服务*软件开发服务</td>
+        <td>-</td>
+        <td>项</td>
+        <td>1</td>
+        <td>280,000.00</td>
+        <td>280,000.00</td>
+        <td>6%</td>
+        <td>16,800.00</td>
+      </tr>
+      <tr>
+        <td>*信息技术服务*运维支持服务</td>
+        <td>-</td>
+        <td>月</td>
+        <td>12</td>
+        <td>8,500.00</td>
+        <td>102,000.00</td>
+        <td>6%</td>
+        <td>6,120.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="amount-row">
+    <span>合计：</span>
+    <span>金额 ¥532,000.00　　　税额 ¥31,920.00</span>
+  </div>
+  <div style="font-size:14px;margin-top:8px;font-weight:bold;">
+    价税合计（大写）：伍拾陆万叁仟玖佰贰拾元整　　（小写）¥563,920.00
+  </div>
+
+  <div class="section" style="margin-top:15px;">
+    <div class="section-title">销售方</div>
+    <div>名称：杭州云智信息技术有限公司</div>
+    <div>纳税人识别号：91330108MA2B7P3K15</div>
+    <div>地址、电话：杭州市滨江区网商路599号 0571-86753421</div>
+    <div>开户行及账号：中国建设银行杭州滨江支行 3300 1567 8901 2345 678</div>
+  </div>
+
+  <div class="row" style="margin-top:12px;">
+    <span>收款人：王芳</span>
+    <span>复核：张明</span>
+    <span>开票人：李华</span>
+  </div>
+
+  <div class="seal">杭州云智信息<br>技术有限公司<br>发票专用章</div>
+</div>
+</body>
+</html>

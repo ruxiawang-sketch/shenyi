@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>银行回单 - 差旅费报销</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#fff;display:flex;justify-content:center;padding:40px;font-family:'SimSun','STSong',serif;}
+.receipt{width:700px;border:2px solid #1a4b8c;padding:25px 35px;position:relative;}
+.bank-logo{text-align:center;margin-bottom:10px;}
+.bank-name{font-size:22px;font-weight:bold;color:#1a4b8c;letter-spacing:4px;}
+.receipt-title{text-align:center;font-size:18px;font-weight:bold;color:#333;margin:12px 0;border-bottom:2px solid #1a4b8c;padding-bottom:10px;letter-spacing:3px;}
+.receipt-no{text-align:right;font-size:12px;color:#666;margin-bottom:15px;}
+.info-table{width:100%;border-collapse:collapse;font-size:14px;margin:15px 0;}
+.info-table td{padding:10px 15px;border:1px solid #ccc;line-height:1.6;}
+.info-table .label{width:120px;background:#f0f4fa;font-weight:bold;color:#1a4b8c;text-align:center;}
+.amount-big{font-size:16px;font-weight:bold;color:#c00;}
+.footer{display:flex;justify-content:space-between;margin-top:20px;font-size:12px;color:#666;}
+.stamp{position:absolute;bottom:50px;right:50px;width:140px;height:140px;border:3px solid #1a4b8c;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1a4b8c;font-size:13px;font-weight:bold;transform:rotate(-10deg);opacity:0.5;text-align:center;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="receipt">
+  <div class="bank-logo">
+    <div class="bank-name">中国工商银行</div>
+    <div style="font-size:12px;color:#666;letter-spacing:2px;">INDUSTRIAL AND COMMERCIAL BANK OF CHINA</div>
+  </div>
+  <div class="receipt-title">电 子 回 单</div>
+  <div class="receipt-no">回单编号：ICBC-2024-1018-02478951 &nbsp;&nbsp; 交易流水号：2024101802478951326</div>
+
+  <table class="info-table">
+    <tr>
+      <td class="label">交易类型</td>
+      <td colspan="3">转账汇款</td>
+    </tr>
+    <tr>
+      <td class="label">交易日期</td>
+      <td>2024年10月18日</td>
+      <td class="label">交易时间</td>
+      <td>15:42:08</td>
+    </tr>
+    <tr>
+      <td class="label">付款人名称</td>
+      <td colspan="3">上海星辰科技有限公司</td>
+    </tr>
+    <tr>
+      <td class="label">付款账号</td>
+      <td colspan="3">1001 2345 6789 0123 456</td>
+    </tr>
+    <tr>
+      <td class="label">付款开户行</td>
+      <td colspan="3">中国工商银行上海张江支行</td>
+    </tr>
+    <tr>
+      <td class="label">收款人名称</td>
+      <td colspan="3">李伟</td>
+    </tr>
+    <tr>
+      <td class="label">收款账号</td>
+      <td colspan="3">6222 0210 0108 7654 321</td>
+    </tr>
+    <tr>
+      <td class="label">收款开户行</td>
+      <td colspan="3">中国工商银行上海浦东支行</td>
+    </tr>
+    <tr>
+      <td class="label">交易金额</td>
+      <td colspan="3">
+        <span class="amount-big">¥12,600.00</span>
+        <span style="margin-left:20px;font-size:13px;">（大写：壹万贰仟陆佰元整）</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="label">摘要</td>
+      <td colspan="3">员工差旅费报销</td>
+    </tr>
+    <tr>
+      <td class="label">交易状态</td>
+      <td colspan="3" style="color:green;font-weight:bold;">交易成功</td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    <span>打印日期：2024-10-18 15:43:15</span>
+    <span>此回单由系统自动生成，无需签章</span>
+  </div>
+
+  <div class="stamp">中国工商银行<br>上海张江支行<br>业务专用章</div>
+</div>
+</body>
+</html>

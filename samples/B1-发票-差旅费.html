@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>增值税普通发票 - 差旅费</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#fff;display:flex;justify-content:center;padding:40px;font-family:'SimSun','STSong',serif;}
+.invoice{width:800px;border:2px solid #c00;padding:20px 30px;position:relative;}
+.invoice-title{text-align:center;color:#c00;font-size:24px;font-weight:bold;letter-spacing:6px;margin-bottom:15px;}
+.invoice-sub{text-align:center;font-size:12px;color:#666;margin-bottom:15px;}
+.row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.row .left{color:#333;} .row .right{color:#333;}
+.section{border:1px solid #c00;margin:10px 0;padding:10px 15px;font-size:13px;line-height:2;}
+.section-title{color:#c00;font-weight:bold;font-size:12px;margin-bottom:4px;}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+table th,table td{border:1px solid #c00;padding:6px 8px;text-align:center;}
+table th{background:#fff5f5;color:#c00;font-weight:bold;}
+.amount-row{display:flex;justify-content:space-between;font-size:14px;font-weight:bold;border-top:2px solid #c00;padding-top:10px;margin-top:10px;}
+.seal{position:absolute;bottom:60px;right:60px;width:120px;height:120px;border:3px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#c00;font-size:14px;font-weight:bold;transform:rotate(-15deg);opacity:0.6;}
+</style>
+</head>
+<body>
+<div class="invoice">
+  <div class="invoice-title">增 值 税 普 通 发 票</div>
+  <div class="invoice-sub">（第一联：记账联）</div>
+  <div class="row">
+    <span class="left">发票代码：3100 2241 04</span>
+    <span class="right">发票号码：35281067</span>
+  </div>
+  <div class="row">
+    <span class="left">开票日期：2024年10月15日</span>
+    <span class="right">校验码：47159 82063 71548 29036</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">购买方</div>
+    <div>名称：上海星辰科技有限公司</div>
+    <div>纳税人识别号：91310115MA1K4L8X29</div>
+    <div>地址、电话：</div>
+    <div>开户行及账号：</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>货物或应税劳务名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th>数量</th>
+        <th>单价（元）</th>
+        <th>金额（元）</th>
+        <th>税率</th>
+        <th>税额（元）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>*住宿服务*商务住宿</td>
+        <td>-</td>
+        <td>间/夜</td>
+        <td>7</td>
+        <td>1,698.11</td>
+        <td>11,886.79</td>
+        <td>6%</td>
+        <td>713.21</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="amount-row">
+    <span>合计：</span>
+    <span>金额 ¥11,886.79　　　税额 ¥713.21</span>
+  </div>
+  <div style="font-size:14px;margin-top:8px;font-weight:bold;">
+    价税合计（大写）：壹万贰仟陆佰元整　　（小写）¥12,600.00
+  </div>
+
+  <div class="section" style="margin-top:15px;">
+    <div class="section-title">销售方</div>
+    <div>名称：上海锦江之星酒店管理有限公司</div>
+    <div>纳税人识别号：91310000607284400C</div>
+    <div>地址、电话：上海市徐汇区肇嘉浜路1065号 021-64155588</div>
+    <div>开户行及账号：中国工商银行上海徐汇支行 1001 1809 3002 0156 789</div>
+  </div>
+
+  <div class="row" style="margin-top:12px;">
+    <span>收款人：周丽</span>
+    <span>复核：孙强</span>
+    <span>开票人：吴佳</span>
+  </div>
+
+  <div class="seal">上海锦江之星<br>酒店管理有限<br>公司发票专用章</div>
+</div>
+</body>
+</html>
