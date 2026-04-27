@@ -156,7 +156,8 @@ a { text-decoration: none; color: inherit; }
 .notif-overlay.show { display: block; }
 
 /* 高亮效果 */
-.highlight-ring { position: relative; z-index: 160; }
+.highlight-ring { z-index: 160; }
+.highlight-ring:not(.notif-popup) { position: relative; }
 .highlight-ring::after { content: ''; position: absolute; inset: -4px; border: 2px solid #00c4b4; border-radius: 14px; animation: ringPulse 1.5s ease-in-out infinite; pointer-events: none; }
 @keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,196,180,.3); } 50% { box-shadow: 0 0 0 8px rgba(0,196,180,0); } }
 
@@ -437,9 +438,9 @@ a { text-decoration: none; color: inherit; }
     <div class="guide-step-indicator" id="guideStepIndicator"></div>
     <div class="guide-bubble-title" id="guideBubbleTitle"></div>
     <div class="guide-bubble-desc" id="guideBubbleDesc"></div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button class="guide-bubble-btn" id="guideBubbleBtn"></button>
+    <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;">
       <span style="font-size:11px;color:#999;cursor:pointer;" onclick="skipGuide()">跳过引导</span>
+      <button class="guide-bubble-btn" id="guideBubbleBtn"></button>
     </div>
   </div>
 </div>
@@ -511,8 +512,7 @@ function handleAuditNotif() {
 
 function startGuideStep0() {
   guideStep = 0;
-  document.getElementById('overlay').classList.add('show');
-  // 通知弹窗高亮
+  // 不显示overlay，用notifOverlay作为蒙层（弹窗z-index:100在其上方）
   document.getElementById('notifPopup').classList.add('highlight-ring');
 
   const indicator = document.getElementById('guideStepIndicator');

@@ -45,8 +45,9 @@ a{text-decoration:none;color:inherit;}
 .sidebar-logo .logo-text small{display:block;font-size:10px;font-weight:400;color:var(--gray-400);letter-spacing:.5px;}
 
 .sidebar-nav{flex:1;padding:8px;overflow-y:auto;}
-.nav-section{margin-bottom:4px;}
-.nav-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);padding:12px 10px 6px;}
+.nav-section{margin-bottom:2px;}
+.nav-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);padding:12px 10px 6px;display:flex;align-items:center;gap:6px;}
+.nav-step-num{width:16px;height:16px;border-radius:50%;background:var(--gray-200);color:var(--gray-500);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
 .nav-item{
   display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
   cursor:pointer;transition:var(--transition);color:var(--gray-600);font-size:13px;position:relative;
@@ -493,29 +494,36 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section">
-      <div class="nav-section-title">工作台</div>
       <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span>工作概览</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title"><span class="nav-step-num">1</span>制定计划</div>
       <div class="nav-item" data-page="auditplan"><span class="nav-icon">📋</span>审计计划</div>
     </div>
     <div class="nav-section">
-      <div class="nav-section-title">审计执行</div>
-      <div class="nav-item" data-page="extract"><span class="nav-icon">📄</span>AI 资料提取</div>
-      <div class="nav-item" data-page="clean"><span class="nav-icon">🧹</span>数据清洗</div>
-      <div class="nav-item" data-page="reconcile"><span class="nav-icon">🔗</span>智能核对</div>
+      <div class="nav-section-title"><span class="nav-step-num">2</span>收集资料</div>
+      <div class="nav-item" data-page="extract"><span class="nav-icon">📄</span>扫描 / 上传 / OCR</div>
+      <div class="nav-item" data-page="clean"><span class="nav-icon">🧹</span>数据质量检查</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title"><span class="nav-step-num">3</span>交叉核对</div>
+      <div class="nav-item" data-page="reconcile"><span class="nav-icon">🔗</span>银行 / 往来核对</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title"><span class="nav-step-num">4</span>发现问题</div>
       <div class="nav-item" data-page="anomaly"><span class="nav-icon">🔍</span>异常检测</div>
       <div class="nav-item" data-page="analysis"><span class="nav-icon">📈</span>分析性复核</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title"><span class="nav-step-num">5</span>出具结论</div>
       <div class="nav-item" data-page="adjust"><span class="nav-icon">📝</span>问题调整</div>
-      <div class="nav-item" data-page="confirm"><span class="nav-icon">📨</span>函证管理</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-section-title">审计报告</div>
       <div class="nav-item" data-page="auditreport"><span class="nav-icon">📑</span>生成报告</div>
-      <div class="nav-item" data-page="archive"><span class="nav-icon">📦</span>归档</div>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-title">智能助手</div>
+    <div class="nav-section" style="margin-top:auto;border-top:1px solid var(--gray-200);padding-top:8px;">
       <div class="nav-item" data-page="ai"><span class="nav-icon">🤖</span>AI 助手</div>
     </div>
+    <div class="nav-item" data-page="confirm" style="display:none;"><span class="nav-icon">📨</span>函证管理</div>
+    <div class="nav-item" data-page="archive" style="display:none;"><span class="nav-icon">📦</span>归档</div>
   </nav>
   <div class="sidebar-footer">
     <div class="sf-avatar">林</div>
@@ -639,6 +647,17 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
     <div class="page" id="page-extract">
       <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.pdf,.bmp,.tiff,.tif,.heic" style="display:none;" onchange="handleFiles(this.files)">
 
+      <div class="page-tip" style="background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="font-size:20px;">📄</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#3730a3;">收集并识别审计资料</div>
+            <div style="font-size:12px;color:#4338ca;margin-top:3px;line-height:1.6;">上传发票、银行回单、对账单、凭证等扫描件或照片，AI 自动 OCR 识别并结构化提取关键信息（金额、日期、往来方），为后续核对和检测提供数据基础。</div>
+            <div style="font-size:11px;color:#6366f1;margin-top:6px;">💡 支持格式：JPG / PNG / PDF / TIFF &nbsp;|&nbsp; 支持批量上传 &nbsp;|&nbsp; 拖拽或粘贴均可</div>
+          </div>
+        </div>
+      </div>
+
       <div class="page-tabs">
         <div class="page-tab active" onclick="switchExtractTab('extMyFiles')">我的资料</div>
         <div class="page-tab" onclick="switchExtractTab('extHistory')">提取记录</div>
@@ -682,10 +701,15 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             <div class="flex gap-12" style="align-items:center;">
               <select id="docTypeSelect" onchange="filterExtractList()" style="border:1px solid var(--gray-300);border-radius:6px;padding:5px 10px;font-size:12px;">
                 <option value="all">全部类型</option>
-                <option value="bank_receipt">银行回单</option>
                 <option value="invoice">增值税发票</option>
+                <option value="bank_receipt">银行回单</option>
                 <option value="bank_statement">银行对账单</option>
                 <option value="voucher">记账凭证</option>
+                <option value="trial_balance">科目余额表</option>
+                <option value="fixed_asset">固定资产台账</option>
+                <option value="ar_ap">往来明细账</option>
+                <option value="contract">合同/协议</option>
+                <option value="tax_return">纳税申报表</option>
               </select>
               <span id="fileCount" style="font-size:12px;color:var(--gray-500);"></span>
               <span id="batchSelectedCount" style="font-size:12px;font-weight:600;color:var(--primary);display:none;"></span>
@@ -786,6 +810,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         <button class="btn btn-primary mt-12" onclick="switchPage('extract')">去上传资料</button>
       </div>
       <div id="anomaly-content" style="display:none;">
+        <div style="background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fecaca;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:20px;">🔍</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#991b1b;">自动扫描财务数据中的异常疑点</div>
+              <div style="font-size:12px;color:#b91c1c;margin-top:3px;line-height:1.6;">系统基于审计规则自动检测：大额整数交易、关联方交易、跨期记账、连号发票、签章缺失、金额异常波动等常见审计风险点。</div>
+              <div style="font-size:11px;color:#dc2626;margin-top:6px;">💡 检测到的异常按风险等级排序 &nbsp;|&nbsp; 支持逐条核查确认 &nbsp;|&nbsp; 可导出为审计底稿附件</div>
+            </div>
+          </div>
+        </div>
         <div class="flex-between mb-16">
           <div class="flex gap-8" style="align-items:center;">
             <h3 style="font-size:14px;font-weight:600;">异常扫描结果</h3>
@@ -814,6 +848,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         </div>
       </div>
       <div id="reconcile-content" style="display:none;">
+        <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:20px;">🔗</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#065f46;">交叉核对多源数据，发现账实差异</div>
+              <div style="font-size:12px;color:#047857;margin-top:3px;line-height:1.6;">支持银行余额调节（银行对账单 vs 账面余额）、往来核对（应收/应付 vs 发票/合同）、多单据交叉比对，自动匹配并标注差异金额。</div>
+              <div style="font-size:11px;color:#059669;margin-top:6px;">💡 自动匹配相同金额和日期 &nbsp;|&nbsp; 差异项高亮显示 &nbsp;|&nbsp; 支持导出调节表</div>
+            </div>
+          </div>
+        </div>
         <div class="page-tabs">
           <div class="page-tab active" onclick="switchReconTab('reconNew')">新增核对</div>
           <div class="page-tab" onclick="switchReconTab('reconResult')">核对结果</div>
@@ -895,10 +939,15 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
           <div class="flex gap-12" style="align-items:center;">
             <select id="storageTypeSelect" onchange="filterStorageList()" style="border:1px solid var(--gray-300);border-radius:6px;padding:5px 10px;font-size:12px;">
               <option value="all">全部类型</option>
-              <option value="bank_receipt">银行回单</option>
               <option value="invoice">增值税发票</option>
+              <option value="bank_receipt">银行回单</option>
               <option value="bank_statement">银行对账单</option>
               <option value="voucher">记账凭证</option>
+              <option value="trial_balance">科目余额表</option>
+              <option value="fixed_asset">固定资产台账</option>
+              <option value="ar_ap">往来明细账</option>
+              <option value="contract">合同/协议</option>
+              <option value="tax_return">纳税申报表</option>
             </select>
             <span id="storageCount" style="font-size:12px;color:var(--gray-500);"></span>
             <span id="storageBatchCount" style="font-size:12px;font-weight:600;color:var(--primary);display:none;"></span>
@@ -1027,6 +1076,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
     <!-- ===== 审计计划页 ===== -->
     <div class="page" id="page-auditplan">
       <div style="max-width:960px;margin:0 auto;">
+        <div style="background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:20px;">📋</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#3730a3;">明确审计目标、范围和重点领域</div>
+              <div style="font-size:12px;color:#4338ca;margin-top:3px;line-height:1.6;">填写被审计单位基本信息后，AI 结合企业公开资料自动生成审计计划，包括审计范围、重点科目、时间安排和人员分工，可在线编辑调整。</div>
+              <div style="font-size:11px;color:#6366f1;margin-top:6px;">💡 自动检索企业工商信息 &nbsp;|&nbsp; 生成后可编辑 &nbsp;|&nbsp; 导出 Word</div>
+            </div>
+          </div>
+        </div>
         <!-- 顶部配置区 -->
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:20px;">
@@ -1057,7 +1116,6 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <button class="btn btn-primary" onclick="generateAuditPlan()" id="planGenBtn">生成审计计划</button>
-              <button class="btn btn-outline" onclick="switchPage('anomaly');setTimeout(showSamplingSuggestion,300)" style="border-color:#8b5cf6;color:#8b5cf6;">🎯 智能抽样建议</button>
               <span id="planDataHint" style="font-size:11px;color:var(--gray-400);"></span>
             </div>
           </div>
@@ -1089,6 +1147,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
     <!-- ===== 审计报告页 ===== -->
     <div class="page" id="page-auditreport">
       <div style="max-width:900px;margin:0 auto;">
+        <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:20px;">📑</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#065f46;">综合所有审计证据，一键生成审计报告</div>
+              <div style="font-size:12px;color:#047857;margin-top:3px;line-height:1.6;">AI 自动汇总项目信息、资料提取结果、核对差异、异常发现和调整分录，按审计准则格式生成完整审计报告，支持选择意见类型。</div>
+              <div style="font-size:11px;color:#059669;margin-top:6px;">💡 支持标准/保留/否定/无法表示意见 &nbsp;|&nbsp; 可编辑修改 &nbsp;|&nbsp; 导出 Word</div>
+            </div>
+          </div>
+        </div>
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:20px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -1164,6 +1232,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         <div class="es-desc">上传科目余额表、试算平衡表或财务报表后，AI 将自动执行比率分析、趋势预警和异常指标识别</div>
       </div>
       <div id="analysis-content" style="display:none;">
+        <div style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:20px;">📈</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#0c4a6e;">对财务数据执行分析性复核，识别异常趋势</div>
+              <div style="font-size:12px;color:#0369a1;margin-top:3px;line-height:1.6;">基于已提取数据自动计算交易集中度、金额离散度、大额占比等关键指标，结合 AI 深度分析生成比率分析、趋势预警、风险评估报告。</div>
+              <div style="font-size:11px;color:#0284c7;margin-top:6px;">💡 指标自动计算 &nbsp;|&nbsp; AI 深度分析可直接输出底稿 &nbsp;|&nbsp; 支持导出 Word</div>
+            </div>
+          </div>
+        </div>
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:16px 20px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -1184,6 +1262,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         </div>
         <div id="analysisIndicators" style="margin-bottom:16px;"></div>
         <div id="analysisAiResult" style="display:none;">
+          <div id="analysisKeyFindings" class="card" style="margin-bottom:16px;border:1.5px solid #fbbf24;background:linear-gradient(135deg,#fffbeb,#fef3c7);display:none;">
+            <div class="card-body" style="padding:16px 20px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <span style="font-size:20px;">⚠️</span>
+                <span style="font-size:15px;font-weight:700;color:#92400e;">核心发现</span>
+                <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:#dc2626;color:white;font-weight:600;">重点关注</span>
+              </div>
+              <div id="analysisKeyContent" style="font-size:13px;line-height:1.9;color:#78350f;"></div>
+            </div>
+          </div>
           <div class="card">
             <div class="card-body" style="padding:0;">
               <div style="padding:14px 20px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;">
@@ -1211,6 +1299,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         <div class="es-desc">完成异常检测和智能核对后，此处将自动汇总需调整的问题，并生成调整分录建议</div>
       </div>
       <div id="adjust-content" style="display:none;">
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:20px;">📝</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#78350f;">汇总审计发现，生成调整分录建议</div>
+              <div style="font-size:12px;color:#92400e;margin-top:3px;line-height:1.6;">自动汇总异常检测和核对中发现的问题，AI 根据会计准则生成对应的审计调整分录（借贷方向、科目、金额），可直接用于审计底稿。</div>
+              <div style="font-size:11px;color:#b45309;margin-top:6px;">💡 基于前序步骤自动汇总 &nbsp;|&nbsp; AI 生成标准调整分录 &nbsp;|&nbsp; 支持手动修改和导出</div>
+            </div>
+          </div>
+        </div>
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:16px 20px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -1547,8 +1645,8 @@ function switchPage(page) {
   if (navItem) navItem.classList.add('active');
 
   const titles = {
-    dashboard: '工作概览', projects: '项目管理', extract: 'AI 资料提取', clean: '数据清洗', reconcile: '智能核对',
-    anomaly: '异常检测', analysis: '分析性复核', adjust: '问题调整', confirm: '函证管理', ai: 'AI 助手', auditplan: '审计计划', auditreport: '审计报告', archive: '归档'
+    dashboard: '工作概览', projects: '项目管理', extract: '扫描 / 上传 / OCR', clean: '数据质量检查', reconcile: '银行 / 往来核对',
+    anomaly: '异常检测', analysis: '分析性复核', adjust: '问题调整', confirm: '函证管理', ai: 'AI 助手', auditplan: '审计计划', auditreport: '生成报告', archive: '归档'
   };
   if (page === 'dashboard') updateDashboard();
   if (page === 'projects') renderProjectGrid();
@@ -3940,6 +4038,7 @@ function runDataClean() {
             <span style="font-size:11px;color:var(--gray-400);">${docIssues.length} 项问题</span>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
+            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openDetailDrawer(${docIdx})" style="font-size:11px;color:#475569;border-color:#cbd5e1;">📄 查看原图</button>
             ${fixable > 0 ? `<button class="btn btn-sm btn-outline" onclick="event.stopPropagation();applyDocFixes(${docIdx})" style="font-size:11px;color:#8b5cf6;border-color:#8b5cf6;">修复 ${fixable} 项</button>` : ''}
             <span style="font-size:11px;color:var(--gray-400);">▼</span>
           </div>
@@ -5887,9 +5986,15 @@ function checkReportReadiness() {
     { key: 'balance_sheet', name: '资产负债表', keywords: ['资产负债', 'balance sheet'] },
     { key: 'income_statement', name: '利润表', keywords: ['利润', '损益', 'income', 'profit'] },
     { key: 'cash_flow', name: '现金流量表', keywords: ['现金流', 'cash flow'] },
+    { key: 'trial_balance', name: '科目余额表', keywords: ['科目余额', '余额表', 'trial balance'] },
     { key: 'bank_statement', name: '银行对账单', keywords: ['对账', 'bank statement', '银行'] },
+    { key: 'bank_receipt', name: '银行回单', keywords: ['回单', '银行回单', 'bank receipt'] },
+    { key: 'voucher', name: '记账凭证', keywords: ['凭证', '记账', 'voucher', 'journal'] },
+    { key: 'invoice', name: '发票', keywords: ['发票', 'invoice', '税务', '增值税'] },
     { key: 'contract', name: '合同/协议', keywords: ['合同', '协议', 'contract'] },
-    { key: 'invoice', name: '发票', keywords: ['发票', 'invoice', '税务'] },
+    { key: 'fixed_asset', name: '固定资产台账', keywords: ['固定资产', '资产台账', '折旧', 'fixed asset'] },
+    { key: 'ar_ap', name: '往来明细账', keywords: ['应收', '应付', '往来', '账龄'] },
+    { key: 'tax_return', name: '纳税申报表', keywords: ['纳税', '申报', '税务申报', 'tax return'] },
   ];
   const allDocText = extracts.map(r => (r.docTypeName || '') + (r.filename || '') + (r.docType || '')).join(' ').toLowerCase();
   const missing = [];
@@ -7368,10 +7473,12 @@ function initAnalysisPage() {
     document.getElementById('analysisAiResult').style.display = '';
     document.getElementById('analysisContent').innerHTML = saved.html;
     document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--gray-400);">已保存于 ${new Date(saved.time).toLocaleString('zh-CN')}</span>`;
+    extractKeyFindings(saved.html);
   } else {
     document.getElementById('analysisAiResult').style.display = 'none';
     document.getElementById('analysisContent').innerHTML = '';
     document.getElementById('analysisSavedInfo').innerHTML = '';
+    document.getElementById('analysisKeyFindings').style.display = 'none';
   }
 }
 
@@ -7568,6 +7675,15 @@ ${dataSummary.length > 50 ? '\n...(更多数据省略)' : ''}
 
 请执行以下分析性复核程序，输出专业审计工作底稿：
 
+## ⚠️ 核心发现（必须首先输出）
+用3-5条要点列出本次分析性复核的最重要发现，每条包含：
+- 🔴/🟡/🟢 风险等级标记
+- 一句话结论
+- 涉及金额或比例
+格式示例：
+- 🔴 **单笔交易占比过高**：某笔 ¥XX 占总额 XX%，需核实商业实质
+- 🟡 **交易集中度偏高**：前3大对手方占比XX%，关注关联关系
+
 ## 一、数据概况
 概括交易总量、总金额、时间跨度、主要科目分布。
 
@@ -7603,7 +7719,33 @@ ${dataSummary.length > 50 ? '\n...(更多数据省略)' : ''}
   streamAiToElement(prompt, el, btn, '✨ AI 深度分析', (markdown) => {
     saveGeneratedDoc('analysis', markdown);
     document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--success);">✓ 已自动保存</span>`;
+    extractKeyFindings(el.innerHTML);
   });
+}
+
+function extractKeyFindings(html) {
+  const card = document.getElementById('analysisKeyFindings');
+  const content = document.getElementById('analysisKeyContent');
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  let found = '';
+  const headings = temp.querySelectorAll('h2');
+  for (const h of headings) {
+    if (/核心发现/.test(h.textContent)) {
+      let sibling = h.nextElementSibling;
+      while (sibling && sibling.tagName !== 'H2') {
+        found += sibling.outerHTML;
+        sibling = sibling.nextElementSibling;
+      }
+      break;
+    }
+  }
+  if (found) {
+    content.innerHTML = found;
+    card.style.display = '';
+  } else {
+    card.style.display = 'none';
+  }
 }
 
 // ========== 页面初始化 ==========
