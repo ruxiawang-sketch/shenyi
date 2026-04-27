@@ -2567,6 +2567,22 @@ function updateReconSelection() {
   });
 }
 
+function formatOcrText(text) {
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return text.split('\n').map(line => {
+    const t = line.trim();
+    if (!t) return '<div style="height:6px;"></div>';
+    let html = esc(t);
+    // 编号行：01. 02. 1. 2. 等 — 加粗编号
+    html = html.replace(/^(\d{1,2}[\.\、])/, '<span style="font-weight:700;color:#334155;">$1</span>');
+    // 键值对：xxx:yyy / xxx：yyy — 键名加色
+    html = html.replace(/^([^:：]{1,15})([:：])/, '<span style="color:#64748b;font-weight:500;">$1$2</span>');
+    // 金额高亮：匹配 123,456.00 这样的数字
+    html = html.replace(/([\d,]+\.\d{2})\b/g, '<span style="font-weight:600;color:#6366f1;">$1</span>');
+    return `<div>${html}</div>`;
+  }).join('');
+}
+
 function extractAmount(record) {
   const fmt = n => n.toLocaleString('zh-CN', { minimumFractionDigits: 2 });
   const isInvoice = record.docType === 'invoice' || /发票/.test(record.filename || '');
@@ -7101,7 +7117,7 @@ async function openDetailDrawer(i) {
 
   if (text) {
     dataHtml += `<div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px;margin-top:16px;">识别文本</div>`;
-    dataHtml += `<pre style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:inherit;">${text}</pre>`;
+    dataHtml += `<div style="background:#f8fafc;padding:14px 16px;border-radius:8px;border:1px solid #e2e8f0;font-size:12.5px;line-height:2;">${formatOcrText(text)}</div>`;
   }
 
   document.getElementById('ddImagePane').innerHTML = imgHtml;
