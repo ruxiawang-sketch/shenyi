@@ -506,11 +506,9 @@ function openAudit() {
   window.open('/index.html', '_blank');
 }
 
-// 页面加载后 2 秒自动弹出消息提醒（不自动消失，需用户点击）
-setTimeout(() => {
-  document.getElementById('notifPopup').classList.add('show');
-  document.getElementById('notifOverlay').classList.add('show');
-}, 2000);
+// 页面加载完成后立即显示消息弹窗
+document.getElementById('notifPopup').classList.add('show');
+document.getElementById('notifOverlay').classList.add('show');
 </script>
 
 </body>
