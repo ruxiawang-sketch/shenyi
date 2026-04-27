@@ -158,6 +158,16 @@ a { text-decoration: none; color: inherit; }
 .highlight-ring::after { content: ''; position: absolute; inset: -4px; border: 2px solid #00c4b4; border-radius: 14px; animation: ringPulse 1.5s ease-in-out infinite; pointer-events: none; }
 @keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,196,180,.3); } 50% { box-shadow: 0 0 0 8px rgba(0,196,180,0); } }
 
+/* 引导步骤指示器 */
+.guide-step-indicator { display: flex; gap: 6px; margin-bottom: 12px; }
+.guide-step-dot { width: 20px; height: 4px; border-radius: 2px; background: #e0e0e0; transition: all .2s; }
+.guide-step-dot.active { background: #00c4b4; width: 28px; }
+.guide-step-dot.done { background: #00c4b4; }
+
+/* 文档行高亮 */
+.doc-highlight { background: #e6f9f7 !important; position: relative; z-index: 160; }
+.doc-highlight td { background: #e6f9f7 !important; }
+
 /* SVG 图标 */
 .svg-icon { display: inline-block; vertical-align: middle; }
 </style>
@@ -421,28 +431,25 @@ a { text-decoration: none; color: inherit; }
 <div class="guide-bubble" id="guideBubble">
   <div class="guide-bubble-content">
     <div class="guide-bubble-arrow top"></div>
-    <span class="guide-bubble-close" onclick="closeGuide()">✕</span>
-    <div class="guide-bubble-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z" fill="#00c4b4" opacity=".2" stroke="#00c4b4" stroke-width="1.5"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> AI 审计助手 <span class="new-tag">NEW</span></div>
-    <div class="guide-bubble-desc">
-      基于扫描全能王 OCR 能力，为审计员量身打造的智能审计工具：
-      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;font-size:12px;">
-        <span>✅ 57 种财务单据自动识别提取</span>
-        <span>✅ 15+ 条异常检测规则实时扫描</span>
-        <span>✅ 跨单据关联核对 · 智能抽样</span>
-        <span>✅ 一键生成审计计划与报告</span>
-      </div>
+    <span class="guide-bubble-close" onclick="skipGuide()">✕</span>
+    <div class="guide-step-indicator" id="guideStepIndicator"></div>
+    <div class="guide-bubble-title" id="guideBubbleTitle"></div>
+    <div class="guide-bubble-desc" id="guideBubbleDesc"></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="guide-bubble-btn" id="guideBubbleBtn"></button>
+      <span style="font-size:11px;color:#999;cursor:pointer;" onclick="skipGuide()">跳过引导</span>
     </div>
-    <button class="guide-bubble-btn" onclick="openAudit()">立即体验 AI 审计 →</button>
   </div>
 </div>
 
 <script>
-// 消息弹窗
+let guideStep = 0;
+
+// ===== 通知弹窗 =====
 function toggleNotif() {
   const popup = document.getElementById('notifPopup');
   const ov = document.getElementById('notifOverlay');
-  const isOpen = popup.classList.contains('show');
-  if (isOpen) {
+  if (popup.classList.contains('show')) {
     closeNotif();
   } else {
     popup.classList.add('show');
@@ -467,46 +474,138 @@ function markAllRead() {
   document.querySelector('.notif-new-badge')?.remove();
 }
 
-// 点击审计通知 → 关闭弹窗 → 高亮工具入口 → 显示引导气泡
+// ===== 3步引导流程 =====
+const guideSteps = [
+  {
+    title: '📢 上新提醒',
+    desc: '通过消息通知，第一时间告知用户 AI 审计功能上线，点击即可了解详情。',
+    btn: '知道了，下一步',
+    target: () => document.getElementById('notifPopup'),
+    position: 'none'
+  },
+  {
+    title: '🛡️ 工具固定入口',
+    desc: '在工具栏中新增「AI 审计」常驻入口，用户可随时通过此入口进入审计工作台。',
+    btn: '知道了，下一步',
+    target: () => document.getElementById('auditTool'),
+    position: 'below'
+  },
+  {
+    title: '📄 文档详情页入口',
+    desc: '打开已有财务文档时，系统自动识别文档类型并推荐使用 AI 审计功能提取处理。',
+    btn: '立即体验',
+    target: () => document.querySelector('.doc-table tbody tr'),
+    position: 'above'
+  }
+];
+
 function handleAuditNotif() {
   closeNotif();
   document.getElementById('auditNotif').classList.remove('unread');
-
-  const tool = document.getElementById('auditTool');
-  tool.classList.add('highlight-ring');
-  document.getElementById('overlay').classList.add('show');
-
-  positionBubble();
-  document.getElementById('guideBubble').classList.add('show');
+  guideStep = 1;
+  showGuideStep();
 }
 
-function positionBubble() {
-  const tool = document.getElementById('auditTool');
+function showGuideStep() {
+  const step = guideSteps[guideStep];
+  if (!step) { skipGuide(); return; }
+
+  // 清除之前的高亮
+  document.querySelectorAll('.highlight-ring,.doc-highlight').forEach(el => {
+    el.classList.remove('highlight-ring', 'doc-highlight');
+  });
+
+  // 步骤指示器
+  const indicator = document.getElementById('guideStepIndicator');
+  indicator.innerHTML = guideSteps.map((_, i) =>
+    `<div class="guide-step-dot ${i < guideStep ? 'done' : ''} ${i === guideStep ? 'active' : ''}"></div>`
+  ).join('');
+
+  // 内容
+  document.getElementById('guideBubbleTitle').innerHTML = `<span style="font-size:14px;font-weight:700;">${step.title}</span> <span style="font-size:11px;color:#999;font-weight:400;">第 ${guideStep + 1} / ${guideSteps.length} 步</span>`;
+  document.getElementById('guideBubbleDesc').innerHTML = step.desc;
+  const btn = document.getElementById('guideBubbleBtn');
+  btn.textContent = step.btn;
+  btn.onclick = nextGuideStep;
+
+  // 遮罩 & 高亮
+  document.getElementById('overlay').classList.add('show');
+  const target = step.target();
+  if (target) {
+    if (target.tagName === 'TR') {
+      target.classList.add('doc-highlight');
+    } else {
+      target.classList.add('highlight-ring');
+    }
+  }
+
+  // 定位气泡
   const bubble = document.getElementById('guideBubble');
-  const rect = tool.getBoundingClientRect();
-  bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
-  bubble.style.top = (rect.bottom + 12) + 'px';
+  if (step.position === 'none') {
+    // 第一步：弹窗旁边
+    bubble.style.left = '';
+    bubble.style.right = '380px';
+    bubble.style.top = '80px';
+  } else if (target) {
+    const rect = target.getBoundingClientRect();
+    bubble.style.right = '';
+    if (step.position === 'below') {
+      bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
+      bubble.style.top = (rect.bottom + 14) + 'px';
+    } else if (step.position === 'above') {
+      bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
+      bubble.style.top = (rect.top - 200) + 'px';
+    }
+  }
+  bubble.classList.add('show');
+}
+
+function nextGuideStep() {
+  guideStep++;
+  if (guideStep >= guideSteps.length) {
+    skipGuide();
+    window.open('/doc-viewer.html', '_blank');
+    return;
+  }
+  showGuideStep();
+}
+
+function skipGuide() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('guideBubble').classList.remove('show');
+  document.querySelectorAll('.highlight-ring,.doc-highlight').forEach(el => {
+    el.classList.remove('highlight-ring', 'doc-highlight');
+  });
 }
 
 window.addEventListener('scroll', () => {
   if (document.getElementById('guideBubble').classList.contains('show')) {
-    positionBubble();
+    const step = guideSteps[guideStep];
+    if (step && step.position !== 'none') {
+      const target = step.target();
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const bubble = document.getElementById('guideBubble');
+        bubble.style.right = '';
+        if (step.position === 'below') {
+          bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
+          bubble.style.top = (rect.bottom + 14) + 'px';
+        } else if (step.position === 'above') {
+          bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
+          bubble.style.top = (rect.top - 200) + 'px';
+        }
+      }
+    }
   }
 }, true);
 
-function closeGuide() {
-  document.getElementById('overlay').classList.remove('show');
-  document.getElementById('guideBubble').classList.remove('show');
-  document.getElementById('auditTool').classList.remove('highlight-ring');
-}
-
 // 打开 AI 审计
 function openAudit() {
-  closeGuide();
+  skipGuide();
   window.open('/index.html', '_blank');
 }
 
-// 页面加载完成后立即显示消息弹窗
+// 页面加载完成后立即显示消息弹窗（第1步入口）
 document.getElementById('notifPopup').classList.add('show');
 document.getElementById('notifOverlay').classList.add('show');
 </script>
