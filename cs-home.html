@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扫描全能王</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f6fa; color: #333; }
+a { text-decoration: none; color: inherit; }
+
+/* ===== 左侧边栏 ===== */
+.sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 200px; background: #fff; border-right: 1px solid #eee; padding: 20px 0; display: flex; flex-direction: column; z-index: 10; }
+.sidebar-logo { display: flex; align-items: center; gap: 8px; padding: 0 20px 24px; }
+.sidebar-logo .logo-icon { width: 32px; height: 32px; background: #00c4b4; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; }
+.sidebar-logo .logo-text { font-size: 16px; font-weight: 700; color: #333; }
+.sidebar-logo .logo-tm { font-size: 8px; color: #999; vertical-align: super; }
+
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 14px; color: #666; cursor: pointer; transition: all .15s; position: relative; }
+.nav-item:hover { background: #f0faf9; color: #00c4b4; }
+.nav-item.active { background: #e6f9f7; color: #00c4b4; font-weight: 600; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: #00c4b4; border-radius: 0 2px 2px 0; }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-sub { padding-left: 50px; }
+.nav-sub .nav-item { padding: 6px 20px; font-size: 13px; }
+
+.sidebar-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0; }
+.sidebar-bottom { margin-top: auto; padding: 16px 20px; }
+.download-btn { display: block; text-align: center; padding: 10px; border: 1.5px solid #00c4b4; border-radius: 8px; color: #00c4b4; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+.download-btn:hover { background: #00c4b4; color: #fff; }
+.storage-info { margin-top: 12px; font-size: 11px; color: #999; }
+.storage-bar { height: 4px; background: #eee; border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.storage-fill { height: 100%; width: 7%; background: #00c4b4; border-radius: 2px; }
+
+/* ===== 顶栏 ===== */
+.topbar { position: fixed; top: 0; left: 200px; right: 0; height: 56px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 10; }
+.search-box { display: flex; align-items: center; gap: 8px; background: #f5f6fa; border-radius: 8px; padding: 8px 16px; width: 360px; }
+.search-box input { border: none; background: none; outline: none; font-size: 14px; color: #333; width: 100%; }
+.search-box .search-icon { color: #999; font-size: 14px; }
+
+.topbar-right { display: flex; align-items: center; gap: 20px; }
+.topbar-right .lang { font-size: 13px; color: #666; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.topbar-right .icon-btn { font-size: 18px; color: #666; cursor: pointer; position: relative; }
+.topbar-right .icon-btn:hover { color: #00c4b4; }
+.topbar-right .user { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #666; cursor: pointer; }
+.user-avatar { width: 24px; height: 24px; border-radius: 50%; background: #ffc107; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
+
+/* 消息红点 */
+.badge-dot { position: absolute; top: -2px; right: -4px; width: 8px; height: 8px; background: #ff4757; border-radius: 50%; border: 1.5px solid #fff; }
+
+/* 消息弹窗 */
+.notif-popup { position: absolute; top: 40px; right: -60px; width: 360px; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 100; display: none; overflow: hidden; }
+.notif-popup.show { display: block; animation: fadeInDown .2s ease; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.notif-header { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+.notif-header h3 { font-size: 15px; font-weight: 600; }
+.notif-header .mark-read { font-size: 12px; color: #999; cursor: pointer; }
+.notif-header .mark-read:hover { color: #00c4b4; }
+.notif-list { max-height: 320px; overflow-y: auto; }
+.notif-item { padding: 14px 18px; display: flex; gap: 12px; cursor: pointer; transition: background .12s; border-bottom: 1px solid #f8f8f8; }
+.notif-item:hover { background: #f8fffe; }
+.notif-item.unread { background: #f0fdfb; }
+.notif-item.unread .notif-title { font-weight: 600; }
+.notif-icon-wrap { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+.notif-content { flex: 1; min-width: 0; }
+.notif-title { font-size: 13px; color: #333; margin-bottom: 3px; }
+.notif-desc { font-size: 12px; color: #999; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.notif-time { font-size: 11px; color: #ccc; margin-top: 4px; }
+.notif-new-badge { display: inline-block; font-size: 10px; padding: 1px 6px; background: #ff4757; color: #fff; border-radius: 3px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
+
+/* ===== 主内容区 ===== */
+.main { margin-left: 200px; margin-top: 56px; padding: 24px; }
+
+/* 上传区 */
+.upload-area { background: #fff; border-radius: 16px; padding: 40px; text-align: center; margin-bottom: 24px; border: 2px dashed #e0e0e0; transition: border-color .2s; cursor: pointer; }
+.upload-area:hover { border-color: #00c4b4; }
+.upload-img { width: 120px; margin: 0 auto 16px; }
+.upload-text { font-size: 15px; color: #666; margin-bottom: 20px; }
+.upload-btns { display: flex; justify-content: center; gap: 24px; }
+.upload-btn { display: flex; align-items: center; gap: 8px; padding: 12px 32px; border-radius: 10px; background: #f5f6fa; font-size: 14px; color: #555; cursor: pointer; transition: all .15s; border: 1px solid #eee; }
+.upload-btn:hover { background: #e6f9f7; border-color: #00c4b4; color: #00c4b4; }
+.upload-btn .btn-icon { font-size: 20px; }
+
+/* 工具行 */
+.tools-row { display: flex; gap: 8px; margin-bottom: 28px; overflow-x: auto; padding: 4px 0; }
+.tool-item { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: all .15s; min-width: 80px; position: relative; }
+.tool-item:hover { background: #f0f0f0; }
+.tool-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; }
+.tool-name { font-size: 12px; color: #555; white-space: nowrap; }
+.tool-badge { position: absolute; top: -4px; right: -4px; font-size: 9px; padding: 1px 5px; background: #ff4757; color: #fff; border-radius: 3px; font-weight: 700; }
+.tool-new { position: absolute; top: -4px; right: -8px; font-size: 9px; padding: 1px 5px; background: #00c4b4; color: #fff; border-radius: 3px; font-weight: 700; }
+
+/* 工具图标颜色 */
+.tool-icon.green { background: linear-gradient(135deg, #e6f9f7, #ccf2ee); color: #00c4b4; }
+.tool-icon.blue { background: linear-gradient(135deg, #e8f0fe, #d0e2fc); color: #4285f4; }
+.tool-icon.purple { background: linear-gradient(135deg, #f3e8ff, #e4ccff); color: #9333ea; }
+.tool-icon.orange { background: linear-gradient(135deg, #fff3e0, #ffe0b2); color: #f57c00; }
+.tool-icon.red { background: linear-gradient(135deg, #fce4ec, #f8bbd0); color: #e91e63; }
+.tool-icon.teal { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); color: #00897b; }
+.tool-icon.indigo { background: linear-gradient(135deg, #e8eaf6, #c5cae9); color: #3f51b5; }
+
+/* AI 审计特殊样式 - 呼吸光效 */
+.tool-item.audit-tool .tool-icon {
+  background: linear-gradient(135deg, #e6f9f7, #b2f0e8);
+  color: #00c4b4;
+  box-shadow: 0 0 0 0 rgba(0, 196, 180, 0.4);
+  animation: auditPulse 2s ease-in-out infinite;
+}
+@keyframes auditPulse {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 196, 180, 0.2); }
+  50% { box-shadow: 0 2px 16px rgba(0, 196, 180, 0.45); }
+}
+.tool-item.audit-tool:hover .tool-icon { animation: none; box-shadow: 0 4px 16px rgba(0, 196, 180, 0.35); transform: scale(1.05); transition: all .2s; }
+
+/* 文档列表 */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-title { font-size: 16px; font-weight: 600; }
+.section-actions { display: flex; align-items: center; gap: 12px; }
+.section-actions .view-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e0e0e0; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #999; }
+.section-actions .view-btn.active { border-color: #00c4b4; color: #00c4b4; }
+.section-actions .view-all { font-size: 13px; color: #00c4b4; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+.doc-table { width: 100%; background: #fff; border-radius: 12px; overflow: hidden; }
+.doc-table table { width: 100%; border-collapse: collapse; }
+.doc-table th { padding: 12px 18px; text-align: left; font-size: 12px; color: #999; font-weight: 500; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
+.doc-table td { padding: 12px 18px; font-size: 13px; border-bottom: 1px solid #f8f8f8; }
+.doc-table tr:hover td { background: #fafffe; }
+.doc-table .doc-name-cell { display: flex; align-items: center; gap: 10px; }
+.doc-thumb { width: 32px; height: 40px; border-radius: 4px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; flex-shrink: 0; overflow: hidden; }
+.doc-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* 引导气泡 */
+.guide-bubble { position: fixed; z-index: 200; display: none; }
+.guide-bubble.show { display: block; animation: bubbleIn .3s ease; }
+@keyframes bubbleIn { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+.guide-bubble-content { background: #fff; border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,.15); padding: 20px; width: 300px; position: relative; }
+.guide-bubble-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); box-shadow: -2px -2px 4px rgba(0,0,0,.04); }
+.guide-bubble-arrow.top { top: -6px; left: 50%; margin-left: -6px; }
+.guide-bubble-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.guide-bubble-title .new-tag { font-size: 10px; padding: 2px 6px; background: #00c4b4; color: #fff; border-radius: 4px; }
+.guide-bubble-desc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 14px; }
+.guide-bubble-btn { display: inline-block; padding: 8px 20px; background: #00c4b4; color: #fff; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: background .15s; }
+.guide-bubble-btn:hover { background: #00b3a3; }
+.guide-bubble-close { position: absolute; top: 12px; right: 14px; font-size: 16px; color: #ccc; cursor: pointer; line-height: 1; }
+.guide-bubble-close:hover { color: #999; }
+
+/* 遮罩 */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 150; display: none; }
+.overlay.show { display: block; }
+
+/* 高亮效果 */
+.highlight-ring { position: relative; z-index: 160; }
+.highlight-ring::after { content: ''; position: absolute; inset: -4px; border: 2px solid #00c4b4; border-radius: 14px; animation: ringPulse 1.5s ease-in-out infinite; pointer-events: none; }
+@keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,196,180,.3); } 50% { box-shadow: 0 0 0 8px rgba(0,196,180,0); } }
+
+/* SVG 图标 */
+.svg-icon { display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<!-- 左侧边栏 -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">CS</div>
+    <div class="logo-text">扫描全能王<span class="logo-tm">™</span></div>
+  </div>
+
+  <div class="nav-item active"><span class="nav-icon">🏠</span> 首页</div>
+  <div class="nav-item" style="padding-left:12px;"><span class="nav-icon" style="font-size:12px;">▸</span> 我的文档</div>
+  <div class="nav-sub">
+    <div class="nav-item">de</div>
+    <div class="nav-item">证件卡包</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="nav-item"><span class="nav-icon">📁</span> 工具箱</div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="download-btn">桌面版下载</div>
+    <div class="storage-info">
+      889.43MB / 12.10GB <span style="color:#00c4b4;cursor:pointer;">扩容</span>
+      <div class="storage-bar"><div class="storage-fill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="支持多关键词搜索">
+  </div>
+  <div class="topbar-right">
+    <div class="lang">🌐 简体中文 ▾</div>
+    <div class="icon-btn">🌐</div>
+    <div class="icon-btn" id="notifBell" onclick="toggleNotif()">
+      🔔
+      <span class="badge-dot" id="badgeDot"></span>
+      <!-- 消息弹窗 -->
+      <div class="notif-popup" id="notifPopup">
+        <div class="notif-header">
+          <h3>消息通知</h3>
+          <span class="mark-read" onclick="event.stopPropagation();markAllRead()">全部已读</span>
+        </div>
+        <div class="notif-list">
+          <!-- AI 审计上新通知 -->
+          <div class="notif-item unread" id="auditNotif" onclick="event.stopPropagation();handleAuditNotif()">
+            <div class="notif-icon-wrap" style="background:linear-gradient(135deg,#e6f9f7,#b2f0e8);">🛡️</div>
+            <div class="notif-content">
+              <div class="notif-title">AI 审计助手正式上线！<span class="notif-new-badge">NEW</span></div>
+              <div class="notif-desc">全新 AI 审计工具已上线，支持智能异常检测、跨单据核对、风险识别，助力审计提效 10 倍。点击立即体验 →</div>
+              <div class="notif-time">刚刚</div>
+            </div>
+          </div>
+          <!-- 其他通知 -->
+          <div class="notif-item">
+            <div class="notif-icon-wrap" style="background:#f3e8ff;">🎉</div>
+            <div class="notif-content">
+              <div class="notif-title">AI PPT 功能升级</div>
+              <div class="notif-desc">AI PPT 新增 20+ 模板，支持一键生成专业演示文稿</div>
+              <div class="notif-time">2小时前</div>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon-wrap" style="background:#e8f0fe;">📄</div>
+            <div class="notif-content">
+              <div class="notif-title">文档存储空间提醒</div>
+              <div class="notif-desc">您的存储空间已使用 7%，可免费扩容至 20GB</div>
+              <div class="notif-time">昨天</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="user"><div class="user-avatar">🟡</div> 17610307930 ▾</div>
+  </div>
+</div>
+
+<!-- 主内容区 -->
+<div class="main">
+  <!-- 上传区 -->
+  <div class="upload-area">
+    <div class="upload-img">
+      <svg width="120" height="90" viewBox="0 0 120 90" fill="none">
+        <rect x="20" y="10" width="50" height="65" rx="4" fill="#e0e0e0"/>
+        <rect x="25" y="15" width="40" height="4" rx="2" fill="#bbb"/>
+        <rect x="25" y="23" width="30" height="3" rx="1.5" fill="#ccc"/>
+        <rect x="25" y="30" width="35" height="3" rx="1.5" fill="#ccc"/>
+        <rect x="50" y="5" width="50" height="65" rx="4" fill="#f5f5f5" stroke="#ddd"/>
+        <rect x="55" y="12" width="40" height="4" rx="2" fill="#ccc"/>
+        <rect x="55" y="20" width="30" height="3" rx="1.5" fill="#ddd"/>
+        <rect x="55" y="27" width="35" height="3" rx="1.5" fill="#ddd"/>
+        <circle cx="95" cy="60" r="16" fill="#00c4b4"/>
+        <path d="M95 52v16M87 60h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="upload-text">将文件拖到这里，或点击上传</div>
+    <div class="upload-btns">
+      <div class="upload-btn"><span class="btn-icon">📷</span> 智能扫描</div>
+      <div class="upload-btn"><span class="btn-icon">🖼</span> 导入图片</div>
+      <div class="upload-btn"><span class="btn-icon">📄</span> 导入文档</div>
+    </div>
+  </div>
+
+  <!-- 工具行 -->
+  <div class="tools-row">
+    <div class="tool-item audit-tool" id="auditTool" onclick="openAudit()">
+      <div class="tool-icon green">
+        🛡️
+        <span class="tool-new">NEW</span>
+      </div>
+      <div class="tool-name" style="color:#00c4b4;font-weight:600;">AI 审计</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon green">📝</div>
+      <div class="tool-name">AI 文档助手</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon purple">
+        📊
+        <span class="tool-badge" style="background:#9333ea;">Beta</span>
+      </div>
+      <div class="tool-name">AI PPT</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon blue">📘</div>
+      <div class="tool-name">转 Word</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon green">📗</div>
+      <div class="tool-name">转 Excel</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon orange">📙</div>
+      <div class="tool-name">转 PPT</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon red">🖼</div>
+      <div class="tool-name">转图片</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon teal">📑</div>
+      <div class="tool-name">文档合并</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon indigo">📋</div>
+      <div class="tool-name">页面提取</div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-icon" style="background:#f0f0f0;color:#666;">⊞</div>
+      <div class="tool-name">全部工具</div>
+    </div>
+  </div>
+
+  <!-- 最近文档 -->
+  <div class="section-header">
+    <div class="section-title">最近文档</div>
+    <div class="section-actions">
+      <div class="view-btn active">☰</div>
+      <div class="view-btn">⊞</div>
+      <div class="view-btn">🖥</div>
+      <div class="view-all">查看所有文档 ›</div>
+    </div>
+  </div>
+
+  <div class="doc-table">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px;"><input type="checkbox"></th>
+          <th>49 个文档</th>
+          <th>路径</th>
+          <th>数量</th>
+          <th>修改时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8eaf6;">📄</div> 1_西北工业大学民航短舱关重件制造技术与产业化</div></td>
+          <td style="color:#999;">我的文档</td>
+          <td>1页</td>
+          <td style="color:#999;">14:57</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e0f7fa;">📄</div> 2_财务审计报告_天霸动霸物流_2026Q1</div></td>
+          <td style="color:#999;">我的文档</td>
+          <td>3页</td>
+          <td style="color:#999;">14:32</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fff3e0;">📄</div> 3_增值税专用发票_顺达燃油_50万</div></td>
+          <td style="color:#999;">我的文档</td>
+          <td>1页</td>
+          <td style="color:#999;">13:45</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fce4ec;">📄</div> 4_银行回单_工商银行_200万</div></td>
+          <td style="color:#999;">我的文档</td>
+          <td>1页</td>
+          <td style="color:#999;">11:20</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8f5e9;">📄</div> 5_运输服务合同_霸天集团_800万</div></td>
+          <td style="color:#999;">我的文档</td>
+          <td>4页</td>
+          <td style="color:#999;">昨天</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 遮罩层 -->
+<div class="overlay" id="overlay" onclick="closeGuide()"></div>
+
+<!-- 引导气泡 -->
+<div class="guide-bubble" id="guideBubble">
+  <div class="guide-bubble-content">
+    <div class="guide-bubble-arrow top"></div>
+    <span class="guide-bubble-close" onclick="closeGuide()">✕</span>
+    <div class="guide-bubble-title">🛡️ AI 审计助手 <span class="new-tag">NEW</span></div>
+    <div class="guide-bubble-desc">
+      基于扫描全能王 OCR 能力，为审计员量身打造的智能审计工具：
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;font-size:12px;">
+        <span>✅ 57 种财务单据自动识别提取</span>
+        <span>✅ 15+ 条异常检测规则实时扫描</span>
+        <span>✅ 跨单据关联核对 · 智能抽样</span>
+        <span>✅ 一键生成审计计划与报告</span>
+      </div>
+    </div>
+    <button class="guide-bubble-btn" onclick="openAudit()">立即体验 AI 审计 →</button>
+  </div>
+</div>
+
+<script>
+// 消息弹窗
+function toggleNotif() {
+  const popup = document.getElementById('notifPopup');
+  popup.classList.toggle('show');
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#notifBell')) {
+    document.getElementById('notifPopup').classList.remove('show');
+  }
+});
+
+function markAllRead() {
+  document.querySelectorAll('.notif-item.unread').forEach(el => el.classList.remove('unread'));
+  document.getElementById('badgeDot').style.display = 'none';
+  document.querySelector('.notif-new-badge')?.remove();
+}
+
+// 点击审计通知 → 关闭弹窗 → 高亮工具入口 → 显示引导气泡
+function handleAuditNotif() {
+  document.getElementById('notifPopup').classList.remove('show');
+  document.getElementById('auditNotif').classList.remove('unread');
+
+  const tool = document.getElementById('auditTool');
+  tool.classList.add('highlight-ring');
+  document.getElementById('overlay').classList.add('show');
+
+  const rect = tool.getBoundingClientRect();
+  const bubble = document.getElementById('guideBubble');
+  bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
+  bubble.style.top = (rect.bottom + 12) + 'px';
+  bubble.classList.add('show');
+}
+
+function closeGuide() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('guideBubble').classList.remove('show');
+  document.getElementById('auditTool').classList.remove('highlight-ring');
+}
+
+// 打开 AI 审计
+function openAudit() {
+  closeGuide();
+  window.open('/index.html', '_blank');
+}
+
+// 页面加载后 2 秒自动弹出消息提醒
+setTimeout(() => {
+  document.getElementById('notifPopup').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('notifPopup').classList.remove('show');
+  }, 4000);
+}, 2000);
+</script>
+
+</body>
+</html>
