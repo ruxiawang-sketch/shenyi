@@ -691,6 +691,11 @@ ${extra ? '补充信息：' + extra : ''}
   }
 });
 
+// 所有未匹配路由返回 index.html（SPA fallback）
+app.get('/{0,}', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // ========== 启动 ==========
 const PORT = process.env.PORT || 3200;
 app.listen(PORT, () => {
