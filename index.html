@@ -7060,8 +7060,11 @@ async function openDetailDrawer(i) {
   document.getElementById('ddPrev').classList.toggle('disabled', i <= 0);
   document.getElementById('ddNext').classList.toggle('disabled', i >= appState.extracts.length - 1);
 
+  const isPdf = imgData && imgData.startsWith('data:application/pdf');
   const imgHtml = imgData
-    ? `<img src="${imgData}" alt="原始文件" id="ddZoomImg"><div class="img-zoom-bar"><button onclick="imgZoom(-1)" title="缩小">−</button><span id="ddZoomLevel">100%</span><button onclick="imgZoom(1)" title="放大">+</button><button onclick="imgZoomReset()" title="重置" style="font-size:12px;">↺</button></div>`
+    ? (isPdf
+      ? `<iframe src="${imgData}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#fff;"></iframe>`
+      : `<img src="${imgData}" alt="原始文件" id="ddZoomImg"><div class="img-zoom-bar"><button onclick="imgZoom(-1)" title="缩小">−</button><span id="ddZoomLevel">100%</span><button onclick="imgZoom(1)" title="放大">+</button><button onclick="imgZoomReset()" title="重置" style="font-size:12px;">↺</button></div>`)
     : `<div style="color:#64748b;font-size:13px;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"><div style="font-size:40px;margin-bottom:8px;opacity:.5;">📄</div>原始图片不可用<br><span style="font-size:11px;opacity:.7;">仅当前会话上传的文件可预览</span></div>`;
 
   let dataHtml = '';
@@ -7104,12 +7107,16 @@ async function openDetailDrawer(i) {
   document.getElementById('ddImagePane').innerHTML = imgHtml;
   document.getElementById('ddDataPane').innerHTML = dataHtml;
   const imgOnlyHtml = imgData
-    ? `<img src="${imgData}" alt="原始文件" id="ddZoomImgOnly"><div class="img-zoom-bar"><button onclick="imgZoom(-1,'ddZoomImgOnly')" title="缩小">−</button><span id="ddZoomLevelOnly">100%</span><button onclick="imgZoom(1,'ddZoomImgOnly')" title="放大">+</button><button onclick="imgZoomReset('ddZoomImgOnly')" title="重置" style="font-size:12px;">↺</button></div>`
+    ? (isPdf
+      ? `<iframe src="${imgData}" style="width:100%;height:100%;border:none;background:#fff;"></iframe>`
+      : `<img src="${imgData}" alt="原始文件" id="ddZoomImgOnly"><div class="img-zoom-bar"><button onclick="imgZoom(-1,'ddZoomImgOnly')" title="缩小">−</button><span id="ddZoomLevelOnly">100%</span><button onclick="imgZoom(1,'ddZoomImgOnly')" title="放大">+</button><button onclick="imgZoomReset('ddZoomImgOnly')" title="重置" style="font-size:12px;">↺</button></div>`)
     : imgHtml;
   document.getElementById('ddImageOnly').innerHTML = `<div class="dd-img-pane" id="ddImagePaneOnly" style="height:100%;width:100%;min-height:0;">${imgOnlyHtml}</div>`;
   document.getElementById('ddDataOnly').innerHTML = dataHtml;
-  initImgZoom('ddImagePane', 'ddZoomImg', 'ddZoomLevel');
-  initImgZoom('ddImagePaneOnly', 'ddZoomImgOnly', 'ddZoomLevelOnly');
+  if (!isPdf) {
+    initImgZoom('ddImagePane', 'ddZoomImg', 'ddZoomLevel');
+    initImgZoom('ddImagePaneOnly', 'ddZoomImgOnly', 'ddZoomLevelOnly');
+  }
 
   document.getElementById('detailOverlay').classList.add('open');
   document.getElementById('detailDrawer').classList.add('open');
