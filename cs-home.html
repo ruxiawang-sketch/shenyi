@@ -465,6 +465,7 @@ function closeNotif() {
 }
 
 document.addEventListener('click', (e) => {
+  if (guideStep <= 0 && document.getElementById('guideBubble').classList.contains('show')) return;
   if (!e.target.closest('#notifBell') && !e.target.closest('.notif-popup')) {
     closeNotif();
   }
