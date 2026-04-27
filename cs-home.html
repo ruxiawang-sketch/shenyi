@@ -40,7 +40,7 @@ a { text-decoration: none; color: inherit; }
 
 .topbar-right { display: flex; align-items: center; gap: 20px; }
 .topbar-right .lang { font-size: 13px; color: #666; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.topbar-right .icon-btn { font-size: 18px; color: #666; cursor: pointer; position: relative; }
+.topbar-right .icon-btn { font-size: 18px; color: #666; cursor: pointer; position: relative; z-index: 95; }
 .topbar-right .icon-btn:hover { color: #00c4b4; }
 .topbar-right .user { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #666; cursor: pointer; }
 .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: #ffc107; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
@@ -49,7 +49,7 @@ a { text-decoration: none; color: inherit; }
 .badge-dot { position: absolute; top: -2px; right: -4px; width: 8px; height: 8px; background: #ff4757; border-radius: 50%; border: 1.5px solid #fff; }
 
 /* 消息弹窗 */
-.notif-popup { position: absolute; top: 40px; right: -60px; width: 360px; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 100; display: none; overflow: hidden; }
+.notif-popup { position: absolute; top: 40px; right: -60px; width: 360px; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.15); z-index: 100; display: none; overflow: hidden; }
 .notif-popup.show { display: block; animation: fadeInDown .2s ease; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 .notif-header { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
@@ -148,6 +148,11 @@ a { text-decoration: none; color: inherit; }
 /* 遮罩 */
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 150; display: none; }
 .overlay.show { display: block; }
+
+/* 通知蒙层 */
+.notif-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 90; display: none; }
+.notif-overlay.show { display: block; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* 高亮效果 */
 .highlight-ring { position: relative; z-index: 160; }
@@ -412,6 +417,9 @@ a { text-decoration: none; color: inherit; }
   </div>
 </div>
 
+<!-- 通知蒙层 -->
+<div class="notif-overlay" id="notifOverlay" onclick="closeNotif()"></div>
+
 <!-- 遮罩层 -->
 <div class="overlay" id="overlay" onclick="closeGuide()"></div>
 
@@ -438,12 +446,24 @@ a { text-decoration: none; color: inherit; }
 // 消息弹窗
 function toggleNotif() {
   const popup = document.getElementById('notifPopup');
-  popup.classList.toggle('show');
+  const ov = document.getElementById('notifOverlay');
+  const isOpen = popup.classList.contains('show');
+  if (isOpen) {
+    closeNotif();
+  } else {
+    popup.classList.add('show');
+    ov.classList.add('show');
+  }
+}
+
+function closeNotif() {
+  document.getElementById('notifPopup').classList.remove('show');
+  document.getElementById('notifOverlay').classList.remove('show');
 }
 
 document.addEventListener('click', (e) => {
-  if (!e.target.closest('#notifBell')) {
-    document.getElementById('notifPopup').classList.remove('show');
+  if (!e.target.closest('#notifBell') && !e.target.closest('.notif-popup')) {
+    closeNotif();
   }
 });
 
@@ -495,8 +515,9 @@ function openAudit() {
 // 页面加载后 2 秒自动弹出消息提醒
 setTimeout(() => {
   document.getElementById('notifPopup').classList.add('show');
+  document.getElementById('notifOverlay').classList.add('show');
   setTimeout(() => {
-    document.getElementById('notifPopup').classList.remove('show');
+    closeNotif();
   }, 4000);
 }, 2000);
 </script>
