@@ -353,7 +353,7 @@ async function goToExtract() {
   } catch (e) {
     console.error('截图失败:', e);
   }
-  window.location.href = '/index.html#extract';
+  window.open('/index.html#extract', '_blank');
 }
 
 // Draw a mini version on the thumbnail canvas
