@@ -12,7 +12,7 @@ a { text-decoration: none; color: inherit; }
 /* ===== 左侧边栏 ===== */
 .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 200px; background: #fff; border-right: 1px solid #eee; padding: 20px 0; display: flex; flex-direction: column; z-index: 10; }
 .sidebar-logo { display: flex; align-items: center; gap: 8px; padding: 0 20px 24px; }
-.sidebar-logo .logo-icon { width: 32px; height: 32px; background: #00c4b4; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; }
+.sidebar-logo .logo-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
 .sidebar-logo .logo-text { font-size: 16px; font-weight: 700; color: #333; }
 .sidebar-logo .logo-tm { font-size: 8px; color: #999; vertical-align: super; }
 
@@ -20,7 +20,7 @@ a { text-decoration: none; color: inherit; }
 .nav-item:hover { background: #f0faf9; color: #00c4b4; }
 .nav-item.active { background: #e6f9f7; color: #00c4b4; font-weight: 600; }
 .nav-item.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: #00c4b4; border-radius: 0 2px 2px 0; }
-.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .nav-sub { padding-left: 50px; }
 .nav-sub .nav-item { padding: 6px 20px; font-size: 13px; }
 
@@ -82,10 +82,10 @@ a { text-decoration: none; color: inherit; }
 .upload-btn .btn-icon { font-size: 20px; }
 
 /* 工具行 */
-.tools-row { display: flex; gap: 8px; margin-bottom: 28px; overflow-x: auto; padding: 4px 0; }
+.tools-row { display: flex; gap: 8px; margin-bottom: 28px; overflow-x: auto; padding: 4px 0; justify-content: center; }
 .tool-item { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: all .15s; min-width: 80px; position: relative; }
 .tool-item:hover { background: #f0f0f0; }
-.tool-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; }
+.tool-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; }
 .tool-name { font-size: 12px; color: #555; white-space: nowrap; }
 .tool-badge { position: absolute; top: -4px; right: -4px; font-size: 9px; padding: 1px 5px; background: #ff4757; color: #fff; border-radius: 3px; font-weight: 700; }
 .tool-new { position: absolute; top: -4px; right: -8px; font-size: 9px; padding: 1px 5px; background: #00c4b4; color: #fff; border-radius: 3px; font-weight: 700; }
@@ -162,18 +162,31 @@ a { text-decoration: none; color: inherit; }
 <!-- 左侧边栏 -->
 <div class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-icon">CS</div>
+    <div class="logo-icon">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="8" fill="#1e2a3a"/>
+        <text x="18" y="22" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="Arial,Helvetica,sans-serif" letter-spacing="1">CS</text>
+        <clipPath id="logoClip"><rect width="36" height="36" rx="8"/></clipPath>
+        <rect x="0" y="29" width="36" height="7" fill="#00c4b4" clip-path="url(#logoClip)"/>
+      </svg>
+    </div>
     <div class="logo-text">扫描全能王<span class="logo-tm">™</span></div>
   </div>
 
-  <div class="nav-item active"><span class="nav-icon">🏠</span> 首页</div>
-  <div class="nav-item" style="padding-left:12px;"><span class="nav-icon" style="font-size:12px;">▸</span> 我的文档</div>
+  <div class="nav-item active">
+    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 8.5L10 3l7 5.5V17a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 013 17V8.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 18.5v-5.5h4v5.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span> 首页
+  </div>
+  <div class="nav-item" style="padding-left:12px;">
+    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 3h8l4 4v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 3v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 10h8M6 13h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> 我的文档
+  </div>
   <div class="nav-sub">
     <div class="nav-item">de</div>
     <div class="nav-item">证件卡包</div>
   </div>
   <div class="sidebar-section">
-    <div class="nav-item"><span class="nav-icon">📁</span> 工具箱</div>
+    <div class="nav-item">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 8h16" stroke="currentColor" stroke-width="1.3"/><path d="M7 5V3.5A1.5 1.5 0 018.5 2h3A1.5 1.5 0 0113 3.5V5" stroke="currentColor" stroke-width="1.4"/></svg></span> 工具箱
+    </div>
   </div>
 
   <div class="sidebar-bottom">
@@ -188,14 +201,14 @@ a { text-decoration: none; color: inherit; }
 <!-- 顶栏 -->
 <div class="topbar">
   <div class="search-box">
-    <span class="search-icon">🔍</span>
+    <span class="search-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#999" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></span>
     <input type="text" placeholder="支持多关键词搜索">
   </div>
   <div class="topbar-right">
-    <div class="lang">🌐 简体中文 ▾</div>
-    <div class="icon-btn">🌐</div>
+    <div class="lang"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#666" stroke-width="1.2"/><ellipse cx="8" cy="8" rx="3" ry="6.5" stroke="#666" stroke-width="1"/><path d="M1.5 8h13M2.5 5h11M2.5 11h11" stroke="#666" stroke-width=".8"/></svg> 简体中文 ▾</div>
+    <div class="icon-btn"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.3"/><ellipse cx="9" cy="9" rx="3.2" ry="7" stroke="currentColor" stroke-width="1"/><path d="M2 9h14M3 6h12M3 12h12" stroke="currentColor" stroke-width=".7"/></svg></div>
     <div class="icon-btn" id="notifBell" onclick="toggleNotif()">
-      🔔
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 15a2 2 0 004 0" stroke="currentColor" stroke-width="1.2"/><path d="M14 12c-.6-.6-1-1.5-1-3V7.5a4 4 0 10-8 0V9c0 1.5-.4 2.4-1 3h10z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
       <span class="badge-dot" id="badgeDot"></span>
       <!-- 消息弹窗 -->
       <div class="notif-popup" id="notifPopup">
@@ -206,7 +219,7 @@ a { text-decoration: none; color: inherit; }
         <div class="notif-list">
           <!-- AI 审计上新通知 -->
           <div class="notif-item unread" id="auditNotif" onclick="event.stopPropagation();handleAuditNotif()">
-            <div class="notif-icon-wrap" style="background:linear-gradient(135deg,#e6f9f7,#b2f0e8);">🛡️</div>
+            <div class="notif-icon-wrap" style="background:linear-gradient(135deg,#e6f9f7,#b2f0e8);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z" fill="#00c4b4" opacity=".2" stroke="#00c4b4" stroke-width="1.5"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="notif-content">
               <div class="notif-title">AI 审计助手正式上线！<span class="notif-new-badge">NEW</span></div>
               <div class="notif-desc">全新 AI 审计工具已上线，支持智能异常检测、跨单据核对、风险识别，助力审计提效 10 倍。点击立即体验 →</div>
@@ -215,7 +228,7 @@ a { text-decoration: none; color: inherit; }
           </div>
           <!-- 其他通知 -->
           <div class="notif-item">
-            <div class="notif-icon-wrap" style="background:#f3e8ff;">🎉</div>
+            <div class="notif-icon-wrap" style="background:#f3e8ff;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#9333ea" opacity=".15"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#9333ea">P</text></svg></div>
             <div class="notif-content">
               <div class="notif-title">AI PPT 功能升级</div>
               <div class="notif-desc">AI PPT 新增 20+ 模板，支持一键生成专业演示文稿</div>
@@ -223,7 +236,7 @@ a { text-decoration: none; color: inherit; }
             </div>
           </div>
           <div class="notif-item">
-            <div class="notif-icon-wrap" style="background:#e8f0fe;">📄</div>
+            <div class="notif-icon-wrap" style="background:#e8f0fe;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V7l-5-5z" stroke="#4285f4" stroke-width="1.5"/><path d="M14 2v5h5" stroke="#4285f4" stroke-width="1.5"/></svg></div>
             <div class="notif-content">
               <div class="notif-title">文档存储空间提醒</div>
               <div class="notif-desc">您的存储空间已使用 7%，可免费扩容至 20GB</div>
@@ -233,7 +246,7 @@ a { text-decoration: none; color: inherit; }
         </div>
       </div>
     </div>
-    <div class="user"><div class="user-avatar">🟡</div> 17610307930 ▾</div>
+    <div class="user"><div class="user-avatar"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" fill="#fff"/><path d="M1.5 13c0-3 2.5-5 5.5-5s5.5 2 5.5 5" fill="#fff"/></svg></div> 17610307930 ▾</div>
   </div>
 </div>
 
@@ -257,9 +270,33 @@ a { text-decoration: none; color: inherit; }
     </div>
     <div class="upload-text">将文件拖到这里，或点击上传</div>
     <div class="upload-btns">
-      <div class="upload-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="#00c4b4" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" stroke="#00c4b4" stroke-width="1.5"/><circle cx="17" cy="8" r="1" fill="#00c4b4"/></svg> 智能扫描</div>
-      <div class="upload-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="3" stroke="#4caf50" stroke-width="1.5"/><circle cx="9" cy="10" r="2" fill="#4caf50" opacity=".4"/><path d="M3 17l5-4 3 2 4-5 6 5v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-0z" fill="#4caf50" opacity=".2"/></svg> 导入图片</div>
-      <div class="upload-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#999" stroke-width="1.5"/><path d="M14 2v6h6" stroke="#999" stroke-width="1.5"/></svg> 导入文档</div>
+      <div class="upload-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="5" width="20" height="14" rx="3" fill="#00c4b4" opacity=".12" stroke="#00c4b4" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="4" stroke="#00c4b4" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="1.5" fill="#00c4b4"/>
+          <circle cx="17.5" cy="8" r="1.2" fill="#00c4b4"/>
+        </svg>
+        智能扫描
+      </div>
+      <div class="upload-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="4" width="20" height="16" rx="3" fill="#4285f4" opacity=".08" stroke="#4285f4" stroke-width="1.4"/>
+          <circle cx="8" cy="9.5" r="2.2" fill="#4285f4" opacity=".35"/>
+          <path d="M2 16l5-4.5 3.5 2.5 4-5L22 16v1.5a3 3 0 01-3 3H5a3 3 0 01-3-3V16z" fill="#4285f4" opacity=".25"/>
+          <path d="M7 14.5l3.5-3 3 2 4.5-4.5" stroke="#4285f4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
+        </svg>
+        导入图片
+      </div>
+      <div class="upload-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16 2H8a2.5 2.5 0 00-2.5 2.5v15A2.5 2.5 0 008 22h10a2.5 2.5 0 002.5-2.5V7L16 2z" fill="#4285f4" opacity=".1" stroke="#4285f4" stroke-width="1.4"/>
+          <path d="M16 2v5h4.5" stroke="#4285f4" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M9 12h7M9 15h5" stroke="#4285f4" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M14 0H6a2.5 2.5 0 00-2.5 2.5v15A2.5 2.5 0 006 20" stroke="#4285f4" stroke-width="1" opacity=".3"/>
+        </svg>
+        导入文档
+      </div>
     </div>
   </div>
 
@@ -268,72 +305,72 @@ a { text-decoration: none; color: inherit; }
     <!-- AI 审计 -->
     <div class="tool-item audit-tool" id="auditTool" onclick="openAudit()">
       <div class="tool-icon" style="background:linear-gradient(135deg,#e0f8f5,#b8f0e8);position:relative;">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3L4 8v6c0 6.6 4.3 12.4 10 14 5.7-1.6 10-7.4 10-14V8L14 3z" fill="#00c4b4" opacity=".15"/><path d="M14 3L4 8v6c0 6.6 4.3 12.4 10 14 5.7-1.6 10-7.4 10-14V8L14 3z" stroke="#00c4b4" stroke-width="1.5" fill="none"/><path d="M10 14l3 3 5-6" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 3L4 8.5v7c0 7 4.5 13 11 15 6.5-2 11-8 11-15v-7L15 3z" fill="#00c4b4" opacity=".15"/><path d="M15 3L4 8.5v7c0 7 4.5 13 11 15 6.5-2 11-8 11-15v-7L15 3z" stroke="#00c4b4" stroke-width="1.5" fill="none"/><path d="M10.5 15l3 3 5.5-6.5" stroke="#00c4b4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="tool-new">NEW</span>
       </div>
       <div class="tool-name" style="color:#00c4b4;font-weight:600;">AI 审计</div>
     </div>
-    <!-- AI 文档助手 -->
+    <!-- AI 文档助手：黑底+青色星光 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#e0f8f5,#c5f2ec);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#00c4b4" opacity=".12"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#00c4b4" stroke-width="1.3" fill="none"/><path d="M9 9h10M9 13h7M9 17h9" stroke="#00c4b4" stroke-width="1.3" stroke-linecap="round"/><circle cx="20" cy="20" r="4" fill="#00c4b4"/><path d="M18.5 20l1 1 2-2.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="tool-icon" style="background:#1a1a2e;border-radius:14px;">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 6l1.2 3.5h3.6l-2.9 2.1 1.1 3.4L15 13l-3 2 1.1-3.4-2.9-2.1h3.6L15 6z" fill="#00c4b4"/><path d="M8 18l.6 1.8h1.8l-1.5 1 .6 1.7L8 21.5l-1.5 1 .6-1.7-1.5-1h1.8L8 18z" fill="#5eead4" opacity=".7"/><path d="M22 16l.5 1.3h1.4l-1.1.8.4 1.3-1.2-.9-1.2.9.4-1.3-1.1-.8h1.4L22 16z" fill="#5eead4" opacity=".5"/><rect x="4" y="20" width="22" height="5" rx="2" fill="#00c4b4" opacity=".2"/><path d="M7 22.5h16" stroke="#00c4b4" stroke-width="1" stroke-linecap="round" opacity=".5"/></svg>
       </div>
       <div class="tool-name">AI 文档助手</div>
     </div>
-    <!-- AI PPT -->
+    <!-- AI PPT：粉底+橙红P+星号 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);position:relative;">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="5" width="20" height="18" rx="3" fill="#e91e63" opacity=".12"/><rect x="4" y="5" width="20" height="18" rx="3" stroke="#e91e63" stroke-width="1.3" fill="none"/><rect x="8" y="10" width="5" height="3" rx="1" fill="#e91e63" opacity=".4"/><rect x="8" y="15" width="12" height="1.5" rx=".75" fill="#e91e63" opacity=".3"/><rect x="8" y="18" width="8" height="1.5" rx=".75" fill="#e91e63" opacity=".2"/><rect x="15" y="9" width="5" height="5" rx="1" fill="#e91e63" opacity=".25"/></svg>
-        <span class="tool-badge" style="background:#e91e63;">Beta</span>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#ffeef0,#fdd);position:relative;">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="6" y="6" width="18" height="18" rx="4" fill="#f06050"/><text x="15" y="19" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">P</text><path d="M21 7l.5 1.3h1.4l-1.1.8.4 1.3-1.2-.9-1.2.9.4-1.3-1.1-.8h1.4z" fill="#ffa726" opacity=".9"/></svg>
+        <span class="tool-badge" style="background:#f06050;font-size:9px;padding:1px 5px;">Beta</span>
       </div>
       <div class="tool-name">AI PPT</div>
     </div>
-    <!-- 转 Word -->
+    <!-- 转 Word：蓝色文档+W+星号 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#1976d2" opacity=".1"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#1976d2" stroke-width="1.3" fill="none"/><text x="14" y="17" text-anchor="middle" font-size="10" font-weight="700" fill="#1976d2">W</text></svg>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e8f4fd,#d5ebfc);">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="8" y="5" width="16" height="20" rx="3" fill="#2196f3" opacity=".12" stroke="#2196f3" stroke-width="1.3"/><text x="16" y="19" text-anchor="middle" font-size="12" font-weight="800" fill="#2196f3">W</text><path d="M7 9l.4 1.1h1.2l-1 .7.4 1.1-1-.7-1 .7.4-1.1-1-.7h1.2z" fill="#00c4b4" opacity=".8"/><path d="M9 6l.3.7h.8l-.6.5.2.7-.7-.5-.7.5.2-.7-.6-.5h.8z" fill="#00c4b4" opacity=".5"/></svg>
       </div>
       <div class="tool-name">转 Word</div>
     </div>
-    <!-- 转 Excel -->
+    <!-- 转 Excel：绿色文档+X+星号 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#2e7d32" opacity=".1"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#2e7d32" stroke-width="1.3" fill="none"/><text x="14" y="17" text-anchor="middle" font-size="10" font-weight="700" fill="#2e7d32">X</text></svg>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e8f5e9,#d5edd7);">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="8" y="5" width="16" height="20" rx="3" fill="#4caf50" opacity=".12" stroke="#4caf50" stroke-width="1.3"/><text x="16" y="19" text-anchor="middle" font-size="12" font-weight="800" fill="#4caf50">X</text><path d="M7 9l.4 1.1h1.2l-1 .7.4 1.1-1-.7-1 .7.4-1.1-1-.7h1.2z" fill="#00c4b4" opacity=".8"/><path d="M9 6l.3.7h.8l-.6.5.2.7-.7-.5-.7.5.2-.7-.6-.5h.8z" fill="#00c4b4" opacity=".5"/></svg>
       </div>
       <div class="tool-name">转 Excel</div>
     </div>
-    <!-- 转 PPT -->
+    <!-- 转 PPT：红橙色叠放文档+P -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#e65100" opacity=".1"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#e65100" stroke-width="1.3" fill="none"/><text x="14" y="17" text-anchor="middle" font-size="10" font-weight="700" fill="#e65100">P</text></svg>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#ffeef0,#fdd);">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="9" y="8" width="14" height="17" rx="2.5" fill="#ef5350" opacity=".2" stroke="#ef5350" stroke-width="1"/><rect x="6" y="5" width="14" height="17" rx="2.5" fill="#ef5350" opacity=".15" stroke="#ef5350" stroke-width="1.2"/><text x="13" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#ef5350">P</text></svg>
       </div>
       <div class="tool-name">转 PPT</div>
     </div>
-    <!-- 转图片 -->
+    <!-- 转图片：蓝色叠放图片框 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="5" width="20" height="18" rx="3" fill="#7b1fa2" opacity=".1"/><rect x="4" y="5" width="20" height="18" rx="3" stroke="#7b1fa2" stroke-width="1.3" fill="none"/><circle cx="11" cy="12" r="2.5" fill="#7b1fa2" opacity=".25"/><path d="M4 19l5-4 3 2 4-5 8 7" stroke="#7b1fa2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/></svg>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e8f0fe,#d5e3fc);">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="9" y="8" width="15" height="15" rx="2.5" fill="#42a5f5" opacity=".15" stroke="#42a5f5" stroke-width="1"/><rect x="6" y="5" width="15" height="15" rx="2.5" fill="#42a5f5" opacity=".12" stroke="#42a5f5" stroke-width="1.3"/><rect x="9" y="8" width="9" height="7" rx="1.5" stroke="#42a5f5" stroke-width="1" fill="none" opacity=".5"/><circle cx="11.5" cy="10.5" r="1.2" fill="#42a5f5" opacity=".4"/><path d="M9 14l2.5-2 2 1.5 3-3" stroke="#42a5f5" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/></svg>
       </div>
       <div class="tool-name">转图片</div>
     </div>
-    <!-- 文档合并 -->
+    <!-- 文档合并：红橙色叠放+箭头 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#e0f7fa,#b2ebf2);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="14" height="18" rx="2.5" fill="#00838f" opacity=".1" stroke="#00838f" stroke-width="1.2"/><rect x="11" y="5" width="14" height="18" rx="2.5" fill="#00838f" opacity=".1" stroke="#00838f" stroke-width="1.2"/><path d="M14 11v6M11 14h6" stroke="#00838f" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#ffeef0,#fdd);">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="10" y="8" width="13" height="16" rx="2.5" fill="#ef5350" opacity=".25" stroke="#ef5350" stroke-width="1"/><rect x="7" y="5" width="13" height="16" rx="2.5" fill="#ef5350" opacity=".15" stroke="#ef5350" stroke-width="1.2"/><path d="M20 18l3-3-3-3" stroke="#ef5350" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18l-3-3 3-3" stroke="#ef5350" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="tool-name">文档合并</div>
     </div>
-    <!-- 页面提取 -->
+    <!-- 页面提取：蓝色文档+箭头 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9);">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="6" y="3" width="16" height="22" rx="3" fill="#3949ab" opacity=".1" stroke="#3949ab" stroke-width="1.2"/><path d="M10 10h8M10 14h5" stroke="#3949ab" stroke-width="1.2" stroke-linecap="round"/><path d="M18 16l3 3M18 19l3-3" stroke="#3949ab" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e3f2fd,#d0e8fc);">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="7" y="5" width="16" height="20" rx="3" fill="#2196f3" opacity=".1" stroke="#2196f3" stroke-width="1.3"/><path d="M11 11h5M11 14h8M11 17h4" stroke="#2196f3" stroke-width="1.2" stroke-linecap="round"/><path d="M20 14l4 0" stroke="#2196f3" stroke-width="1.8" stroke-linecap="round"/><path d="M22 11.5l2.5 2.5-2.5 2.5" stroke="#2196f3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="tool-name">页面提取</div>
     </div>
-    <!-- 全部工具 -->
+    <!-- 全部工具：四色方块 -->
     <div class="tool-item">
       <div class="tool-icon" style="background:#f5f5f5;">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="5" width="7" height="7" rx="1.5" fill="#999"/><rect x="16" y="5" width="7" height="7" rx="1.5" fill="#999"/><rect x="5" y="16" width="7" height="7" rx="1.5" fill="#999"/><rect x="16" y="16" width="7" height="7" rx="1.5" fill="#999"/></svg>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="4" width="9" height="9" rx="2" fill="#2196f3"/><rect x="15" y="4" width="9" height="9" rx="2" fill="#00c4b4"/><rect x="4" y="15" width="9" height="9" rx="2" fill="#42a5f5"/><rect x="15" y="15" width="9" height="9" rx="2" fill="#1976d2"/></svg>
       </div>
       <div class="tool-name">全部工具</div>
     </div>
@@ -364,35 +401,35 @@ a { text-decoration: none; color: inherit; }
       <tbody>
         <tr>
           <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8eaf6;">📄</div> 1_西北工业大学民航短舱关重件制造技术与产业化</div></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8eaf6;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e8eaf6" stroke="#7986cb" stroke-width="1"/><path d="M11 1v6h6" stroke="#7986cb" stroke-width="1"/></svg></div> 1_西北工业大学民航短舱关重件制造技术与产业化</div></td>
           <td style="color:#999;">我的文档</td>
           <td>1页</td>
           <td style="color:#999;">14:57</td>
         </tr>
         <tr>
           <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e0f7fa;">📄</div> 2_财务审计报告_天霸动霸物流_2026Q1</div></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e0f7fa;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e0f7fa" stroke="#4db6ac" stroke-width="1"/><path d="M11 1v6h6" stroke="#4db6ac" stroke-width="1"/></svg></div> 2_财务审计报告_天霸动霸物流_2026Q1</div></td>
           <td style="color:#999;">我的文档</td>
           <td>3页</td>
           <td style="color:#999;">14:32</td>
         </tr>
         <tr>
           <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fff3e0;">📄</div> 3_增值税专用发票_顺达燃油_50万</div></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fff3e0;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#fff3e0" stroke="#ffb74d" stroke-width="1"/><path d="M11 1v6h6" stroke="#ffb74d" stroke-width="1"/></svg></div> 3_增值税专用发票_顺达燃油_50万</div></td>
           <td style="color:#999;">我的文档</td>
           <td>1页</td>
           <td style="color:#999;">13:45</td>
         </tr>
         <tr>
           <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fce4ec;">📄</div> 4_银行回单_工商银行_200万</div></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fce4ec;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#fce4ec" stroke="#ef9a9a" stroke-width="1"/><path d="M11 1v6h6" stroke="#ef9a9a" stroke-width="1"/></svg></div> 4_银行回单_工商银行_200万</div></td>
           <td style="color:#999;">我的文档</td>
           <td>1页</td>
           <td style="color:#999;">11:20</td>
         </tr>
         <tr>
           <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8f5e9;">📄</div> 5_运输服务合同_霸天集团_800万</div></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8f5e9;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e8f5e9" stroke="#81c784" stroke-width="1"/><path d="M11 1v6h6" stroke="#81c784" stroke-width="1"/></svg></div> 5_运输服务合同_霸天集团_800万</div></td>
           <td style="color:#999;">我的文档</td>
           <td>4页</td>
           <td style="color:#999;">昨天</td>
@@ -410,7 +447,7 @@ a { text-decoration: none; color: inherit; }
   <div class="guide-bubble-content">
     <div class="guide-bubble-arrow top"></div>
     <span class="guide-bubble-close" onclick="closeGuide()">✕</span>
-    <div class="guide-bubble-title">🛡️ AI 审计助手 <span class="new-tag">NEW</span></div>
+    <div class="guide-bubble-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z" fill="#00c4b4" opacity=".2" stroke="#00c4b4" stroke-width="1.5"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> AI 审计助手 <span class="new-tag">NEW</span></div>
     <div class="guide-bubble-desc">
       基于扫描全能王 OCR 能力，为审计员量身打造的智能审计工具：
       <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;font-size:12px;">
