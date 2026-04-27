@@ -84,6 +84,7 @@ a { text-decoration: none; color: inherit; }
 /* 工具行 */
 .tools-row { display: flex; gap: 8px; margin-bottom: 28px; overflow-x: auto; padding: 4px 0; justify-content: center; }
 .tool-item { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: all .15s; min-width: 80px; position: relative; }
+.tool-item.audit-tool { background: #edfaf8; }
 .tool-item:hover { background: #f0f0f0; }
 .tool-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; }
 .tool-name { font-size: 12px; color: #555; white-space: nowrap; }
@@ -226,8 +227,8 @@ a { text-decoration: none; color: inherit; }
               <div class="notif-time">刚刚</div>
             </div>
           </div>
-          <!-- 其他通知 -->
-          <div class="notif-item">
+          <!-- 其他通知（弱化） -->
+          <div class="notif-item" style="opacity:.45;">
             <div class="notif-icon-wrap" style="background:#f3e8ff;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#9333ea" opacity=".15"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="#9333ea">P</text></svg></div>
             <div class="notif-content">
               <div class="notif-title">AI PPT 功能升级</div>
@@ -235,7 +236,7 @@ a { text-decoration: none; color: inherit; }
               <div class="notif-time">2小时前</div>
             </div>
           </div>
-          <div class="notif-item">
+          <div class="notif-item" style="opacity:.45;">
             <div class="notif-icon-wrap" style="background:#e8f0fe;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V7l-5-5z" stroke="#4285f4" stroke-width="1.5"/><path d="M14 2v5h5" stroke="#4285f4" stroke-width="1.5"/></svg></div>
             <div class="notif-content">
               <div class="notif-title">文档存储空间提醒</div>
@@ -392,47 +393,19 @@ a { text-decoration: none; color: inherit; }
       <thead>
         <tr>
           <th style="width:40px;"><input type="checkbox"></th>
-          <th>49 个文档</th>
+          <th>1 个文档</th>
           <th>路径</th>
           <th>数量</th>
           <th>修改时间</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr style="cursor:pointer;" onclick="window.open('/doc-viewer.html','_blank')">
           <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8eaf6;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e8eaf6" stroke="#7986cb" stroke-width="1"/><path d="M11 1v6h6" stroke="#7986cb" stroke-width="1"/></svg></div> 1_西北工业大学民航短舱关重件制造技术与产业化</div></td>
-          <td style="color:#999;">我的文档</td>
-          <td>1页</td>
-          <td style="color:#999;">14:57</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e0f7fa;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e0f7fa" stroke="#4db6ac" stroke-width="1"/><path d="M11 1v6h6" stroke="#4db6ac" stroke-width="1"/></svg></div> 2_财务审计报告_天霸动霸物流_2026Q1</div></td>
+          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e0f7fa;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e0f7fa" stroke="#4db6ac" stroke-width="1"/><path d="M11 1v6h6" stroke="#4db6ac" stroke-width="1"/></svg></div> <span style="color:#00c4b4;">财务审计报告_天霸动霸物流_2026Q1</span></div></td>
           <td style="color:#999;">我的文档</td>
           <td>3页</td>
           <td style="color:#999;">14:32</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fff3e0;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#fff3e0" stroke="#ffb74d" stroke-width="1"/><path d="M11 1v6h6" stroke="#ffb74d" stroke-width="1"/></svg></div> 3_增值税专用发票_顺达燃油_50万</div></td>
-          <td style="color:#999;">我的文档</td>
-          <td>1页</td>
-          <td style="color:#999;">13:45</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#fce4ec;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#fce4ec" stroke="#ef9a9a" stroke-width="1"/><path d="M11 1v6h6" stroke="#ef9a9a" stroke-width="1"/></svg></div> 4_银行回单_工商银行_200万</div></td>
-          <td style="color:#999;">我的文档</td>
-          <td>1页</td>
-          <td style="color:#999;">11:20</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td><div class="doc-name-cell"><div class="doc-thumb" style="background:#e8f5e9;"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M11 1H3a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7l-6-6z" fill="#e8f5e9" stroke="#81c784" stroke-width="1"/><path d="M11 1v6h6" stroke="#81c784" stroke-width="1"/></svg></div> 5_运输服务合同_霸天集团_800万</div></td>
-          <td style="color:#999;">我的文档</td>
-          <td>4页</td>
-          <td style="color:#999;">昨天</td>
         </tr>
       </tbody>
     </table>
@@ -489,12 +462,23 @@ function handleAuditNotif() {
   tool.classList.add('highlight-ring');
   document.getElementById('overlay').classList.add('show');
 
-  const rect = tool.getBoundingClientRect();
+  positionBubble();
+  document.getElementById('guideBubble').classList.add('show');
+}
+
+function positionBubble() {
+  const tool = document.getElementById('auditTool');
   const bubble = document.getElementById('guideBubble');
+  const rect = tool.getBoundingClientRect();
   bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
   bubble.style.top = (rect.bottom + 12) + 'px';
-  bubble.classList.add('show');
 }
+
+window.addEventListener('scroll', () => {
+  if (document.getElementById('guideBubble').classList.contains('show')) {
+    positionBubble();
+  }
+}, true);
 
 function closeGuide() {
   document.getElementById('overlay').classList.remove('show');
