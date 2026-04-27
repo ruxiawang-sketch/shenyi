@@ -49,7 +49,7 @@ a { text-decoration: none; color: inherit; }
 .badge-dot { position: absolute; top: -2px; right: -4px; width: 8px; height: 8px; background: #ff4757; border-radius: 50%; border: 1.5px solid #fff; }
 
 /* 消息弹窗 */
-.notif-popup { position: absolute; top: 40px; right: -60px; width: 360px; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.15); z-index: 100; display: none; overflow: hidden; }
+.notif-popup { position: fixed; top: 56px; right: 60px; width: 360px; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.15); z-index: 100; display: none; overflow: hidden; }
 .notif-popup.show { display: block; animation: fadeInDown .2s ease; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 .notif-header { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
@@ -149,8 +149,8 @@ a { text-decoration: none; color: inherit; }
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 150; display: none; }
 .overlay.show { display: block; }
 
-/* 通知蒙层：盖住全页面但在顶栏下方 */
-.notif-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 8; display: none; }
+/* 通知蒙层：盖住全页面包括侧边栏和顶栏，弹窗通过更高z-index浮出 */
+.notif-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 50; display: none; }
 .notif-overlay.show { display: block; }
 
 /* 高亮效果 */
