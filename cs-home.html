@@ -135,8 +135,10 @@ a { text-decoration: none; color: inherit; }
 .guide-bubble.show { display: block; animation: bubbleIn .3s ease; }
 @keyframes bubbleIn { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
 .guide-bubble-content { background: #fff; border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,.15); padding: 20px; width: 300px; position: relative; }
-.guide-bubble-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); box-shadow: -2px -2px 4px rgba(0,0,0,.04); }
-.guide-bubble-arrow.top { top: -6px; left: 50%; margin-left: -6px; }
+.guide-bubble-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); }
+.guide-bubble-arrow.top { top: -6px; left: 50%; margin-left: -6px; box-shadow: -2px -2px 4px rgba(0,0,0,.04); }
+.guide-bubble-arrow.bottom { bottom: -6px; left: 50%; margin-left: -6px; box-shadow: 2px 2px 4px rgba(0,0,0,.04); }
+.guide-bubble-arrow.right { right: -6px; top: 30px; box-shadow: 2px -2px 4px rgba(0,0,0,.04); }
 .guide-bubble-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
 .guide-bubble-title .new-tag { font-size: 10px; padding: 2px 6px; background: #00c4b4; color: #fff; border-radius: 4px; }
 .guide-bubble-desc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 14px; }
@@ -430,7 +432,7 @@ a { text-decoration: none; color: inherit; }
 <!-- 引导气泡 -->
 <div class="guide-bubble" id="guideBubble">
   <div class="guide-bubble-content">
-    <div class="guide-bubble-arrow top"></div>
+    <div class="guide-bubble-arrow top" id="guideArrow"></div>
     <span class="guide-bubble-close" onclick="skipGuide()">✕</span>
     <div class="guide-step-indicator" id="guideStepIndicator"></div>
     <div class="guide-bubble-title" id="guideBubbleTitle"></div>
@@ -506,6 +508,40 @@ function handleAuditNotif() {
   showGuideStep();
 }
 
+function startGuideStep0() {
+  guideStep = 0;
+  document.getElementById('overlay').classList.add('show');
+  // 通知弹窗高亮
+  document.getElementById('notifPopup').classList.add('highlight-ring');
+
+  const indicator = document.getElementById('guideStepIndicator');
+  indicator.innerHTML = guideSteps.map((_, i) =>
+    `<div class="guide-step-dot ${i === 0 ? 'active' : ''}"></div>`
+  ).join('');
+
+  document.getElementById('guideBubbleTitle').innerHTML = `<span style="font-size:14px;font-weight:700;">${guideSteps[0].title}</span> <span style="font-size:11px;color:#999;font-weight:400;">第 1 / ${guideSteps.length} 步</span>`;
+  document.getElementById('guideBubbleDesc').innerHTML = guideSteps[0].desc;
+  const btn = document.getElementById('guideBubbleBtn');
+  btn.textContent = guideSteps[0].btn;
+  btn.onclick = () => {
+    document.getElementById('notifPopup').classList.remove('highlight-ring');
+    guideStep = 1;
+    showGuideStep();
+  };
+
+  // 箭头指向右边（通知弹窗）
+  const arrow = document.getElementById('guideArrow');
+  arrow.className = 'guide-bubble-arrow right';
+
+  const bubble = document.getElementById('guideBubble');
+  const popup = document.getElementById('notifPopup');
+  const rect = popup.getBoundingClientRect();
+  bubble.style.right = '';
+  bubble.style.left = (rect.left - 320) + 'px';
+  bubble.style.top = (rect.top + 40) + 'px';
+  bubble.classList.add('show');
+}
+
 function showGuideStep() {
   const step = guideSteps[guideStep];
   if (!step) { skipGuide(); return; }
@@ -539,10 +575,16 @@ function showGuideStep() {
     }
   }
 
+  // 箭头方向
+  const arrow = document.getElementById('guideArrow');
+  arrow.className = 'guide-bubble-arrow';
+  if (step.position === 'below') arrow.classList.add('top');
+  else if (step.position === 'above') arrow.classList.add('bottom');
+  else arrow.classList.add('right');
+
   // 定位气泡
   const bubble = document.getElementById('guideBubble');
   if (step.position === 'none') {
-    // 第一步：弹窗旁边
     bubble.style.left = '';
     bubble.style.right = '380px';
     bubble.style.top = '80px';
@@ -554,7 +596,7 @@ function showGuideStep() {
       bubble.style.top = (rect.bottom + 14) + 'px';
     } else if (step.position === 'above') {
       bubble.style.left = (rect.left + rect.width/2 - 150) + 'px';
-      bubble.style.top = (rect.top - 200) + 'px';
+      bubble.style.top = (rect.top - 220) + 'px';
     }
   }
   bubble.classList.add('show');
@@ -605,9 +647,10 @@ function openAudit() {
   window.open('/index.html', '_blank');
 }
 
-// 页面加载完成后立即显示消息弹窗（第1步入口）
+// 页面加载完成后立即显示消息弹窗 + 第1步引导
 document.getElementById('notifPopup').classList.add('show');
 document.getElementById('notifOverlay').classList.add('show');
+setTimeout(startGuideStep0, 300);
 </script>
 
 </body>
