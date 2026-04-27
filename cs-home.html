@@ -149,10 +149,9 @@ a { text-decoration: none; color: inherit; }
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 150; display: none; }
 .overlay.show { display: block; }
 
-/* 通知蒙层 */
-.notif-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 90; display: none; }
-.notif-overlay.show { display: block; animation: fadeIn .2s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* 通知蒙层：盖住全页面但在顶栏下方 */
+.notif-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 8; display: none; }
+.notif-overlay.show { display: block; }
 
 /* 高亮效果 */
 .highlight-ring { position: relative; z-index: 160; }
@@ -475,7 +474,7 @@ function markAllRead() {
 
 // 点击审计通知 → 关闭弹窗 → 高亮工具入口 → 显示引导气泡
 function handleAuditNotif() {
-  document.getElementById('notifPopup').classList.remove('show');
+  closeNotif();
   document.getElementById('auditNotif').classList.remove('unread');
 
   const tool = document.getElementById('auditTool');
@@ -512,13 +511,10 @@ function openAudit() {
   window.open('/index.html', '_blank');
 }
 
-// 页面加载后 2 秒自动弹出消息提醒
+// 页面加载后 2 秒自动弹出消息提醒（不自动消失，需用户点击）
 setTimeout(() => {
   document.getElementById('notifPopup').classList.add('show');
   document.getElementById('notifOverlay').classList.add('show');
-  setTimeout(() => {
-    closeNotif();
-  }, 4000);
 }, 2000);
 </script>
 
