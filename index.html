@@ -852,10 +852,10 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
                 ondragleave="this.style.borderColor='var(--gray-300)';this.style.background='#fff';"
                 ondrop="event.preventDefault();this.style.borderColor='var(--gray-300)';this.style.background='#fff';handleLedgerImport(event.dataTransfer.files)">
                 <div style="font-size:24px;margin-bottom:4px;">📊</div>
-                <div style="font-size:13px;font-weight:500;color:var(--gray-600);">点击或拖拽 Excel/CSV 文件</div>
-                <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">支持 .xlsx .xls .csv 格式的试算平衡表、总账、明细账</div>
+                <div style="font-size:13px;font-weight:500;color:var(--gray-600);">点击或拖拽文件</div>
+                <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">支持 .xlsx .xls .csv .pdf 格式的试算平衡表、总账、明细账</div>
               </div>
-              <input type="file" id="ledgerFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleLedgerImport(this.files)">
+              <input type="file" id="ledgerFileInput" accept=".xlsx,.xls,.csv,.pdf" style="display:none;" onchange="handleLedgerImport(this.files)">
               <div id="ledgerPreview" style="display:none;margin-top:12px;"></div>
               <div id="ledgerMatchResult" style="display:none;margin-top:16px;"></div>
             </div>
@@ -2569,18 +2569,37 @@ function updateReconSelection() {
 
 function formatOcrText(text) {
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  return text.split('\n').map(line => {
-    const t = line.trim();
-    if (!t) return '<div style="height:6px;"></div>';
-    let html = esc(t);
-    // 编号行：01. 02. 1. 2. 等 — 加粗编号
-    html = html.replace(/^(\d{1,2}[\.\、])/, '<span style="font-weight:700;color:#334155;">$1</span>');
-    // 键值对：xxx:yyy / xxx：yyy — 键名加色
-    html = html.replace(/^([^:：]{1,15})([:：])/, '<span style="color:#64748b;font-weight:500;">$1$2</span>');
-    // 金额高亮：匹配 123,456.00 这样的数字
-    html = html.replace(/([\d,]+\.\d{2})\b/g, '<span style="font-weight:600;color:#6366f1;">$1</span>');
-    return `<div>${html}</div>`;
-  }).join('');
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const kvPairs = [];
+  const otherLines = [];
+  for (const line of lines) {
+    const m = line.match(/^([^:：]{1,20})([:：])\s*(.+)$/);
+    if (m) {
+      kvPairs.push({ key: m[1].trim(), val: m[3].trim() });
+    } else {
+      otherLines.push(line);
+    }
+  }
+  let html = '';
+  if (kvPairs.length >= 2) {
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12.5px;">';
+    kvPairs.forEach(kv => {
+      let val = esc(kv.val);
+      val = val.replace(/([\d,]+\.\d{2})/g, '<span style="font-weight:600;color:#6366f1;">$1</span>');
+      html += `<tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b;font-weight:500;white-space:nowrap;width:1%;vertical-align:top;">${esc(kv.key)}</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:500;">${val}</td></tr>`;
+    });
+    html += '</table>';
+  }
+  if (otherLines.length > 0) {
+    if (html) html += '<div style="height:10px;"></div>';
+    html += otherLines.map(l => {
+      let line = esc(l);
+      line = line.replace(/^(\d{1,2}[\.\、])/, '<span style="font-weight:700;color:#334155;">$1</span>');
+      line = line.replace(/([\d,]+\.\d{2})/g, '<span style="font-weight:600;color:#6366f1;">$1</span>');
+      return `<div style="padding:2px 0;">${line}</div>`;
+    }).join('');
+  }
+  return html || esc(text);
 }
 
 function extractAmount(record) {
@@ -3015,6 +3034,11 @@ function deleteReconRun(runId) {
 function handleLedgerImport(files) {
   if (!files || files.length === 0) return;
   const file = files[0];
+  const isPdf = file.name.toLowerCase().endsWith('.pdf');
+  if (isPdf) {
+    handleLedgerPdf(file);
+    return;
+  }
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
@@ -3030,6 +3054,51 @@ function handleLedgerImport(files) {
     }
   };
   reader.readAsArrayBuffer(file);
+}
+
+async function handleLedgerPdf(file) {
+  const zone = document.getElementById('ledgerUploadZone');
+  const origHtml = zone.innerHTML;
+  zone.innerHTML = '<div style="padding:16px;"><div class="spinner" style="margin:0 auto 8px;"></div><div style="font-size:12px;color:var(--gray-500);">正在通过 OCR 识别 PDF 表格...</div></div>';
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const resp = await fetch('/api/extract', { method: 'POST', body: formData });
+    const result = await resp.json();
+    if (!result.success) throw new Error(result.error || '识别失败');
+    const rows = result.rows || [];
+    if (rows.length === 0) {
+      const text = result.text || '';
+      const parsed = parseLedgerFromText(text);
+      if (parsed.length > 0) {
+        zone.innerHTML = origHtml;
+        renderLedgerPreview(parsed, file.name);
+        return;
+      }
+      throw new Error('未识别到表格数据，请改用 Excel 格式导入');
+    }
+    zone.innerHTML = origHtml;
+    renderLedgerPreview(rows, file.name);
+  } catch(err) {
+    zone.innerHTML = origHtml;
+    alert('PDF 解析失败：' + err.message);
+  }
+}
+
+function parseLedgerFromText(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const rows = [];
+  for (const line of lines) {
+    const parts = line.split(/[\t,，|│┃]+/).map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2) rows.push(parts);
+  }
+  if (rows.length < 2) return [];
+  const headers = rows[0];
+  return rows.slice(1).map(r => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = r[i] || ''; });
+    return obj;
+  });
 }
 
 function renderLedgerPreview(rows, filename) {
