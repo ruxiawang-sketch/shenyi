@@ -257,58 +257,84 @@ a { text-decoration: none; color: inherit; }
     </div>
     <div class="upload-text">将文件拖到这里，或点击上传</div>
     <div class="upload-btns">
-      <div class="upload-btn"><span class="btn-icon">📷</span> 智能扫描</div>
-      <div class="upload-btn"><span class="btn-icon">🖼</span> 导入图片</div>
-      <div class="upload-btn"><span class="btn-icon">📄</span> 导入文档</div>
+      <div class="upload-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="#00c4b4" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" stroke="#00c4b4" stroke-width="1.5"/><circle cx="17" cy="8" r="1" fill="#00c4b4"/></svg> 智能扫描</div>
+      <div class="upload-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="3" stroke="#4caf50" stroke-width="1.5"/><circle cx="9" cy="10" r="2" fill="#4caf50" opacity=".4"/><path d="M3 17l5-4 3 2 4-5 6 5v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-0z" fill="#4caf50" opacity=".2"/></svg> 导入图片</div>
+      <div class="upload-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#999" stroke-width="1.5"/><path d="M14 2v6h6" stroke="#999" stroke-width="1.5"/></svg> 导入文档</div>
     </div>
   </div>
 
   <!-- 工具行 -->
   <div class="tools-row">
+    <!-- AI 审计 -->
     <div class="tool-item audit-tool" id="auditTool" onclick="openAudit()">
-      <div class="tool-icon green">
-        🛡️
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e0f8f5,#b8f0e8);position:relative;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3L4 8v6c0 6.6 4.3 12.4 10 14 5.7-1.6 10-7.4 10-14V8L14 3z" fill="#00c4b4" opacity=".15"/><path d="M14 3L4 8v6c0 6.6 4.3 12.4 10 14 5.7-1.6 10-7.4 10-14V8L14 3z" stroke="#00c4b4" stroke-width="1.5" fill="none"/><path d="M10 14l3 3 5-6" stroke="#00c4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="tool-new">NEW</span>
       </div>
       <div class="tool-name" style="color:#00c4b4;font-weight:600;">AI 审计</div>
     </div>
+    <!-- AI 文档助手 -->
     <div class="tool-item">
-      <div class="tool-icon green">📝</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e0f8f5,#c5f2ec);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#00c4b4" opacity=".12"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#00c4b4" stroke-width="1.3" fill="none"/><path d="M9 9h10M9 13h7M9 17h9" stroke="#00c4b4" stroke-width="1.3" stroke-linecap="round"/><circle cx="20" cy="20" r="4" fill="#00c4b4"/><path d="M18.5 20l1 1 2-2.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
       <div class="tool-name">AI 文档助手</div>
     </div>
+    <!-- AI PPT -->
     <div class="tool-item">
-      <div class="tool-icon purple">
-        📊
-        <span class="tool-badge" style="background:#9333ea;">Beta</span>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);position:relative;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="5" width="20" height="18" rx="3" fill="#e91e63" opacity=".12"/><rect x="4" y="5" width="20" height="18" rx="3" stroke="#e91e63" stroke-width="1.3" fill="none"/><rect x="8" y="10" width="5" height="3" rx="1" fill="#e91e63" opacity=".4"/><rect x="8" y="15" width="12" height="1.5" rx=".75" fill="#e91e63" opacity=".3"/><rect x="8" y="18" width="8" height="1.5" rx=".75" fill="#e91e63" opacity=".2"/><rect x="15" y="9" width="5" height="5" rx="1" fill="#e91e63" opacity=".25"/></svg>
+        <span class="tool-badge" style="background:#e91e63;">Beta</span>
       </div>
       <div class="tool-name">AI PPT</div>
     </div>
+    <!-- 转 Word -->
     <div class="tool-item">
-      <div class="tool-icon blue">📘</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#1976d2" opacity=".1"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#1976d2" stroke-width="1.3" fill="none"/><text x="14" y="17" text-anchor="middle" font-size="10" font-weight="700" fill="#1976d2">W</text></svg>
+      </div>
       <div class="tool-name">转 Word</div>
     </div>
+    <!-- 转 Excel -->
     <div class="tool-item">
-      <div class="tool-icon green">📗</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#2e7d32" opacity=".1"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#2e7d32" stroke-width="1.3" fill="none"/><text x="14" y="17" text-anchor="middle" font-size="10" font-weight="700" fill="#2e7d32">X</text></svg>
+      </div>
       <div class="tool-name">转 Excel</div>
     </div>
+    <!-- 转 PPT -->
     <div class="tool-item">
-      <div class="tool-icon orange">📙</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="3" fill="#e65100" opacity=".1"/><rect x="5" y="3" width="18" height="22" rx="3" stroke="#e65100" stroke-width="1.3" fill="none"/><text x="14" y="17" text-anchor="middle" font-size="10" font-weight="700" fill="#e65100">P</text></svg>
+      </div>
       <div class="tool-name">转 PPT</div>
     </div>
+    <!-- 转图片 -->
     <div class="tool-item">
-      <div class="tool-icon red">🖼</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="5" width="20" height="18" rx="3" fill="#7b1fa2" opacity=".1"/><rect x="4" y="5" width="20" height="18" rx="3" stroke="#7b1fa2" stroke-width="1.3" fill="none"/><circle cx="11" cy="12" r="2.5" fill="#7b1fa2" opacity=".25"/><path d="M4 19l5-4 3 2 4-5 8 7" stroke="#7b1fa2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/></svg>
+      </div>
       <div class="tool-name">转图片</div>
     </div>
+    <!-- 文档合并 -->
     <div class="tool-item">
-      <div class="tool-icon teal">📑</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e0f7fa,#b2ebf2);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="14" height="18" rx="2.5" fill="#00838f" opacity=".1" stroke="#00838f" stroke-width="1.2"/><rect x="11" y="5" width="14" height="18" rx="2.5" fill="#00838f" opacity=".1" stroke="#00838f" stroke-width="1.2"/><path d="M14 11v6M11 14h6" stroke="#00838f" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
       <div class="tool-name">文档合并</div>
     </div>
+    <!-- 页面提取 -->
     <div class="tool-item">
-      <div class="tool-icon indigo">📋</div>
+      <div class="tool-icon" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9);">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="6" y="3" width="16" height="22" rx="3" fill="#3949ab" opacity=".1" stroke="#3949ab" stroke-width="1.2"/><path d="M10 10h8M10 14h5" stroke="#3949ab" stroke-width="1.2" stroke-linecap="round"/><path d="M18 16l3 3M18 19l3-3" stroke="#3949ab" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
       <div class="tool-name">页面提取</div>
     </div>
+    <!-- 全部工具 -->
     <div class="tool-item">
-      <div class="tool-icon" style="background:#f0f0f0;color:#666;">⊞</div>
+      <div class="tool-icon" style="background:#f5f5f5;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="5" width="7" height="7" rx="1.5" fill="#999"/><rect x="16" y="5" width="7" height="7" rx="1.5" fill="#999"/><rect x="5" y="16" width="7" height="7" rx="1.5" fill="#999"/><rect x="16" y="16" width="7" height="7" rx="1.5" fill="#999"/></svg>
+      </div>
       <div class="tool-name">全部工具</div>
     </div>
   </div>
@@ -317,9 +343,9 @@ a { text-decoration: none; color: inherit; }
   <div class="section-header">
     <div class="section-title">最近文档</div>
     <div class="section-actions">
-      <div class="view-btn active">☰</div>
-      <div class="view-btn">⊞</div>
-      <div class="view-btn">🖥</div>
+      <div class="view-btn active"><svg width="14" height="14" viewBox="0 0 14 14"><rect y="1" width="14" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="11" width="14" height="2" rx="1" fill="currentColor"/></svg></div>
+      <div class="view-btn"><svg width="14" height="14" viewBox="0 0 14 14"><rect width="6" height="6" rx="1" fill="currentColor"/><rect x="8" width="6" height="6" rx="1" fill="currentColor"/><rect y="8" width="6" height="6" rx="1" fill="currentColor"/><rect x="8" y="8" width="6" height="6" rx="1" fill="currentColor"/></svg></div>
+      <div class="view-btn"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="4" y="4" width="6" height="4" rx="1" fill="currentColor" opacity=".4"/></svg></div>
       <div class="view-all">查看所有文档 ›</div>
     </div>
   </div>
