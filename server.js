@@ -409,10 +409,10 @@ async function aiStructure(ocrText) {
   }
 }
 
-// Claude 配置（环境变量优先，本地回退内网代理）
-const CLAUDE_BASE = process.env.CLAUDE_BASE || 'http://deepseek-work.intsig.net/proxy/aws/claude/v1';
-const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY || '019d2e6dd2b876d6992df679e3730917';
-const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
+// LLM 配置（通过 Render 环境变量设置）
+const CLAUDE_BASE = process.env.CLAUDE_BASE || 'https://api.groq.com/openai/v1';
+const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY || '';
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'llama-3.3-70b-versatile';
 
 // ========== API 路由 ==========
 
@@ -665,7 +665,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ========== 企业信息搜索 ==========
-const FAST_MODEL = process.env.FAST_MODEL || 'claude-sonnet-4-20250514';
+const FAST_MODEL = process.env.FAST_MODEL || 'llama-3.3-70b-versatile';
 app.post('/api/suggest-company', async (req, res) => {
   try {
     const query = req.body.query || req.body.filename || '';
