@@ -1135,8 +1135,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;">
               <button class="btn btn-primary" onclick="generateAuditPlan()" id="planGenBtn">生成审计计划</button>
-              <button class="btn" style="border:1px solid var(--gray-200);background:#fff;color:var(--gray-700);font-size:12px;" onclick="searchCompanyForPlan(false)" id="planSearchBtn">检索企业信息</button>
-              <span id="planDataHint" style="font-size:11px;color:var(--gray-400);"></span>
+              <span id="planDataHint" style="display:none;"></span>
             </div>
           </div>
         </div>
@@ -1181,44 +1180,41 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
           </div>
         </div>
-        <div class="card" style="margin-bottom:16px;">
-          <div class="card-body" style="padding:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-              <div style="display:flex;align-items:center;gap:10px;">
-                <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;">
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div>
-                  <div style="font-size:16px;font-weight:700;color:var(--gray-800);">AI 生成审计报告</div>
-                  <div style="font-size:12px;color:var(--gray-400);">项目信息 + 上传数据 + 核对/异常结果 + 企业公开信息 → 生成报告</div>
-                </div>
+        <div class="page-tabs" style="margin-bottom:16px;">
+          <div class="page-tab active" onclick="switchReportSubTab('reportGenerate')">生成报告</div>
+          <div class="page-tab" onclick="switchReportSubTab('reportReadiness')">审计就绪检查</div>
+        </div>
+        <div id="reportGeneratePanel">
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-body" style="padding:20px;">
+              <div id="reportProjectInfo" style="display:none;"></div>
+              <div id="reportSearchResult" style="display:none;"><div id="reportSearchContent"></div></div>
+              <div id="reportDataSummary" style="display:none;"></div>
+              <div style="margin-bottom:12px;">
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">审计意见类型</label>
+                <select id="reportType" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;background:#fff;">
+                  <option value="auto">AI 根据数据自动判断</option>
+                  <option value="standard">标准无保留意见</option>
+                  <option value="emphasis">带强调事项段的无保留意见</option>
+                  <option value="qualified">保留意见</option>
+                  <option value="adverse">否定意见</option>
+                  <option value="disclaimer">无法表示意见</option>
+                </select>
+                <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">选择"AI 自动判断"将根据上传的审计资料和异常检测结果智能推荐意见类型</div>
+              </div>
+              <div style="margin-bottom:12px;">
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">补充说明（可选）</label>
+                <textarea id="reportExtra" placeholder="重大事项、持续经营问题、关键审计事项等" rows="2" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <button class="btn btn-primary" onclick="generateAuditReport()" id="reportGenBtn" style="background:linear-gradient(135deg,#059669,#10b981);">生成审计报告</button>
+                <span id="reportDataHint" style="display:none;"></span>
               </div>
             </div>
-            <div id="reportProjectInfo" style="display:none;"></div>
-            <div id="reportSearchResult" style="display:none;"><div id="reportSearchContent"></div></div>
-            <div id="reportDataSummary" style="display:none;"></div>
-            <div style="margin-bottom:12px;">
-              <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">审计意见类型</label>
-              <select id="reportType" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;background:#fff;">
-                <option value="auto">AI 根据数据自动判断</option>
-                <option value="standard">标准无保留意见</option>
-                <option value="emphasis">带强调事项段的无保留意见</option>
-                <option value="qualified">保留意见</option>
-                <option value="adverse">否定意见</option>
-                <option value="disclaimer">无法表示意见</option>
-              </select>
-              <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">选择"AI 自动判断"将根据上传的审计资料和异常检测结果智能推荐意见类型</div>
-            </div>
-            <div style="margin-bottom:12px;">
-              <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">补充说明（可选）</label>
-              <textarea id="reportExtra" placeholder="重大事项、持续经营问题、关键审计事项等" rows="2" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <button class="btn btn-primary" onclick="checkReportReadiness()" id="reportGenBtn" style="background:linear-gradient(135deg,#059669,#10b981);">生成审计报告</button>
-              <span id="reportDataHint" style="display:none;"></span>
-            </div>
-            <div id="reportReadiness" style="display:none;margin-top:14px;"></div>
           </div>
+        </div>
+        <div id="reportReadinessPanel" style="display:none;">
+          <div id="reportReadiness"></div>
         </div>
         <div id="reportResult" style="display:none;">
           <div class="card">
@@ -3710,6 +3706,20 @@ function exportReconcileCSV(runId) {
   URL.revokeObjectURL(a.href);
 }
 
+function switchReportSubTab(tab) {
+  document.getElementById('reportGeneratePanel').style.display = tab === 'reportGenerate' ? '' : 'none';
+  document.getElementById('reportReadinessPanel').style.display = tab === 'reportReadiness' ? '' : 'none';
+  const reportResult = document.getElementById('reportResult');
+  if (reportResult) reportResult.style.display = tab === 'reportGenerate' && reportResult.innerHTML.trim() ? '' : (tab === 'reportGenerate' ? reportResult.style.display : 'none');
+  const tabs = document.querySelectorAll('#page-auditreport > div:first-child > .page-tabs .page-tab, #page-auditreport .page-tabs .page-tab');
+  tabs.forEach(t => {
+    const isGenerate = t.textContent.includes('生成报告');
+    const isReadiness = t.textContent.includes('就绪检查');
+    t.classList.toggle('active', (tab === 'reportGenerate' && isGenerate) || (tab === 'reportReadiness' && isReadiness));
+  });
+  if (tab === 'reportReadiness') checkReportReadiness();
+}
+
 function switchReconTab(tab) {
   document.getElementById('reconNewPanel').style.display = tab === 'reconNew' ? '' : 'none';
   document.getElementById('reconResultPanel').style.display = tab === 'reconResult' ? '' : 'none';
@@ -6139,18 +6149,14 @@ function checkReportReadiness() {
     issues.yellow.push({ title: '未设置审计期间', detail: '项目信息不完整', hint: '建议补充审计期间以确保报告准确', action: 'editProject(getCurrentProjectId())' });
   }
 
-  const hasIssues = issues.red.length > 0 || issues.yellow.length > 0;
-  if (!hasIssues) {
-    generateAuditReport();
-    el.style.display = 'none';
-    return;
-  }
+  const totalIssues = issues.red.length + issues.yellow.length;
+  const allGood = totalIssues === 0;
 
-  let html = `<div style="border:1px solid ${issues.red.length > 0 ? '#fecaca' : '#fde68a'};border-radius:12px;overflow:hidden;">`;
-  html += `<div style="padding:14px 16px;background:${issues.red.length > 0 ? '#fef2f2' : '#fffbeb'};border-bottom:1px solid ${issues.red.length > 0 ? '#fecaca' : '#fde68a'};display:flex;align-items:center;gap:10px;">`;
-  html += `<span style="font-size:20px;">${issues.red.length > 0 ? '🚨' : '⚠️'}</span>`;
-  html += `<div><div style="font-size:14px;font-weight:700;color:${issues.red.length > 0 ? '#991b1b' : '#92400e'};">审计就绪检查</div>`;
-  html += `<div style="font-size:11px;color:${issues.red.length > 0 ? '#b91c1c' : '#b45309'};margin-top:2px;">发现 ${issues.red.length + issues.yellow.length} 项需关注事项，建议确认后再生成报告</div></div></div>`;
+  let html = `<div style="border:1px solid ${allGood ? '#bbf7d0' : (issues.red.length > 0 ? '#fecaca' : '#fde68a')};border-radius:12px;overflow:hidden;">`;
+  html += `<div style="padding:14px 16px;background:${allGood ? '#f0fdf4' : (issues.red.length > 0 ? '#fef2f2' : '#fffbeb')};border-bottom:1px solid ${allGood ? '#bbf7d0' : (issues.red.length > 0 ? '#fecaca' : '#fde68a')};display:flex;align-items:center;gap:10px;">`;
+  html += `<span style="font-size:20px;">${allGood ? '✅' : (issues.red.length > 0 ? '🚨' : '⚠️')}</span>`;
+  html += `<div><div style="font-size:14px;font-weight:700;color:${allGood ? '#166534' : (issues.red.length > 0 ? '#991b1b' : '#92400e')};">审计就绪检查</div>`;
+  html += `<div style="font-size:11px;color:${allGood ? '#15803d' : (issues.red.length > 0 ? '#b91c1c' : '#b45309')};margin-top:2px;">${allGood ? '所有检查项均已通过，可以生成报告' : '发现 ' + totalIssues + ' 项需关注事项，建议确认后再生成报告'}</div></div></div>`;
   html += '<div style="padding:14px 16px;">';
   issues.red.forEach(item => {
     html += `<div style="display:flex;gap:10px;padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:8px;">`;
@@ -6175,12 +6181,11 @@ function checkReportReadiness() {
     html += `<div style="font-size:12px;color:#15803d;margin-top:2px;">${item.detail}</div></div></div>`;
   });
   html += `<div style="display:flex;gap:8px;margin-top:12px;">`;
-  html += `<button class="btn btn-primary" onclick="generateAuditReport();document.getElementById('reportReadiness').style.display='none';" style="background:linear-gradient(135deg,#059669,#10b981);">仍然生成报告</button>`;
-  html += `<button class="btn btn-outline" onclick="document.getElementById('reportReadiness').style.display='none';">返回补充</button>`;
+  html += `<button class="btn btn-primary" onclick="switchReportSubTab('reportGenerate')" style="background:linear-gradient(135deg,#059669,#10b981);">${allGood ? '去生成报告' : '仍然去生成报告'}</button>`;
+  html += `<button class="btn btn-outline" onclick="checkReportReadiness();">🔄 重新检查</button>`;
   html += '</div></div></div>';
   el.innerHTML = html;
   el.style.display = '';
-  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function generateAuditReport() {
