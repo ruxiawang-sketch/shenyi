@@ -1636,6 +1636,7 @@ let _serverDataLoaded = false;
 
 const _localOnlyLoadPrefixes = ['audit_doc_plan_', 'audit_doc_analysis_', 'audit_doc_adjust_', 'audit_doc_report_'];
 async function _loadAllServerState() {
+  try { Object.keys(localStorage).filter(k => k.startsWith('img_')).forEach(k => _origRemoveItem(k)); } catch {}
   try {
     const resp = await fetch('/api/state');
     const { keys } = await resp.json();
@@ -1655,7 +1656,6 @@ async function _loadAllServerState() {
       }
     }
   } catch (e) { console.warn('服务器数据加载失败，使用本地缓存', e); }
-  try { Object.keys(localStorage).filter(k => k.startsWith('img_')).forEach(k => _origRemoveItem(k)); } catch {}
   _serverDataLoaded = true;
 }
 
@@ -1681,6 +1681,7 @@ const _localOnlyPrefixes = ['audit_doc_plan_', 'audit_doc_analysis_', 'audit_doc
 localStorage.setItem = function(key, value) {
   try { _origSetItem(key, value); } catch (e) {
     console.warn('[Storage] 写入失败，清理旧数据后重试:', key, e.message);
+    Object.keys(localStorage).filter(k => k.startsWith('img_')).forEach(k => { try { _origRemoveItem(k); } catch {} });
     _localOnlyPrefixes.forEach(prefix => {
       Object.keys(localStorage).filter(k => k.startsWith(prefix) && k !== key).forEach(k => { try { _origRemoveItem(k); } catch {} });
     });
