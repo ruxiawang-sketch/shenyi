@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>审易 AI审计助手 — 产品汇报</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--primary:#4f46e5;--primary-light:#eef2ff;--success:#059669;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-600:#4b5563;--gray-800:#1f2937;--gray-900:#111827;}
+body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;background:#111;overflow:hidden;height:100vh;}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 80px;opacity:0;pointer-events:none;transition:opacity .5s ease;background:#fff;}
+.slide.active{opacity:1;pointer-events:auto;}
+
+/* Navigation */
+.nav-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100;background:rgba(0,0,0,.7);padding:8px 16px;border-radius:20px;backdrop-filter:blur(8px);}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .2s;}
+.nav-dot.active{background:#fff;transform:scale(1.3);}
+.page-num{position:fixed;bottom:24px;right:30px;color:rgba(255,255,255,.5);font-size:12px;z-index:100;}
+.key-hint{position:fixed;bottom:24px;left:30px;color:rgba(255,255,255,.4);font-size:11px;z-index:100;}
+
+/* Slide styles */
+.slide-cover{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#6366f1 100%);color:#fff;text-align:center;}
+.slide-cover h1{font-size:56px;font-weight:800;margin-bottom:16px;letter-spacing:-1px;}
+.slide-cover .subtitle{font-size:22px;opacity:.85;margin-bottom:40px;font-weight:300;}
+.slide-cover .meta{font-size:14px;opacity:.6;}
+.slide-cover .logo{width:80px;height:80px;background:rgba(255,255,255,.15);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;margin:0 auto 30px;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.2);}
+
+.slide-section{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;text-align:center;}
+.slide-section h2{font-size:42px;font-weight:700;margin-bottom:12px;}
+.slide-section p{font-size:18px;opacity:.7;}
+
+h2{font-size:32px;font-weight:700;color:var(--gray-900);margin-bottom:30px;text-align:center;}
+h3{font-size:20px;font-weight:600;color:var(--gray-800);margin-bottom:12px;}
+
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;width:100%;max-width:1000px;}
+.content-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;width:100%;max-width:1100px;}
+.content-full{width:100%;max-width:1000px;}
+
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.04);transition:transform .2s;}
+.card:hover{transform:translateY(-2px);}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;}
+.card-icon.blue{background:#eef2ff;}
+.card-icon.green{background:#ecfdf5;}
+.card-icon.purple{background:#f5f3ff;}
+.card-icon.orange{background:#fff7ed;}
+.card-icon.red{background:#fef2f2;}
+.card-icon.cyan{background:#ecfeff;}
+.card h3{margin-bottom:8px;}
+.card p{font-size:14px;color:var(--gray-600);line-height:1.7;}
+
+.pain-item{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid #f3f4f6;}
+.pain-item:last-child{border-bottom:none;}
+.pain-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.pain-text{font-size:15px;color:var(--gray-800);line-height:1.6;}
+.pain-text strong{color:var(--primary);}
+
+.flow-steps{display:flex;align-items:center;gap:0;width:100%;max-width:1100px;justify-content:center;flex-wrap:wrap;}
+.flow-step{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 14px;min-width:100px;}
+.flow-step .step-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--primary-light);border:2px solid #c7d2fe;}
+.flow-step .step-name{font-size:12px;font-weight:600;color:var(--gray-800);text-align:center;}
+.flow-arrow{font-size:20px;color:#c7d2fe;flex-shrink:0;}
+
+.tech-tag{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:var(--gray-100);font-size:13px;font-weight:500;color:var(--gray-800);margin:4px;}
+
+.metric-card{text-align:center;padding:24px;background:linear-gradient(135deg,#f9fafb,#fff);border:1px solid #e5e7eb;border-radius:14px;}
+.metric-value{font-size:36px;font-weight:800;color:var(--primary);margin-bottom:4px;}
+.metric-label{font-size:13px;color:var(--gray-600);}
+
+.timeline{padding-left:24px;border-left:3px solid #c7d2fe;width:100%;max-width:700px;}
+.tl-item{padding:12px 0 20px 20px;position:relative;}
+.tl-item::before{content:'';position:absolute;left:-27px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--primary);border:3px solid #e0e7ff;}
+.tl-item h4{font-size:15px;font-weight:600;color:var(--gray-900);}
+.tl-item p{font-size:13px;color:var(--gray-600);margin-top:4px;line-height:1.6;}
+
+.slide-end{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-align:center;}
+.slide-end h2{color:#fff;font-size:48px;margin-bottom:16px;}
+.slide-end p{font-size:20px;opacity:.8;}
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Cover -->
+<div class="slide slide-cover active" data-index="0">
+  <div class="logo">审</div>
+  <h1>审易 · AI 审计助手</h1>
+  <div class="subtitle">基于 OCR + AI Agent 的智能审计解决方案</div>
+  <div class="meta">产品汇报 · 2026年4月</div>
+</div>
+
+<!-- Slide 2: 背景与痛点 -->
+<div class="slide" data-index="1">
+  <h2>审计行业痛点</h2>
+  <div class="content-grid">
+    <div class="card">
+      <div class="card-icon red">📋</div>
+      <h3>手工处理量大</h3>
+      <p>审计员每天处理数百份纸质单据，手动录入数据，效率低下且容易出错</p>
+    </div>
+    <div class="card">
+      <div class="card-icon orange">⏰</div>
+      <h3>核对耗时耗力</h3>
+      <p>银行回单、发票、对账单交叉核对需大量人工比对，占据审计60%以上时间</p>
+    </div>
+    <div class="card">
+      <div class="card-icon purple">🔍</div>
+      <h3>异常发现困难</h3>
+      <p>海量数据中识别金额异常、日期矛盾、重复记录，依赖经验和运气</p>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">📑</div>
+      <h3>报告编写繁琐</h3>
+      <p>审计报告、底稿、计划文档格式要求严格，重复性文书工作占比高</p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 3: 产品定位 -->
+<div class="slide" data-index="2">
+  <h2>产品定位</h2>
+  <div class="content-full" style="text-align:center;">
+    <p style="font-size:20px;color:var(--gray-600);margin-bottom:40px;line-height:1.8;">
+      依托<strong style="color:var(--primary);">扫描全能王 OCR 能力</strong> + <strong style="color:#7c3aed;">大模型 AI Agent</strong><br>
+      为一线审计员打造「从纸质单据到审计结论」的端到端解决方案
+    </p>
+    <div class="content-grid-3">
+      <div class="metric-card">
+        <div class="metric-value">10x</div>
+        <div class="metric-label">单据处理效率提升</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">95%+</div>
+        <div class="metric-label">OCR 识别准确率</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">80%</div>
+        <div class="metric-label">核对工作自动化</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 4: 产品架构 / 核心流程 -->
+<div class="slide" data-index="3">
+  <h2>审计全流程覆盖</h2>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="step-icon">📋</div><div class="step-name">审计计划</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">📄</div><div class="step-name">AI 资料提取</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">🧹</div><div class="step-name">数据清洗</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">🔗</div><div class="step-name">智能核对</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">🔍</div><div class="step-name">异常检测</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">📈</div><div class="step-name">分析性复核</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">📝</div><div class="step-name">问题调整</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">📑</div><div class="step-name">生成报告</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-icon">📦</div><div class="step-name">归档</div></div>
+  </div>
+  <p style="margin-top:36px;font-size:15px;color:var(--gray-600);text-align:center;">覆盖审计全生命周期，每个环节均有 AI 加持</p>
+</div>
+
+<!-- Slide 5: 核心功能1 - AI 资料提取 -->
+<div class="slide" data-index="4">
+  <h2>核心功能：AI 资料提取</h2>
+  <div class="content-grid">
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="flex:1;">
+        <div class="card-icon blue">📸</div>
+        <h3>多种输入方式</h3>
+        <p>拍照上传、文件拖拽、Ctrl+V 粘贴截图<br>支持 JPG/PNG/PDF/HEIC 格式</p>
+      </div>
+      <div class="card" style="flex:1;">
+        <div class="card-icon green">🧠</div>
+        <h3>智能文档识别</h3>
+        <p>自动识别发票、银行回单、对账单、记账凭证等文档类型</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="flex:1;">
+        <div class="card-icon purple">📊</div>
+        <h3>结构化提取</h3>
+        <p>表格、金额、日期、往来方信息自动提取为结构化数据，支持编辑修正</p>
+      </div>
+      <div class="card" style="flex:1;">
+        <div class="card-icon orange">⚡</div>
+        <h3>批量处理</h3>
+        <p>支持多文件同时上传，并行 OCR 识别，实时显示进度</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: 核心功能2 - 智能核对 -->
+<div class="slide" data-index="5">
+  <h2>核心功能：智能核对</h2>
+  <div class="content-grid">
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="flex:1;">
+        <div class="card-icon green">🔗</div>
+        <h3>自动配对</h3>
+        <p>基于金额、日期、摘要等多维度智能匹配，自动找到对应关系</p>
+      </div>
+      <div class="card" style="flex:1;">
+        <div class="card-icon red">❗</div>
+        <h3>差异标注</h3>
+        <p>未达账项、金额差异、日期不一致自动高亮，一目了然</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card" style="flex:1;">
+        <div class="card-icon cyan">📒</div>
+        <h3>账面数据导入</h3>
+        <p>支持导入 Excel/CSV 格式的科目余额表、总账、明细账</p>
+      </div>
+      <div class="card" style="flex:1;">
+        <div class="card-icon purple">💾</div>
+        <h3>核对记录</h3>
+        <p>结果可保存、导出，支持历史核对记录查看和对比</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 7: 核心功能3 - 异常检测 + 数据清洗 -->
+<div class="slide" data-index="6">
+  <h2>核心功能：异常检测 & 数据清洗</h2>
+  <div class="content-grid">
+    <div class="card">
+      <div class="card-icon orange">🔍</div>
+      <h3>AI 异常扫描</h3>
+      <p>• 金额异常波动检测<br>• 日期逻辑矛盾<br>• 重复交易识别<br>• 关联方异常交易<br>• 智能抽样建议<br>• 支持导出 Excel</p>
+    </div>
+    <div class="card">
+      <div class="card-icon purple">🧹</div>
+      <h3>数据质量检测</h3>
+      <p>• 重复行自动去重<br>• 缺失字段补全<br>• 格式不统一修正<br>• OCR 置信度低项标注<br>• 一键修复全部问题</p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 8: 核心功能4 - AI 助手 & 报告 -->
+<div class="slide" data-index="7">
+  <h2>核心功能：AI 助手 & 报告生成</h2>
+  <div class="content-grid">
+    <div class="card">
+      <div class="card-icon blue">🤖</div>
+      <h3>AI 审计助手</h3>
+      <p>• 审计准则实时问答<br>• 审计程序生成<br>• 风险分析建议<br>• 底稿起草辅助<br>• 基于项目数据的上下文回答</p>
+    </div>
+    <div class="card">
+      <div class="card-icon green">📑</div>
+      <h3>审计计划 & 报告</h3>
+      <p>• AI 智能生成审计计划<br>• 企业公开信息自动引入<br>• 支持在线编辑和导出 Word<br>• 风险智能识别摘要<br>• 归档管理</p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 9: 与扫描全能王的协同 -->
+<div class="slide" data-index="8">
+  <h2>与扫描全能王的深度协同</h2>
+  <div class="content-full" style="max-width:800px;">
+    <div class="card" style="padding:32px;">
+      <div class="pain-item">
+        <div class="pain-num">1</div>
+        <div class="pain-text"><strong>文档查看器内触发</strong> — 用户在扫描全能王中查看财务单据时，AI 自动识别文档类型，弹出引导卡片提示「可以直接提取处理」</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">2</div>
+        <div class="pain-text"><strong>无缝衔接</strong> — 点击「立即提取」，自动截取当前文档内容，跳转至审易系统完成结构化提取</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">3</div>
+        <div class="pain-text"><strong>场景闭环</strong> — 扫描全能王负责「扫描/拍照」环节，审易负责「理解/分析/决策」环节，形成完整的审计数字化闭环</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 10: 技术方案 -->
+<div class="slide" data-index="9">
+  <h2>技术方案</h2>
+  <div class="content-full" style="text-align:center;">
+    <div style="margin-bottom:30px;">
+      <span class="tech-tag">📸 扫描全能王 OCR</span>
+      <span class="tech-tag">🧠 大模型 AI Agent</span>
+      <span class="tech-tag">📊 结构化数据引擎</span>
+      <span class="tech-tag">🔗 智能匹配算法</span>
+      <span class="tech-tag">📄 文档生成引擎</span>
+      <span class="tech-tag">💾 项目隔离存储</span>
+    </div>
+    <div class="content-grid-3">
+      <div class="card" style="text-align:left;">
+        <h3>前端</h3>
+        <p>纯 HTML/CSS/JS 单页应用<br>响应式布局<br>拖拽/粘贴交互<br>html2canvas 文档截取</p>
+      </div>
+      <div class="card" style="text-align:left;">
+        <h3>AI 能力</h3>
+        <p>多文档类型识别<br>结构化信息提取<br>智能核对匹配<br>异常模式检测<br>自然语言问答</p>
+      </div>
+      <div class="card" style="text-align:left;">
+        <h3>数据架构</h3>
+        <p>多项目隔离<br>本地持久化存储<br>导入/导出 Excel<br>核对记录管理</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 11: 竞品差异 -->
+<div class="slide" data-index="10">
+  <h2>差异化优势</h2>
+  <div class="content-full" style="max-width:900px;">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <thead>
+        <tr style="background:var(--primary-light);">
+          <th style="padding:14px 16px;text-align:left;font-weight:600;border-radius:10px 0 0 0;">对比维度</th>
+          <th style="padding:14px 16px;text-align:center;font-weight:600;color:var(--primary);">审易 AI</th>
+          <th style="padding:14px 16px;text-align:center;font-weight:600;color:var(--gray-600);border-radius:0 10px 0 0;">传统审计软件</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:12px 16px;">单据录入</td><td style="padding:12px;text-align:center;color:var(--success);font-weight:600;">拍照/粘贴自动识别</td><td style="padding:12px;text-align:center;color:var(--gray-600);">手动录入</td></tr>
+        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:12px 16px;">数据核对</td><td style="padding:12px;text-align:center;color:var(--success);font-weight:600;">AI 智能匹配</td><td style="padding:12px;text-align:center;color:var(--gray-600);">规则匹配/人工</td></tr>
+        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:12px 16px;">异常检测</td><td style="padding:12px;text-align:center;color:var(--success);font-weight:600;">AI 多维扫描</td><td style="padding:12px;text-align:center;color:var(--gray-600);">预设规则</td></tr>
+        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:12px 16px;">报告生成</td><td style="padding:12px;text-align:center;color:var(--success);font-weight:600;">AI 自动起草</td><td style="padding:12px;text-align:center;color:var(--gray-600);">模板填写</td></tr>
+        <tr><td style="padding:12px 16px;">与扫描协同</td><td style="padding:12px;text-align:center;color:var(--success);font-weight:600;">扫描全能王深度集成</td><td style="padding:12px;text-align:center;color:var(--gray-600);">无</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Slide 12: 总结 -->
+<div class="slide slide-end" data-index="11">
+  <div class="logo" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(4px);width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;margin:0 auto 24px;color:#fff;">审</div>
+  <h2>审易 · 让审计更智能</h2>
+  <p>OCR 识别 → AI 提取 → 智能核对 → 异常检测 → 报告生成</p>
+  <p style="margin-top:12px;font-size:16px;opacity:.6;">谢谢！</p>
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar" id="navBar"></div>
+<div class="page-num" id="pageNum"></div>
+<div class="key-hint">← → 键翻页 | F 全屏</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const navBar = document.getElementById('navBar');
+const pageNum = document.getElementById('pageNum');
+let current = 0;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => goTo(i);
+  navBar.appendChild(dot);
+});
+
+function goTo(idx) {
+  slides[current].classList.remove('active');
+  navBar.children[current].classList.remove('active');
+  current = idx;
+  slides[current].classList.add('active');
+  navBar.children[current].classList.add('active');
+  pageNum.textContent = (current + 1) + ' / ' + slides.length;
+}
+
+function next() { if (current < slides.length - 1) goTo(current + 1); }
+function prev() { if (current > 0) goTo(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+// Touch support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientX - touchStartX;
+  if (diff < -50) next();
+  if (diff > 50) prev();
+});
+
+pageNum.textContent = '1 / ' + slides.length;
+</script>
+</body>
+</html>

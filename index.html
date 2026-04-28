@@ -865,17 +865,18 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         </div>
         <!-- Tab0: 新增核对 -->
         <div id="reconNewPanel">
-          <!-- 上传区 -->
-          <div style="border:2px dashed var(--gray-300);border-radius:10px;padding:65px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:16px;background:#fff;"
+          <!-- 统一上传区 -->
+          <div style="border:2px dashed var(--gray-300);border-radius:14px;padding:32px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:16px;background:#fff;"
             onclick="document.getElementById('reconFileInput').click()"
             ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'"
             ondragleave="this.style.borderColor='var(--gray-300)';this.style.background='#fff'"
-            ondrop="event.preventDefault();this.style.borderColor='var(--gray-300)';this.style.background='#fff';handleReconUpload(event.dataTransfer.files)">
+            ondrop="event.preventDefault();this.style.borderColor='var(--gray-300)';this.style.background='#fff';handleReconUnifiedUpload(event.dataTransfer.files)">
             <div style="font-size:28px;margin-bottom:6px;">📎</div>
             <div style="font-size:13px;font-weight:500;color:var(--gray-600);">点击或拖拽文件到此处上传</div>
-            <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">也支持 <strong>Ctrl+V</strong> 粘贴图片、文件</div>
+            <div style="font-size:11px;color:var(--gray-400);margin-top:6px;">扫描件（JPG/PNG/PDF）自动 OCR 识别 &nbsp;|&nbsp; Excel/CSV 直接导入账面数据</div>
+            <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">也支持 <strong>Ctrl+V</strong> 粘贴图片</div>
           </div>
-          <input type="file" id="reconFileInput" multiple accept="image/*,.pdf" style="display:none;" onchange="handleReconUpload(this.files)">
+          <input type="file" id="reconFileInput" multiple accept="image/*,.pdf,.xlsx,.xls,.csv" style="display:none;" onchange="handleReconUnifiedUpload(this.files)">
           <!-- 选择已有单据 -->
           <div class="card">
             <div class="card-header">
@@ -884,26 +885,19 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
             <div class="card-body no-pad" id="reconcile-data"></div>
           </div>
-          <!-- 账面数据导入 -->
-          <div class="card" style="margin-top:16px;">
-            <div class="card-header">
-              <h3>📒 账面数据导入 <span style="font-size:12px;color:var(--gray-400);font-weight:400;margin-left:6px;">导入科目余额表/明细账，自动与凭证匹配</span></h3>
-            </div>
-            <div class="card-body">
-              <div id="ledgerUploadZone" style="border:2px dashed var(--gray-300);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .15s;"
-                onclick="document.getElementById('ledgerFileInput').click()"
-                ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)';"
-                ondragleave="this.style.borderColor='var(--gray-300)';this.style.background='#fff';"
-                ondrop="event.preventDefault();this.style.borderColor='var(--gray-300)';this.style.background='#fff';handleLedgerImport(event.dataTransfer.files)">
-                <div style="font-size:24px;margin-bottom:4px;">📊</div>
-                <div style="font-size:13px;font-weight:500;color:var(--gray-600);">点击或拖拽文件</div>
-                <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">支持 .xlsx .xls .csv .pdf 格式的试算平衡表、总账、明细账</div>
+          <!-- 账面数据导入结果（隐藏上传区，保留预览） -->
+          <div id="ledgerResultArea" style="display:none;margin-top:16px;">
+            <div class="card">
+              <div class="card-header">
+                <h3>📒 账面数据 <span style="font-size:12px;color:var(--gray-400);font-weight:400;margin-left:6px;">已导入</span></h3>
               </div>
-              <input type="file" id="ledgerFileInput" accept=".xlsx,.xls,.csv,.pdf" style="display:none;" onchange="handleLedgerImport(this.files)">
-              <div id="ledgerPreview" style="display:none;margin-top:12px;"></div>
-              <div id="ledgerMatchResult" style="display:none;margin-top:16px;"></div>
+              <div class="card-body">
+                <div id="ledgerPreview" style="display:none;"></div>
+                <div id="ledgerMatchResult" style="display:none;margin-top:12px;"></div>
+              </div>
             </div>
           </div>
+          <input type="file" id="ledgerFileInput" accept=".xlsx,.xls,.csv,.pdf" style="display:none;" onchange="handleLedgerImport(this.files)">
         </div>
         <!-- Tab1: 核对结果 -->
         <div id="reconResultPanel" style="display:none;">
@@ -3304,6 +3298,7 @@ function renderLedgerPreview(rows, filename) {
 
   document.getElementById('ledgerPreview').innerHTML = html;
   document.getElementById('ledgerPreview').style.display = '';
+  document.getElementById('ledgerResultArea').style.display = '';
 
   appState.ledgerData = rows;
   appState.ledgerCols = detected;
@@ -3750,6 +3745,22 @@ function switchReconTab(tab) {
   const tabs = document.querySelectorAll('#reconcile-content > .page-tabs .page-tab');
   const map = ['reconNew','reconResult','reconHistory'];
   tabs.forEach((t, i) => t.classList.toggle('active', map[i] === tab));
+}
+
+function handleReconUnifiedUpload(files) {
+  if (!files || files.length === 0) return;
+  const images = [];
+  const spreadsheets = [];
+  for (const f of files) {
+    const ext = f.name.toLowerCase().split('.').pop();
+    if (['xlsx','xls','csv'].includes(ext)) {
+      spreadsheets.push(f);
+    } else {
+      images.push(f);
+    }
+  }
+  if (images.length > 0) handleReconUpload(images);
+  if (spreadsheets.length > 0) handleLedgerImport(spreadsheets);
 }
 
 async function handleReconUpload(fileList) {
