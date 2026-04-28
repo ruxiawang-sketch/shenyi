@@ -1522,6 +1522,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">审计期间</label>
+          <div id="periodQuickBtns" style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;"></div>
           <div style="display:flex;align-items:center;gap:6px;">
             <input type="date" id="projPeriodStart" style="flex:1;padding:9px 12px;border:1px solid var(--gray-300);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-300)'">
             <span style="color:var(--gray-400);font-size:12px;flex-shrink:0;">至</span>
@@ -2491,11 +2492,42 @@ function clearProjForm() {
   document.getElementById('projCompanyInfoContent').innerHTML = '';
 }
 
+function initPeriodQuickBtns() {
+  const container = document.getElementById('periodQuickBtns');
+  if (!container) return;
+  const now = new Date();
+  const year = now.getFullYear();
+  const options = [
+    { label: `${year}年度`, start: `${year}-01-01`, end: `${year}-12-31` },
+    { label: `${year-1}年度`, start: `${year-1}-01-01`, end: `${year-1}-12-31` },
+    { label: `${year}上半年`, start: `${year}-01-01`, end: `${year}-06-30` },
+    { label: `${year}下半年`, start: `${year}-07-01`, end: `${year}-12-31` },
+    { label: `${year-1}下半年`, start: `${year-1}-07-01`, end: `${year-1}-12-31` },
+  ];
+  container.innerHTML = options.map(o =>
+    `<button type="button" onclick="setPeriodQuick('${o.start}','${o.end}')" style="padding:4px 10px;border:1px solid var(--gray-300);border-radius:6px;font-size:11px;background:#fff;cursor:pointer;color:var(--gray-600);transition:all .15s;" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--gray-300)';this.style.color='var(--gray-600)';this.style.background='#fff'">${o.label}</button>`
+  ).join('');
+}
+
+function setPeriodQuick(start, end) {
+  document.getElementById('projPeriodStart').value = start;
+  document.getElementById('projPeriodEnd').value = end;
+  document.querySelectorAll('#periodQuickBtns button').forEach(btn => {
+    btn.style.borderColor = 'var(--gray-300)';
+    btn.style.color = 'var(--gray-600)';
+    btn.style.background = '#fff';
+  });
+  event.target.style.borderColor = 'var(--primary)';
+  event.target.style.color = 'var(--primary)';
+  event.target.style.background = 'var(--primary-light)';
+}
+
 function showNewProjectModal() {
   editingProjectId = null;
   document.getElementById('projectModalTitle').textContent = '新建审计项目';
   document.getElementById('projSubmitBtn').textContent = '创建项目';
   clearProjForm();
+  initPeriodQuickBtns();
   selectedColor = '#6366f1';
   document.querySelectorAll('.color-opt').forEach(c => {
     c.style.border = c.dataset.color === selectedColor ? '3px solid ' + c.dataset.color : '3px solid transparent';
@@ -2514,7 +2546,7 @@ function editProject(id) {
   document.getElementById('projSubmitBtn').textContent = '保存修改';
   document.getElementById('projName').value = p.name;
   document.getElementById('projClient').value = p.client || '';
-  // period 兼容旧格式（纯文本）和新格式（start~end）
+  initPeriodQuickBtns();
   if (p.period && p.period.includes('~')) {
     const [s, e] = p.period.split('~');
     document.getElementById('projPeriodStart').value = s || '';
