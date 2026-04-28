@@ -7275,7 +7275,7 @@ function renderExtractList() {
   appState.extracts.forEach((record, i) => {
     const amount = extractAmount(record);
     const { rows, fields, text } = record;
-    const rowCount = (rows||[]).length;
+    const rowCount = (rows||[]).length || (fields||[]).length;
 
     html += `<div class="md-card" id="md-${i}" data-doctype="${record.docType}" data-status="done" data-idx="${i}">`;
     html += `<div class="md-header" onclick="toggleMdCard(${i})">

@@ -124,11 +124,38 @@ function formatInvoice(result) {
 // 格式化银行回单结果
 function formatBankReceipt(result) {
   if (!result || !result.result) return { fields: [], rows: [] };
-  const r = result.result;
-  // TextIn 银行回单返回的是单条或多条记录
-  const items = r.items || r.receipts || (r.item_list ? r.item_list : [r]);
+  let r = result.result;
+  // TextIn 可能嵌套在 pages[0] 或 data 中
+  if (r.pages && r.pages[0]) r = r.pages[0];
+  if (r.data) r = r.data;
 
-  const rows = items.map((item, i) => ({
+  // 尝试从 item_list (key-value pairs) 提取字段
+  if (r.item_list && r.item_list.length > 0) {
+    const fields = r.item_list.map(item => ({
+      label: item.key || item.description || item.name || '',
+      value: item.value || '',
+    })).filter(f => f.label && f.value);
+    if (fields.length > 0) return { fields, rows: [], raw: r };
+  }
+
+  // 尝试从 object_list 提取
+  if (r.object_list && r.object_list.length > 0) {
+    const fields = [];
+    r.object_list.forEach(obj => {
+      if (obj.item_list) {
+        obj.item_list.forEach(item => {
+          const label = item.key || item.description || '';
+          const value = item.value || '';
+          if (label && value) fields.push({ label, value });
+        });
+      }
+    });
+    if (fields.length > 0) return { fields, rows: [], raw: r };
+  }
+
+  // 多条记录格式
+  const items = r.items || r.receipts || (Array.isArray(r) ? r : [r]);
+  const rows = items.filter(item => item && typeof item === 'object').map((item, i) => ({
     序号: i + 1,
     交易日期: item.date || item.trade_date || item.transaction_date || '',
     付款方: item.payer || item.payer_name || item.from_account_name || '',
@@ -136,7 +163,7 @@ function formatBankReceipt(result) {
     金额: item.amount || item.trade_amount || '',
     摘要: item.summary || item.remark || item.memo || item.purpose || '',
     流水号: item.serial_number || item.transaction_id || item.ref_no || '',
-  }));
+  })).filter(row => row.付款方 || row.收款方 || row.金额);
 
   return { fields: [], rows, raw: r };
 }
@@ -144,19 +171,26 @@ function formatBankReceipt(result) {
 // 格式化银行对账单结果
 function formatBankStatement(result) {
   if (!result || !result.result) return { fields: [], rows: [] };
-  const r = result.result;
-  const items = r.items || r.transactions || r.details || [];
+  let r = result.result;
+  if (r.pages && r.pages[0]) r = r.pages[0];
+  if (r.data) r = r.data;
 
-  const rows = items.map((item, i) => ({
-    序号: i + 1,
-    日期: item.date || item.trade_date || '',
-    摘要: item.summary || item.description || item.remark || '',
-    借方金额: item.debit || item.pay_amount || '',
-    贷方金额: item.credit || item.income_amount || '',
-    余额: item.balance || '',
-  }));
+  const items = r.items || r.transactions || r.details || r.item_list || [];
 
-  return { fields: [], rows, raw: r };
+  if (items.length > 0 && items[0] && (items[0].date || items[0].trade_date || items[0].debit || items[0].credit)) {
+    const rows = items.map((item, i) => ({
+      序号: i + 1,
+      日期: item.date || item.trade_date || '',
+      摘要: item.summary || item.description || item.remark || '',
+      借方金额: item.debit || item.pay_amount || '',
+      贷方金额: item.credit || item.income_amount || '',
+      余额: item.balance || '',
+    }));
+    return { fields: [], rows, raw: r };
+  }
+
+  // 降级到通用格式化
+  return formatGeneral(result);
 }
 
 // 通用格式化（用于自动识别、凭证、table/multipage 接口）
