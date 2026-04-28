@@ -88,30 +88,34 @@ function getDocTypeName(docType) {
 // 格式化发票识别结果
 function formatInvoice(result) {
   if (!result || !result.result) return { fields: [], rows: [] };
-  const r = result.result;
-  // 提取主要字段
-  const item = r.item_list || r.items || [];
+  let r = result.result;
+  // TextIn 可能把发票数据嵌套在 pages[0] 或 invoice_list[0] 中
+  if (r.pages && r.pages[0]) r = r.pages[0];
+  if (r.invoice_list && r.invoice_list[0]) r = r.invoice_list[0];
+  if (r.data) r = r.data;
+
+  const item = r.item_list || r.items || r.detail_list || r.goods_list || [];
   const fields = [
-    { label: '发票代码', value: r.invoice_code || '' },
-    { label: '发票号码', value: r.invoice_number || r.invoice_no || '' },
-    { label: '开票日期', value: r.invoice_date || r.date || '' },
-    { label: '购买方', value: r.buyer_name || r.purchaser_name || '' },
-    { label: '销售方', value: r.seller_name || '' },
-    { label: '金额', value: r.total_amount || r.amount || '' },
-    { label: '税额', value: r.total_tax || r.tax || '' },
-    { label: '价税合计', value: r.amount_in_words ? '' : (r.total || r.price_tax_total || '') },
+    { label: '发票代码', value: r.invoice_code || r.code || '' },
+    { label: '发票号码', value: r.invoice_number || r.invoice_no || r.number || '' },
+    { label: '开票日期', value: r.invoice_date || r.date || r.billing_date || '' },
+    { label: '购买方', value: r.buyer_name || r.purchaser_name || r.buyer || '' },
+    { label: '销售方', value: r.seller_name || r.seller || '' },
+    { label: '金额', value: r.total_amount || r.amount || r.money || '' },
+    { label: '税额', value: r.total_tax || r.tax || r.tax_amount || '' },
+    { label: '价税合计', value: r.price_tax_total || r.total || r.sum_amount || '' },
+    { label: '校验码', value: r.check_code || r.verify_code || '' },
   ].filter(f => f.value);
 
-  // 明细行
   const rows = (item || []).map((it, i) => ({
     序号: i + 1,
-    名称: it.name || it.goods_name || '',
-    规格: it.specification || it.spec || '',
-    数量: it.quantity || '',
+    名称: it.name || it.goods_name || it.item_name || '',
+    规格: it.specification || it.spec || it.model || '',
+    数量: it.quantity || it.num || '',
     单价: it.unit_price || it.price || '',
-    金额: it.amount || '',
-    税率: it.tax_rate || '',
-    税额: it.tax || '',
+    金额: it.amount || it.money || '',
+    税率: it.tax_rate || it.rate || '',
+    税额: it.tax || it.tax_amount || '',
   }));
 
   return { fields, rows, raw: r };
@@ -378,11 +382,13 @@ app.post('/api/recognize', upload.single('file'), async (req, res) => {
     console.log(`[识别] 文件: ${filename}, 类型: ${docType}, 大小: ${req.file.size}`);
 
     let result = await callTextIn(endpoint, req.file.buffer, contentType);
+    let usedFallback = false;
 
     // 专用接口失败时，自动用通用表格接口重试
     if (result.code !== 200 && docType !== 'auto') {
       console.log(`[识别] 专用接口失败(${result.code})，使用通用接口重试: ${filename}`);
       result = await callTextIn(getEndpoint('auto'), req.file.buffer, contentType);
+      usedFallback = true;
     }
 
     if (result.code !== 200) {
@@ -394,14 +400,22 @@ app.post('/api/recognize', upload.single('file'), async (req, res) => {
       });
     }
 
-    // 根据单据类型格式化结果（如果降级到通用接口则用通用格式）
+    // 格式化结果：专用接口成功则用专用格式化，否则通用格式化
     let formatted;
-    const actualType = (result.code === 200 && docType !== 'auto') ? docType : 'auto';
-    switch (actualType) {
-      case 'invoice': formatted = formatInvoice(result); break;
-      case 'bank_receipt': formatted = formatBankReceipt(result); break;
-      case 'bank_statement': formatted = formatBankStatement(result); break;
-      default: formatted = formatGeneral(result); break;
+    if (!usedFallback && docType !== 'auto') {
+      switch (docType) {
+        case 'invoice': formatted = formatInvoice(result); break;
+        case 'bank_receipt': formatted = formatBankReceipt(result); break;
+        case 'bank_statement': formatted = formatBankStatement(result); break;
+        default: formatted = formatGeneral(result); break;
+      }
+      // 专用格式化结果为空时，降级用通用格式化
+      if (formatted.fields.length === 0 && formatted.rows.length === 0 && !formatted.text) {
+        console.log(`[识别] 专用格式化结果为空，改用通用格式化: ${filename}`);
+        formatted = formatGeneral(result);
+      }
+    } else {
+      formatted = formatGeneral(result);
     }
 
     res.json({
@@ -435,19 +449,26 @@ app.post('/api/recognize/batch', upload.array('files', 100), async (req, res) =>
 
       try {
         let result = await callTextIn(endpoint, file.buffer, contentType);
-        // 专用接口失败时自动用通用接口重试
+        let usedFallback = false;
         if (result.code !== 200 && docType !== 'auto') {
           console.log(`[批量识别] 专用接口失败(${result.code})，通用接口重试: ${filename}`);
           result = await callTextIn(getEndpoint('auto'), file.buffer, contentType);
+          usedFallback = true;
         }
         let formatted;
         if (result.code === 200) {
-          const actualType = docType;
-          switch (actualType) {
-            case 'invoice': formatted = formatInvoice(result); break;
-            case 'bank_receipt': formatted = formatBankReceipt(result); break;
-            case 'bank_statement': formatted = formatBankStatement(result); break;
-            default: formatted = formatGeneral(result); break;
+          if (!usedFallback && docType !== 'auto') {
+            switch (docType) {
+              case 'invoice': formatted = formatInvoice(result); break;
+              case 'bank_receipt': formatted = formatBankReceipt(result); break;
+              case 'bank_statement': formatted = formatBankStatement(result); break;
+              default: formatted = formatGeneral(result); break;
+            }
+            if (formatted.fields.length === 0 && formatted.rows.length === 0 && !formatted.text) {
+              formatted = formatGeneral(result);
+            }
+          } else {
+            formatted = formatGeneral(result);
           }
           results.push({
             success: true, filename, docType,
@@ -638,32 +659,27 @@ app.post('/api/search-company', async (req, res) => {
 
     console.log(`[企业搜索] 搜索: ${company}`);
 
-    const searchPrompt = `请搜索并整理以下企业的公开信息，用于审计计划编制。如果你不确定某项信息，请标注"[未查到]"，不要编造。
+    const searchPrompt = `整理企业"${company}"的公开工商信息，用于审计计划编制。
+${extra ? '补充：' + extra : ''}
 
-企业名称：${company}
-${extra ? '补充信息：' + extra : ''}
+要求：
+- 基于你训练数据中的公开信息（工商登记、年报、新闻等）尽可能完整填写
+- 对于知名企业/上市公司，你应该知道大部分信息，请放心输出
+- 只有确实完全没有任何线索的字段才标注"[未查到]"
+- 注册资本、法定代表人、成立日期、经营范围这些工商信息对知名企业是公开的，请务必填写
 
-请整理以下维度（有多少写多少，没有的标注未查到）：
-1. 基本信息：注册资本、成立日期、法定代表人、统一社会信用代码、注册地址
-2. 经营范围：主营业务描述
-3. 行业分类：所属行业、行业代码
-4. 股权结构：主要股东及持股比例
-5. 财务概况：如有公开的营收、利润等数据
-6. 关联公司：主要子公司或关联方
-7. 风险信息：行政处罚、司法案件、经营异常等公开风险提示
-8. 行业特殊关注：该行业审计通常需要关注的特殊会计处理或风险领域
-
-以 JSON 格式返回，格式如下：
+返回JSON：
 {
   "basic": { "注册资本": "", "成立日期": "", "法定代表人": "", "信用代码": "", "注册地址": "" },
-  "business": "主营业务描述",
+  "business": "经营范围详细描述",
   "industry": "行业分类",
   "shareholders": "股东信息",
-  "financials": "财务概况",
-  "related": "关联公司",
-  "risks": "风险信息",
-  "industryFocus": "行业审计关注点"
-}`;
+  "financials": "财务概况（营收规模等）",
+  "related": "主要关联公司",
+  "risks": "公开风险信息",
+  "industryFocus": "该行业审计关注点（3-5条具体审计风险）"
+}
+只返回JSON，不要其他内容。`;
 
     const resp = await fetch(`${CLAUDE_BASE}/chat/completions`, {
       method: 'POST',
@@ -674,7 +690,7 @@ ${extra ? '补充信息：' + extra : ''}
       body: JSON.stringify({
         model: CLAUDE_MODEL,
         messages: [
-          { role: 'system', content: '你是企业信息研究助手。基于你的训练数据中的公开企业信息进行整理。如果不确定，标注[未查到]，绝不编造。' },
+          { role: 'system', content: '你是企业工商信息查询助手。你的训练数据包含大量中国企业的公开工商登记信息。对于知名企业（尤其是上市公司、大型集团），你应当能提供详细的注册信息、经营范围、股东结构等。请尽可能完整地回忆和整理这些公开信息。' },
           { role: 'user', content: searchPrompt },
         ],
         max_tokens: 4096,
