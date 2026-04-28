@@ -1351,9 +1351,9 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             <div id="adjustStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;"></div>
           </div>
         </div>
-        <div id="adjustProblemsWrap" style="margin-bottom:16px;">
-          <div id="adjustProblemsToggle" style="display:none;margin-bottom:8px;cursor:pointer;font-size:12px;color:var(--primary);font-weight:500;" onclick="toggleAdjustProblems()">▶ 展开问题列表</div>
-          <div id="adjustProblems"></div>
+        <div id="adjustProblemsWrap" class="card" style="margin-bottom:16px;border:1px solid var(--gray-200);border-radius:var(--radius-lg);overflow:hidden;">
+          <div id="adjustProblemsToggle" style="padding:12px 16px;cursor:pointer;font-size:13px;color:var(--gray-700);font-weight:600;display:flex;align-items:center;gap:6px;background:var(--gray-50);border-bottom:1px solid var(--gray-100);" onclick="toggleAdjustProblems()"><span id="adjustProblemsArrow">▼</span> 问题列表</div>
+          <div id="adjustProblems" style="padding:12px 16px;"></div>
         </div>
         <div id="adjustEntries" style="display:none;">
           <div class="card">
@@ -4364,23 +4364,22 @@ function initAdjustPage() {
     if (infoEl) infoEl.innerHTML = `<span style="font-size:11px;color:var(--gray-400);">上次生成：${timeStr}</span>`;
     // 折叠问题列表，突出显示调整分录
     document.getElementById('adjustProblems').style.display = 'none';
-    document.getElementById('adjustProblemsToggle').style.display = '';
-    document.getElementById('adjustProblemsToggle').innerHTML = `▶ 展开问题列表（${problems.length} 项）`;
+    document.getElementById('adjustProblemsArrow').textContent = '▶';
+    document.getElementById('adjustProblemsToggle').querySelector('span:last-child') || (document.getElementById('adjustProblemsToggle').innerHTML = `<span id="adjustProblemsArrow">▶</span> 问题列表（${problems.length} 项）`);
   } else {
     document.getElementById('adjustProblems').style.display = '';
-    document.getElementById('adjustProblemsToggle').style.display = 'none';
   }
 }
 
 function toggleAdjustProblems() {
   const el = document.getElementById('adjustProblems');
-  const toggle = document.getElementById('adjustProblemsToggle');
+  const arrow = document.getElementById('adjustProblemsArrow');
   if (el.style.display === 'none') {
     el.style.display = '';
-    toggle.innerHTML = toggle.innerHTML.replace('▶', '▼').replace('展开', '收起');
+    arrow.textContent = '▼';
   } else {
     el.style.display = 'none';
-    toggle.innerHTML = toggle.innerHTML.replace('▼', '▶').replace('收起', '展开');
+    arrow.textContent = '▶';
   }
 }
 
@@ -6631,92 +6630,57 @@ async function sendChat() {
 }
 
 function renderMarkdown(text) {
-  // 先处理表格
+  const tables = [];
   const lines = text.split('\n');
-  const processed = [];
-  let i = 0;
-  while (i < lines.length) {
-    // 检测表格：当前行有 | 且下一行是分隔行 |---|
-    if (i + 1 < lines.length && lines[i].trim().startsWith('|') && /^\|[\s\-:|]+\|$/.test(lines[i+1].trim())) {
-      const headerCells = lines[i].split('|').filter(c => c.trim() !== '').map(c => c.trim());
-      i += 2; // 跳过表头和分隔行
-      const rows = [];
-      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
-        const cells = lines[i].split('|').filter(c => c.trim() !== '').map(c => c.trim());
-        rows.push(cells);
-        i++;
-      }
-      let table = '<table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;border-radius:8px;overflow:hidden;border:1px solid var(--gray-200);">';
-      table += '<thead><tr style="background:var(--gray-50);">';
-      headerCells.forEach(h => { table += `<th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--gray-700);border-bottom:2px solid var(--gray-200);">${h}</th>`; });
-      table += '</tr></thead><tbody>';
-      rows.forEach((row, ri) => {
-        table += `<tr style="background:${ri % 2 === 0 ? '#fff' : 'var(--gray-50)'};">`;
-        row.forEach(c => { table += `<td style="padding:9px 14px;border-bottom:1px solid var(--gray-100);color:var(--gray-600);">${c}</td>`; });
-        table += '</tr>';
-      });
-      table += '</tbody></table>';
-      processed.push(table);
-    } else {
-      processed.push(lines[i]);
-      i++;
-    }
-  }
-  let html = processed.join('\n')
-    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  // 恢复表格 HTML（先保护表格不被转义）
-  // 换个策略：先提取表格，后处理
-  // 重新实现
-  html = text.split('\n');
-  const result = [];
+  const out = [];
   let idx = 0;
-  while (idx < html.length) {
-    if (idx + 1 < html.length && html[idx].trim().startsWith('|') && /^\|[\s\-:|]+\|$/.test(html[idx+1].trim())) {
-      const headerCells = html[idx].split('|').filter(c => c.trim() !== '').map(c => c.trim());
+  while (idx < lines.length) {
+    const line = lines[idx].trim();
+    const nextLine = idx + 1 < lines.length ? lines[idx+1].trim() : '';
+    if (line.includes('|') && nextLine.replace(/[\s|:\-]/g, '') === '') {
+      const headerCells = line.split('|').map(c => c.trim()).filter(c => c !== '');
       idx += 2;
       const rows = [];
-      while (idx < html.length && html[idx].trim().startsWith('|') && html[idx].trim().endsWith('|')) {
-        const cells = html[idx].split('|').filter(c => c.trim() !== '').map(c => c.trim());
-        rows.push(cells);
+      while (idx < lines.length && lines[idx].trim().includes('|')) {
+        const rowLine = lines[idx].trim();
+        if (rowLine.replace(/[\s|:\-]/g, '') === '') { idx++; continue; }
+        rows.push(rowLine.split('|').map(c => c.trim()).filter(c => c !== ''));
         idx++;
       }
-      let table = '<table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;">';
-      table += '<thead><tr style="background:#f9fafb;">';
-      headerCells.forEach(h => { table += `<th style="padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb;">${h}</th>`; });
-      table += '</tr></thead><tbody>';
+      let tbl = '<table style="border-collapse:collapse;width:100%;margin:14px 0;font-size:13px;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,.04);">';
+      tbl += '<thead><tr style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);">';
+      headerCells.forEach(h => { tbl += `<th style="padding:10px 16px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb;font-size:12px;letter-spacing:.3px;">${h}</th>`; });
+      tbl += '</tr></thead><tbody>';
       rows.forEach((row, ri) => {
-        table += `<tr style="background:${ri % 2 === 0 ? '#fff' : '#f9fafb'};">`;
-        row.forEach(c => { table += `<td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;color:#4b5563;">${c}</td>`; });
-        table += '</tr>';
+        tbl += `<tr style="background:${ri % 2 === 0 ? '#fff' : '#f9fafb'};transition:background .15s;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='${ri % 2 === 0 ? '#fff' : '#f9fafb'}'">`;
+        row.forEach(c => { tbl += `<td style="padding:9px 16px;border-bottom:1px solid #f3f4f6;color:#4b5563;">${c}</td>`; });
+        tbl += '</tr>';
       });
-      table += '</tbody></table>';
-      result.push('___TABLE_' + result.length + '___');
-      result['__tbl_' + (result.length - 1)] = table;
+      tbl += '</tbody></table>';
+      const placeholder = '\x00TBL' + tables.length + '\x00';
+      tables.push(tbl);
+      out.push(placeholder);
     } else {
-      result.push(html[idx]);
+      out.push(lines[idx]);
       idx++;
     }
   }
-  let md = result.join('\n')
+  let md = out.join('\n')
     .replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/```([\s\S]*?)```/g, '<pre style="background:#111827;color:#a5f3fc;padding:14px 16px;border-radius:8px;font-size:12px;margin:12px 0;overflow-x:auto;line-height:1.6;">$1</pre>')
     .replace(/`([^`]+)`/g, '<code style="background:#f3f4f6;padding:1px 5px;border-radius:4px;font-size:12px;">$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^#### (.+)$/gm, '<h5 style="font-size:13px;font-weight:700;color:#1f2937;margin:14px 0 6px;">$1</h5>')
-    .replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:#1f2937;margin:18px 0 8px;padding-bottom:4px;">$1</h4>')
-    .replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:#1f2937;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e7eb;">$1</h3>')
-    .replace(/^# (.+)$/gm, '<h2 style="font-size:17px;font-weight:700;color:#1f2937;margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid #e5e7eb;">$1</h2>')
+    .replace(/^#### (.+)$/gm, '<h5 style="font-size:13px;font-weight:700;color:#1f2937;margin:16px 0 6px;">$1</h5>')
+    .replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:#1f2937;margin:20px 0 8px;">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:#1f2937;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e7eb;">$1</h3>')
+    .replace(/^# (.+)$/gm, '<h2 style="font-size:17px;font-weight:700;color:#1f2937;margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid #e5e7eb;">$1</h2>')
     .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0;">')
     .replace(/\n- /g, '\n<li style="margin:4px 0;padding-left:4px;">')
     .replace(/\n(\d+)\. /g, '\n<li style="margin:4px 0;padding-left:4px;">$1. ');
   md = md.replace(/((?:<li[^>]*>.*\n?)+)/g, '<ul style="margin:8px 0 8px 16px;padding:0;list-style:disc;">$1</ul>');
   md = md.replace(/\n/g, '<br>');
-  // 恢复表格
-  for (let t = 0; t < result.length; t++) {
-    const tbl = result['__tbl_' + t];
-    if (tbl) md = md.replace('___TABLE_' + t + '___', tbl);
-  }
+  tables.forEach((tbl, i) => { md = md.replace('\x00TBL' + i + '\x00', tbl); });
   return md;
 }
 
