@@ -377,7 +377,13 @@ app.post('/api/recognize', upload.single('file'), async (req, res) => {
 
     console.log(`[识别] 文件: ${filename}, 类型: ${docType}, 大小: ${req.file.size}`);
 
-    const result = await callTextIn(endpoint, req.file.buffer, contentType);
+    let result = await callTextIn(endpoint, req.file.buffer, contentType);
+
+    // 专用接口失败时，自动用通用表格接口重试
+    if (result.code !== 200 && docType !== 'auto') {
+      console.log(`[识别] 专用接口失败(${result.code})，使用通用接口重试: ${filename}`);
+      result = await callTextIn(getEndpoint('auto'), req.file.buffer, contentType);
+    }
 
     if (result.code !== 200) {
       const isClientError = result.code >= 40000 && result.code < 50000;
@@ -388,9 +394,10 @@ app.post('/api/recognize', upload.single('file'), async (req, res) => {
       });
     }
 
-    // 根据单据类型格式化结果
+    // 根据单据类型格式化结果（如果降级到通用接口则用通用格式）
     let formatted;
-    switch (docType) {
+    const actualType = (result.code === 200 && docType !== 'auto') ? docType : 'auto';
+    switch (actualType) {
       case 'invoice': formatted = formatInvoice(result); break;
       case 'bank_receipt': formatted = formatBankReceipt(result); break;
       case 'bank_statement': formatted = formatBankStatement(result); break;
@@ -427,10 +434,16 @@ app.post('/api/recognize/batch', upload.array('files', 100), async (req, res) =>
       const contentType = getContentType(filename);
 
       try {
-        const result = await callTextIn(endpoint, file.buffer, contentType);
+        let result = await callTextIn(endpoint, file.buffer, contentType);
+        // 专用接口失败时自动用通用接口重试
+        if (result.code !== 200 && docType !== 'auto') {
+          console.log(`[批量识别] 专用接口失败(${result.code})，通用接口重试: ${filename}`);
+          result = await callTextIn(getEndpoint('auto'), file.buffer, contentType);
+        }
         let formatted;
         if (result.code === 200) {
-          switch (docType) {
+          const actualType = docType;
+          switch (actualType) {
             case 'invoice': formatted = formatInvoice(result); break;
             case 'bank_receipt': formatted = formatBankReceipt(result); break;
             case 'bank_statement': formatted = formatBankStatement(result); break;

@@ -1940,13 +1940,27 @@ async function handleFiles(fileList) {
       const docType = detectDocType(file.name);
       formData.append('docType', docType);
 
-      const resp = await fetch(`${API_BASE}/api/recognize`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await resp.json();
+      let data;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const resp = await fetch(`${API_BASE}/api/recognize`, {
+            method: 'POST',
+            body: formData,
+          });
+          data = await resp.json();
+          if (data.success) break;
+          if (attempt === 0) {
+            statusEl.textContent = '⟳ 重试中...';
+            await new Promise(r => setTimeout(r, 1000));
+          }
+        } catch (e) {
+          if (attempt === 1) throw e;
+          statusEl.textContent = '⟳ 重试中...';
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
 
-      if (data.success) {
+      if (data && data.success) {
         statusEl.textContent = '✓ 已完成';
         statusEl.style.color = 'var(--success)';
         statusEl.classList.remove('pulse');
@@ -1959,7 +1973,7 @@ async function handleFiles(fileList) {
         statusEl.classList.remove('pulse');
         document.getElementById(`file-${idx}`).dataset.status = 'done';
         updateUploadLogEntry(file.name, 'error');
-        renderError(data, file, idx, resultsContainer);
+        renderError(data || { error: '识别失败' }, file, idx, resultsContainer);
       }
     } catch (err) {
       statusEl.textContent = '✗ 错误';
