@@ -3779,13 +3779,30 @@ function renderSavedReconciles() {
   el.innerHTML = html;
 }
 
-function viewSavedReconcile(i) {
+function viewSavedReconcile(i, confirmed) {
   const rc = (appState.reconciles || [])[i];
   if (!rc) return;
+  const container = document.getElementById('reconcile-result');
+  const existingBlocks = container.querySelectorAll('.recon-run-block');
+  if (!confirmed && existingBlocks.length > 0) {
+    const overlay = document.createElement('div');
+    overlay.id = 'reconConfirmOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `<div style="background:#fff;border-radius:14px;padding:24px 28px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);">
+      <div style="font-size:16px;font-weight:700;color:var(--gray-800);margin-bottom:8px;">已有核对结果</div>
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:18px;line-height:1.6;">当前已有 ${existingBlocks.length} 组核对结果，查看历史记录将如何处理？</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="document.getElementById('reconConfirmOverlay').remove();clearReconResults();viewSavedReconcile(${i},true);">🗑️ 清空当前结果，查看记录</button>
+        <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="document.getElementById('reconConfirmOverlay').remove();viewSavedReconcile(${i},true);">📎 保留当前结果，追加查看</button>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;color:var(--gray-400);" onclick="document.getElementById('reconConfirmOverlay').remove();">取消</button>
+      </div>
+    </div>`;
+    document.body.appendChild(overlay);
+    return;
+  }
   switchReconTab('reconResult');
   const el = document.getElementById('reconcile-result');
   el.innerHTML = rc.html;
-  // 展开还原的 block（从历史记录点进来的自动展开）
   const blocks = el.querySelectorAll('.recon-run-block');
   blocks.forEach(block => {
     const body = block.querySelector('.recon-run-body');
