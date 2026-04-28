@@ -7529,16 +7529,21 @@ function initAnalysisPage() {
   contentEl.style.display = '';
   runAnalyticalReview();
   const saved = loadGeneratedDoc('analysis');
+  const aiBtn = document.getElementById('analysisAiBtn');
   if (saved) {
     document.getElementById('analysisAiResult').style.display = '';
     document.getElementById('analysisContent').innerHTML = saved.html;
     document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--gray-400);">已保存于 ${new Date(saved.time).toLocaleString('zh-CN')}</span>`;
     extractKeyFindings(saved.html);
+    aiBtn.textContent = '👁 查看 AI 深度分析';
+    aiBtn.onclick = function() { document.getElementById('analysisAiResult').scrollIntoView({ behavior:'smooth', block:'start' }); };
   } else {
     document.getElementById('analysisAiResult').style.display = 'none';
     document.getElementById('analysisContent').innerHTML = '';
     document.getElementById('analysisSavedInfo').innerHTML = '';
     document.getElementById('analysisKeyFindings').style.display = 'none';
+    aiBtn.textContent = '✨ AI 深度分析';
+    aiBtn.onclick = generateAiAnalysis;
   }
 }
 
@@ -7780,6 +7785,8 @@ ${dataSummary.length > 50 ? '\n...(更多数据省略)' : ''}
     saveGeneratedDoc('analysis', markdown);
     document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--success);">✓ 已自动保存</span>`;
     extractKeyFindings(el.innerHTML);
+    btn.textContent = '👁 查看 AI 深度分析';
+    btn.onclick = function() { document.getElementById('analysisAiResult').scrollIntoView({ behavior:'smooth', block:'start' }); };
   });
 }
 
