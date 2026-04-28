@@ -6225,12 +6225,11 @@ function checkReportReadiness() {
   const totalIssues = issues.red.length + issues.yellow.length;
   const allGood = totalIssues === 0;
 
-  let html = `<div style="border:1px solid ${allGood ? '#bbf7d0' : (issues.red.length > 0 ? '#fecaca' : '#fde68a')};border-radius:12px;overflow:hidden;">`;
-  html += `<div style="padding:14px 16px;background:${allGood ? '#f0fdf4' : (issues.red.length > 0 ? '#fef2f2' : '#fffbeb')};border-bottom:1px solid ${allGood ? '#bbf7d0' : (issues.red.length > 0 ? '#fecaca' : '#fde68a')};display:flex;align-items:center;gap:10px;">`;
+  let html = `<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:12px;">`;
   html += `<span style="font-size:20px;">${allGood ? '✅' : (issues.red.length > 0 ? '🚨' : '⚠️')}</span>`;
   html += `<div><div style="font-size:14px;font-weight:700;color:${allGood ? '#166534' : (issues.red.length > 0 ? '#991b1b' : '#92400e')};">审计就绪检查</div>`;
   html += `<div style="font-size:11px;color:${allGood ? '#15803d' : (issues.red.length > 0 ? '#b91c1c' : '#b45309')};margin-top:2px;">${allGood ? '所有检查项均已通过，可以生成报告' : '发现 ' + totalIssues + ' 项需关注事项，建议确认后再生成报告'}</div></div></div>`;
-  html += '<div style="padding:14px 16px;">';
+  html += '<div style="padding:0 16px;">';
   issues.red.forEach(item => {
     html += `<div style="display:flex;gap:10px;padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:8px;">`;
     html += `<span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">!</span>`;
@@ -6256,7 +6255,7 @@ function checkReportReadiness() {
   html += `<div style="display:flex;gap:8px;margin-top:12px;">`;
   html += `<button class="btn btn-primary" onclick="switchReportSubTab('reportGenerate')" style="background:linear-gradient(135deg,#059669,#10b981);">${allGood ? '去生成报告' : '仍然去生成报告'}</button>`;
   html += `<button class="btn btn-outline" onclick="checkReportReadiness();">🔄 重新检查</button>`;
-  html += '</div></div></div>';
+  html += '</div></div>';
   el.innerHTML = html;
   el.style.display = '';
 }
@@ -6633,21 +6632,93 @@ async function sendChat() {
 }
 
 function renderMarkdown(text) {
-  let html = text
+  // 先处理表格
+  const lines = text.split('\n');
+  const processed = [];
+  let i = 0;
+  while (i < lines.length) {
+    // 检测表格：当前行有 | 且下一行是分隔行 |---|
+    if (i + 1 < lines.length && lines[i].trim().startsWith('|') && /^\|[\s\-:|]+\|$/.test(lines[i+1].trim())) {
+      const headerCells = lines[i].split('|').filter(c => c.trim() !== '').map(c => c.trim());
+      i += 2; // 跳过表头和分隔行
+      const rows = [];
+      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+        const cells = lines[i].split('|').filter(c => c.trim() !== '').map(c => c.trim());
+        rows.push(cells);
+        i++;
+      }
+      let table = '<table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;border-radius:8px;overflow:hidden;border:1px solid var(--gray-200);">';
+      table += '<thead><tr style="background:var(--gray-50);">';
+      headerCells.forEach(h => { table += `<th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--gray-700);border-bottom:2px solid var(--gray-200);">${h}</th>`; });
+      table += '</tr></thead><tbody>';
+      rows.forEach((row, ri) => {
+        table += `<tr style="background:${ri % 2 === 0 ? '#fff' : 'var(--gray-50)'};">`;
+        row.forEach(c => { table += `<td style="padding:9px 14px;border-bottom:1px solid var(--gray-100);color:var(--gray-600);">${c}</td>`; });
+        table += '</tr>';
+      });
+      table += '</tbody></table>';
+      processed.push(table);
+    } else {
+      processed.push(lines[i]);
+      i++;
+    }
+  }
+  let html = processed.join('\n')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // 恢复表格 HTML（先保护表格不被转义）
+  // 换个策略：先提取表格，后处理
+  // 重新实现
+  html = text.split('\n');
+  const result = [];
+  let idx = 0;
+  while (idx < html.length) {
+    if (idx + 1 < html.length && html[idx].trim().startsWith('|') && /^\|[\s\-:|]+\|$/.test(html[idx+1].trim())) {
+      const headerCells = html[idx].split('|').filter(c => c.trim() !== '').map(c => c.trim());
+      idx += 2;
+      const rows = [];
+      while (idx < html.length && html[idx].trim().startsWith('|') && html[idx].trim().endsWith('|')) {
+        const cells = html[idx].split('|').filter(c => c.trim() !== '').map(c => c.trim());
+        rows.push(cells);
+        idx++;
+      }
+      let table = '<table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;">';
+      table += '<thead><tr style="background:#f9fafb;">';
+      headerCells.forEach(h => { table += `<th style="padding:10px 14px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb;">${h}</th>`; });
+      table += '</tr></thead><tbody>';
+      rows.forEach((row, ri) => {
+        table += `<tr style="background:${ri % 2 === 0 ? '#fff' : '#f9fafb'};">`;
+        row.forEach(c => { table += `<td style="padding:9px 14px;border-bottom:1px solid #f3f4f6;color:#4b5563;">${c}</td>`; });
+        table += '</tr>';
+      });
+      table += '</tbody></table>';
+      result.push('___TABLE_' + result.length + '___');
+      result['__tbl_' + (result.length - 1)] = table;
+    } else {
+      result.push(html[idx]);
+      idx++;
+    }
+  }
+  let md = result.join('\n')
     .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/```([\s\S]*?)```/g, '<pre style="background:var(--gray-900);color:#a5f3fc;padding:14px 16px;border-radius:8px;font-size:12px;margin:12px 0;overflow-x:auto;line-height:1.6;">$1</pre>')
-    .replace(/`([^`]+)`/g, '<code style="background:var(--gray-100);padding:1px 5px;border-radius:4px;font-size:12px;">$1</code>')
+    .replace(/```([\s\S]*?)```/g, '<pre style="background:#111827;color:#a5f3fc;padding:14px 16px;border-radius:8px;font-size:12px;margin:12px 0;overflow-x:auto;line-height:1.6;">$1</pre>')
+    .replace(/`([^`]+)`/g, '<code style="background:#f3f4f6;padding:1px 5px;border-radius:4px;font-size:12px;">$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:var(--gray-800);margin:18px 0 8px;padding-bottom:4px;">$1</h4>')
-    .replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:var(--gray-800);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--gray-200);">$1</h3>')
-    .replace(/^# (.+)$/gm, '<h2 style="font-size:17px;font-weight:700;color:var(--gray-800);margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--gray-200);">$1</h2>')
-    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--gray-200);margin:16px 0;">')
+    .replace(/^#### (.+)$/gm, '<h5 style="font-size:13px;font-weight:700;color:#1f2937;margin:14px 0 6px;">$1</h5>')
+    .replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:#1f2937;margin:18px 0 8px;padding-bottom:4px;">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:#1f2937;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e7eb;">$1</h3>')
+    .replace(/^# (.+)$/gm, '<h2 style="font-size:17px;font-weight:700;color:#1f2937;margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid #e5e7eb;">$1</h2>')
+    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0;">')
     .replace(/\n- /g, '\n<li style="margin:4px 0;padding-left:4px;">')
     .replace(/\n(\d+)\. /g, '\n<li style="margin:4px 0;padding-left:4px;">$1. ');
-  html = html.replace(/((?:<li[^>]*>.*\n?)+)/g, '<ul style="margin:8px 0 8px 16px;padding:0;list-style:disc;">$1</ul>');
-  html = html.replace(/\n/g, '<br>');
-  return html;
+  md = md.replace(/((?:<li[^>]*>.*\n?)+)/g, '<ul style="margin:8px 0 8px 16px;padding:0;list-style:disc;">$1</ul>');
+  md = md.replace(/\n/g, '<br>');
+  // 恢复表格
+  for (let t = 0; t < result.length; t++) {
+    const tbl = result['__tbl_' + t];
+    if (tbl) md = md.replace('___TABLE_' + t + '___', tbl);
+  }
+  return md;
 }
 
 function askAI(question) {
