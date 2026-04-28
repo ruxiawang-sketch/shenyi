@@ -44,18 +44,17 @@ a{text-decoration:none;color:inherit;}
 .sidebar-logo .logo-text{font-size:16px;font-weight:700;color:var(--gray-900);}
 .sidebar-logo .logo-text small{display:block;font-size:10px;font-weight:400;color:var(--gray-400);letter-spacing:.5px;}
 
-.sidebar-nav{flex:1;padding:8px 6px;overflow-y:auto;}
-.nav-section{margin-bottom:0;}
-.nav-section-title{font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--gray-400);padding:14px 10px 4px;display:flex;align-items:center;gap:5px;}
-.nav-section:first-child .nav-section-title{padding-top:4px;}
-.nav-step-num{width:14px;height:14px;border-radius:50%;background:var(--primary);color:#fff;font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sidebar-nav{flex:1;padding:10px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.nav-divider{height:1px;background:var(--gray-100);margin:6px 8px;}
+.nav-step-num{width:18px;height:18px;border-radius:50%;background:var(--gray-100);color:var(--gray-500);font-size:10px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .nav-item{
-  display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;
-  cursor:pointer;transition:var(--transition);color:var(--gray-600);font-size:12.5px;position:relative;
+  display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;
+  cursor:pointer;transition:var(--transition);color:var(--gray-600);font-size:13px;position:relative;
 }
-.nav-item:hover{background:var(--gray-100);color:var(--gray-800);}
+.nav-item:hover{background:var(--gray-50);color:var(--gray-800);}
 .nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
-.nav-item .nav-icon{width:16px;text-align:center;font-size:13px;flex-shrink:0;}
+.nav-item.active .nav-step-num{background:var(--primary);color:#fff;}
+.nav-item .nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0;}
 .qs-btn{padding:8px 14px;background:var(--bg);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--c);transition:all .15s;border:1px solid transparent;white-space:nowrap;}
 .qs-btn:hover{transform:translateY(-1px);border-color:var(--c);box-shadow:0 2px 8px rgba(0,0,0,.06);}
 .nav-item .nav-badge{
@@ -494,35 +493,19 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
     <div class="ps-dropdown" id="psDropdown"></div>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-section">
-      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span>工作概览</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-section-title"><span class="nav-step-num">1</span>制定计划</div>
-      <div class="nav-item" data-page="auditplan"><span class="nav-icon">📋</span>审计计划</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-section-title"><span class="nav-step-num">2</span>收集资料</div>
-      <div class="nav-item" data-page="extract"><span class="nav-icon">📄</span>扫描 / 上传 / OCR</div>
-      <div class="nav-item" data-page="clean"><span class="nav-icon">✓</span>数据质量检查</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-section-title"><span class="nav-step-num">3</span>交叉核对</div>
-      <div class="nav-item" data-page="reconcile"><span class="nav-icon">⇄</span>银行 / 往来核对</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-section-title"><span class="nav-step-num">4</span>发现问题</div>
-      <div class="nav-item" data-page="anomaly"><span class="nav-icon">⚠</span>异常检测</div>
-      <div class="nav-item" data-page="analysis"><span class="nav-icon">📈</span>分析性复核</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-section-title"><span class="nav-step-num">5</span>出具结论</div>
-      <div class="nav-item" data-page="adjust"><span class="nav-icon">✎</span>调整分录</div>
-      <div class="nav-item" data-page="auditreport"><span class="nav-icon">📑</span>审计报告</div>
-    </div>
-    <div class="nav-section" style="margin-top:auto;border-top:1px solid var(--gray-100);padding-top:6px;">
-      <div class="nav-item" data-page="ai"><span class="nav-icon">✦</span>AI 助手</div>
-    </div>
+    <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span>工作概览</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item" data-page="auditplan"><span class="nav-step-num">1</span>审计计划</div>
+    <div class="nav-item" data-page="extract"><span class="nav-step-num">2</span>资料提取</div>
+    <div class="nav-item" data-page="clean"><span class="nav-step-num">3</span>数据质量检查</div>
+    <div class="nav-item" data-page="reconcile"><span class="nav-step-num">4</span>银行往来核对</div>
+    <div class="nav-item" data-page="anomaly"><span class="nav-step-num">5</span>异常检测</div>
+    <div class="nav-item" data-page="analysis"><span class="nav-step-num">6</span>分析性复核</div>
+    <div class="nav-item" data-page="adjust"><span class="nav-step-num">7</span>调整分录</div>
+    <div class="nav-item" data-page="auditreport"><span class="nav-step-num">8</span>审计报告</div>
+    <div style="flex:1;"></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item" data-page="ai"><span class="nav-icon">✦</span>AI 助手</div>
     <div class="nav-item" data-page="confirm" style="display:none;"><span class="nav-icon">📨</span>函证管理</div>
     <div class="nav-item" data-page="archive" style="display:none;"><span class="nav-icon">📦</span>归档</div>
   </nav>
