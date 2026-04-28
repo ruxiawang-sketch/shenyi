@@ -6337,7 +6337,6 @@ function checkReportReadiness() {
   });
   html += `<div style="display:flex;gap:8px;margin-top:12px;">`;
   html += `<button class="btn btn-primary" onclick="switchReportSubTab('reportGenerate')" style="background:linear-gradient(135deg,#059669,#10b981);">${allGood ? '去生成报告' : '仍然去生成报告'}</button>`;
-  html += `<button class="btn btn-outline" onclick="checkReportReadiness();">🔄 重新检查</button>`;
   html += '</div></div>';
   el.innerHTML = html;
   el.style.display = '';
