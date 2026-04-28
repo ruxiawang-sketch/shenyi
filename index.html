@@ -6560,14 +6560,21 @@ async function sendChat() {
 }
 
 function renderMarkdown(text) {
-  return text
+  let html = text
     .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/```([\s\S]*?)```/g, '<pre style="background:var(--gray-900);color:#a5f3fc;padding:12px;border-radius:8px;font-size:12px;margin:8px 0;overflow-x:auto;">$1</pre>')
+    .replace(/```([\s\S]*?)```/g, '<pre style="background:var(--gray-900);color:#a5f3fc;padding:14px 16px;border-radius:8px;font-size:12px;margin:12px 0;overflow-x:auto;line-height:1.6;">$1</pre>')
     .replace(/`([^`]+)`/g, '<code style="background:var(--gray-100);padding:1px 5px;border-radius:4px;font-size:12px;">$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n- /g, '<br>• ')
-    .replace(/\n(\d+)\. /g, '<br>$1. ')
-    .replace(/\n/g, '<br>');
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:var(--gray-800);margin:18px 0 8px;padding-bottom:4px;">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:var(--gray-800);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--gray-200);">$1</h3>')
+    .replace(/^# (.+)$/gm, '<h2 style="font-size:17px;font-weight:700;color:var(--gray-800);margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--gray-200);">$1</h2>')
+    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--gray-200);margin:16px 0;">')
+    .replace(/\n- /g, '\n<li style="margin:4px 0;padding-left:4px;">')
+    .replace(/\n(\d+)\. /g, '\n<li style="margin:4px 0;padding-left:4px;">$1. ');
+  html = html.replace(/((?:<li[^>]*>.*\n?)+)/g, '<ul style="margin:8px 0 8px 16px;padding:0;list-style:disc;">$1</ul>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
 }
 
 function askAI(question) {
