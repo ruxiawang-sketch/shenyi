@@ -1074,11 +1074,17 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         <!-- 项目信息表单 -->
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="const c=this.nextElementSibling;c.style.display=c.style.display==='none'?'':'none';this.querySelector('.collapse-arrow').textContent=c.style.display==='none'?'▶':'▼'">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
               <div style="font-size:14px;font-weight:700;color:var(--gray-800);">项目基本信息</div>
-              <span class="collapse-arrow" style="font-size:11px;color:var(--gray-400);">▶</span>
+              <span style="font-size:12px;color:var(--primary);cursor:pointer;" onclick="const c=document.getElementById('planFullForm');c.style.display=c.style.display==='none'?'':'none';this.textContent=c.style.display==='none'?'编辑全部信息 ›':'收起 ‹'">编辑全部信息 ›</span>
             </div>
-            <div style="margin-top:16px;display:none;">
+            <div id="planQuickInfo" style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--gray-600);">
+              <span><b>项目：</b><span id="planQuickName">—</span></span>
+              <span><b>被审计单位：</b><span id="planQuickClient">—</span></span>
+              <span><b>审计期间：</b><span id="planQuickPeriod">—</span></span>
+              <span><b>单据：</b><span id="planQuickDocs">—</span></span>
+            </div>
+            <div id="planFullForm" style="margin-top:16px;display:none;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
               <div>
                 <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">项目名称</label>
@@ -5752,6 +5758,12 @@ function initAuditPlanPage() {
   document.getElementById('planBusiness').value = proj?.business || '';
   document.getElementById('planExtra').value = proj?.risks || '';
   document.getElementById('planDocCount').value = ctx.docCount > 0 ? `${ctx.docCount} 张` : '暂无';
+
+  // 填充快速预览
+  document.getElementById('planQuickName').textContent = proj?.name || '—';
+  document.getElementById('planQuickClient').textContent = proj?.client || '—';
+  document.getElementById('planQuickPeriod').textContent = proj?.period ? formatPeriod(proj.period) : '—';
+  document.getElementById('planQuickDocs').textContent = ctx.docCount > 0 ? `${ctx.docCount} 张` : '暂无';
 
   const hint = document.getElementById('planDataHint');
   if (hint) hint.textContent = ctx.docCount > 0 ? `已有 ${ctx.docCount} 张单据数据` : '可直接生成，无需先上传数据';
