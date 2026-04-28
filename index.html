@@ -6,6 +6,7 @@
 <title>审易 — AI 审计助手</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+@keyframes spin{to{transform:rotate(360deg)}}
 :root{
   --primary:#4f46e5;--primary-dark:#4338ca;--primary-light:#eef2ff;--primary-50:#e0e7ff;
   --success:#059669;--success-light:#ecfdf5;--success-bg:#d1fae5;
@@ -55,7 +56,7 @@ a{text-decoration:none;color:inherit;}
 .nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
 .nav-item .nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0;opacity:.7;}
 .nav-item.active .nav-icon{opacity:1;}
-.qs-btn{padding:8px 14px;background:var(--bg);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--c);transition:all .15s;border:1px solid transparent;white-space:nowrap;}
+.qs-btn{padding:10px 18px;background:var(--bg);border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--c);transition:all .15s;border:1px solid transparent;white-space:nowrap;}
 .qs-btn:hover{transform:translateY(-1px);border-color:var(--c);box-shadow:0 2px 8px rgba(0,0,0,.06);}
 .nav-item .nav-badge{
   position:absolute;right:8px;background:var(--danger);color:#fff;
@@ -587,9 +588,9 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
       </div>
 
       <!-- Quick Start -->
-      <div style="margin-bottom:20px;">
-        <h3 style="font-size:14px;font-weight:600;margin-bottom:12px;">审计流程</h3>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <div style="margin-bottom:24px;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">审计流程</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
           <div onclick="switchPage('auditplan')" class="qs-btn" style="--c:#6366f1;--bg:#eef2ff;">📋 审计计划</div>
           <div style="color:var(--gray-300);display:flex;align-items:center;">→</div>
           <div onclick="switchPage('extract')" class="qs-btn" style="--c:#4f46e5;--bg:var(--primary-light);">📄 资料提取</div>
