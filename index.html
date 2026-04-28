@@ -475,6 +475,13 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
 </head>
 <body>
 
+<!-- ===== Loading 遮罩 ===== -->
+<div id="appLoading" style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="width:40px;height:40px;border:3px solid #e5e7eb;border-top-color:#4f46e5;border-radius:50%;animation:spin .8s linear infinite;"></div>
+  <div style="font-size:14px;color:#6b7280;">正在加载数据...</div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
 <!-- ===== Sidebar ===== -->
 <aside class="sidebar">
   <div class="sidebar-logo">
@@ -7916,12 +7923,17 @@ function _doInit() {
 }
 
 // 先从服务器加载数据，再初始化页面
+function _hideLoading() {
+  const el = document.getElementById('appLoading');
+  if (el) { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }
+}
+
 _loadAllServerState().then(() => {
-  // 服务器数据已写入 localStorage，重新读取项目状态
   ensureDefaultProject();
   appState = getProjectState(getCurrentProjectId());
   _doInit();
-}).catch(() => _doInit());
+  _hideLoading();
+}).catch(() => { _doInit(); _hideLoading(); });
 </script>
 </body>
 </html>
