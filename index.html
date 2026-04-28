@@ -1606,6 +1606,65 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
 
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
+// ========== 服务器端持久化代理层 ==========
+const _serverCache = {};
+let _serverDataLoaded = false;
+
+async function _loadAllServerState() {
+  try {
+    const resp = await fetch('/api/state');
+    const { keys } = await resp.json();
+    if (keys && keys.length > 0) {
+      const batchResp = await fetch('/api/state/batch-get', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys })
+      });
+      const data = await batchResp.json();
+      for (const [k, v] of Object.entries(data)) {
+        if (v !== null) {
+          _serverCache[k] = v;
+          localStorage.setItem(k, JSON.stringify(v));
+        }
+      }
+    }
+  } catch (e) { console.warn('服务器数据加载失败，使用本地缓存', e); }
+  _serverDataLoaded = true;
+}
+
+function _syncToServer(key, value) {
+  _serverCache[key] = value;
+  fetch('/api/state/' + encodeURIComponent(key), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value })
+  }).catch(e => console.warn('同步失败:', key, e));
+}
+
+function _deleteFromServer(key) {
+  delete _serverCache[key];
+  fetch('/api/state/' + encodeURIComponent(key), { method: 'DELETE' }).catch(() => {});
+}
+
+const _origSetItem = localStorage.setItem.bind(localStorage);
+const _origGetItem = localStorage.getItem.bind(localStorage);
+const _origRemoveItem = localStorage.removeItem.bind(localStorage);
+
+localStorage.setItem = function(key, value) {
+  _origSetItem(key, value);
+  try {
+    const parsed = JSON.parse(value);
+    _syncToServer(key, parsed);
+  } catch {
+    _syncToServer(key, value);
+  }
+};
+
+localStorage.removeItem = function(key) {
+  _origRemoveItem(key);
+  _deleteFromServer(key);
+};
+
 // ========== IndexedDB 图片持久存储 ==========
 const IMG_DB_NAME = 'audit_images';
 const IMG_DB_VERSION = 1;
@@ -1628,6 +1687,7 @@ async function saveImageData(key, dataUrl) {
     await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
     db.close();
   } catch(e) { console.warn('IndexedDB 写入失败:', e); }
+  _syncToServer('img_' + key, dataUrl);
 }
 
 async function getImageData(key) {
@@ -1637,8 +1697,14 @@ async function getImageData(key) {
     const req = tx.objectStore(IMG_STORE).get(key);
     const result = await new Promise((res, rej) => { req.onsuccess = () => res(req.result); req.onerror = rej; });
     db.close();
-    return result || '';
-  } catch(e) { return ''; }
+    if (result) return result;
+  } catch(e) {}
+  try {
+    const resp = await fetch('/api/state/' + encodeURIComponent('img_' + key));
+    const { value } = await resp.json();
+    if (value) return value;
+  } catch(e) {}
+  return '';
 }
 
 async function deleteImageData(key) {
@@ -1648,6 +1714,7 @@ async function deleteImageData(key) {
     tx.objectStore(IMG_STORE).delete(key);
     db.close();
   } catch(e) {}
+  _deleteFromServer('img_' + key);
 }
 
 // Page navigation
@@ -2535,7 +2602,7 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('.project-switcher')) closeProjectDropdown();
 });
 
-// ========== 初始化项目 ==========
+// ========== 初始化项目（延迟到服务器数据加载后执行） ==========
 ensureDefaultProject();
 
 // ========== 全局状态跟踪 ==========
@@ -7834,17 +7901,27 @@ function extractKeyFindings(html) {
 }
 
 // ========== 页面初始化 ==========
-updateSidebarProject();
-updateDashboard();
-updateReconcile();
-renderExtractList();
+function _doInit() {
+  updateSidebarProject();
+  updateDashboard();
+  updateReconcile();
+  renderExtractList();
 
-// 恢复上次所在页面（hash 优先于 localStorage）
-const hashPage = location.hash.replace('#', '');
-const targetPage = (hashPage && document.getElementById('page-' + hashPage)) ? hashPage : localStorage.getItem('audit_current_page');
-if (targetPage && document.getElementById('page-' + targetPage)) {
-  switchPage(targetPage);
+  // 恢复上次所在页面（hash 优先于 localStorage）
+  const hashPage = location.hash.replace('#', '');
+  const targetPage = (hashPage && document.getElementById('page-' + hashPage)) ? hashPage : localStorage.getItem('audit_current_page');
+  if (targetPage && document.getElementById('page-' + targetPage)) {
+    switchPage(targetPage);
+  }
 }
+
+// 先从服务器加载数据，再初始化页面
+_loadAllServerState().then(() => {
+  // 服务器数据已写入 localStorage，重新读取项目状态
+  ensureDefaultProject();
+  appState = getProjectState(getCurrentProjectId());
+  _doInit();
+}).catch(() => _doInit());
 </script>
 </body>
 </html>

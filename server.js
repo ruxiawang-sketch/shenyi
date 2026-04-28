@@ -692,6 +692,76 @@ ${extra ? '补充信息：' + extra : ''}
   }
 });
 
+// ========== 服务器端数据持久化 ==========
+const DATA_DIR = path.join(__dirname, 'data');
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
+function safeKey(key) {
+  return key.replace(/[^a-zA-Z0-9_\-]/g, '_').substring(0, 200);
+}
+
+// 获取所有 keys
+app.get('/api/state', (req, res) => {
+  try {
+    const files = fs.readdirSync(DATA_DIR).filter(f => f.endsWith('.json'));
+    const keys = files.map(f => f.replace('.json', ''));
+    res.json({ keys });
+  } catch (e) {
+    res.json({ keys: [] });
+  }
+});
+
+// 读取某个 key 的数据
+app.get('/api/state/:key', (req, res) => {
+  const file = path.join(DATA_DIR, safeKey(req.params.key) + '.json');
+  if (!fs.existsSync(file)) return res.json({ value: null });
+  try {
+    const raw = fs.readFileSync(file, 'utf8');
+    res.json({ value: JSON.parse(raw) });
+  } catch (e) {
+    res.json({ value: null });
+  }
+});
+
+// 写入某个 key 的数据
+app.put('/api/state/:key', (req, res) => {
+  const file = path.join(DATA_DIR, safeKey(req.params.key) + '.json');
+  try {
+    fs.writeFileSync(file, JSON.stringify(req.body.value), 'utf8');
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 删除某个 key
+app.delete('/api/state/:key', (req, res) => {
+  const file = path.join(DATA_DIR, safeKey(req.params.key) + '.json');
+  try {
+    if (fs.existsSync(file)) fs.unlinkSync(file);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 批量读取
+app.post('/api/state/batch-get', (req, res) => {
+  const keys = req.body.keys || [];
+  const result = {};
+  for (const key of keys) {
+    const file = path.join(DATA_DIR, safeKey(key) + '.json');
+    try {
+      if (fs.existsSync(file)) {
+        result[key] = JSON.parse(fs.readFileSync(file, 'utf8'));
+      } else {
+        result[key] = null;
+      }
+    } catch { result[key] = null; }
+  }
+  res.json(result);
+});
+
 // 所有未匹配路由返回 index.html（SPA fallback）
 app.get('/{0,}', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
