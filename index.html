@@ -4357,7 +4357,7 @@ function initAdjustPage() {
   const saved = loadGeneratedDoc('adjust');
   if (saved) {
     document.getElementById('adjustEntries').style.display = '';
-    document.getElementById('adjustContent').innerHTML = saved.html || renderMarkdown(saved.markdown);
+    document.getElementById('adjustContent').innerHTML = renderMarkdown(saved.markdown);
     const dt = new Date(saved.time);
     const timeStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
     const infoEl = document.getElementById('adjustSavedInfo');
@@ -5860,7 +5860,7 @@ function initAuditPlanPage() {
     const resultEl = document.getElementById('planResult');
     const contentEl = document.getElementById('planContent');
     resultEl.style.display = '';
-    contentEl.innerHTML = saved.html || renderMarkdown(saved.markdown);
+    contentEl.innerHTML = renderMarkdown(saved.markdown);
     const dt = new Date(saved.time);
     const timeStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
     const infoEl = document.getElementById('planSavedInfo');
@@ -5899,7 +5899,7 @@ function initAuditReportPage() {
     const resultEl = document.getElementById('reportResult');
     const contentEl = document.getElementById('reportContent');
     resultEl.style.display = '';
-    contentEl.innerHTML = saved.html || renderMarkdown(saved.markdown);
+    contentEl.innerHTML = renderMarkdown(saved.markdown);
     const dt = new Date(saved.time);
     const timeStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
     const infoEl = document.getElementById('reportSavedInfo');
