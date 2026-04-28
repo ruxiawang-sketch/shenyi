@@ -590,6 +590,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ========== 企业信息搜索 ==========
+const FAST_MODEL = process.env.FAST_MODEL || 'claude-haiku-4-5-20251001';
 app.post('/api/suggest-company', async (req, res) => {
   try {
     const query = req.body.query || req.body.filename || '';
@@ -604,14 +605,11 @@ app.post('/api/suggest-company', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: CLAUDE_MODEL,
+        model: FAST_MODEL,
         messages: [
-          { role: 'system', content: '你是企业名称联想助手。根据用户输入的部分公司名，返回最可能匹配的知名企业。只返回JSON数组，不要解释。如果不确定，返回空数组。' },
-          { role: 'user', content: `用户正在输入公司名："${query}"，请返回最多5个最可能匹配的知名企业，每个包含公司全称、简称、行业、注册资本。格式：
-[{"name":"公司全称","short":"简称","industry":"行业","capital":"注册资本"}]
-只返回JSON，不要其他内容。如果输入太模糊无法判断，返回空数组[]。` },
+          { role: 'user', content: `企业名联想："${query}"，返回最多5个匹配的知名企业JSON数组，格式：[{"name":"全称","short":"简称","industry":"行业","capital":"注册资本"}]。只返回JSON。不确定则返回[]。` },
         ],
-        max_tokens: 1024,
+        max_tokens: 512,
       }),
     });
 

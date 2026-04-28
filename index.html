@@ -2404,8 +2404,8 @@ document.getElementById('projClient').addEventListener('input', function() {
   const suggestEl = document.getElementById('projClientSuggest');
   const loadingEl = document.getElementById('projClientLoading');
   if (q.length < 2) { suggestEl.style.display = 'none'; loadingEl.style.display = 'none'; return; }
+  loadingEl.style.display = '';
   suggestTimer = setTimeout(async () => {
-    loadingEl.style.display = '';
     suggestAbort = new AbortController();
     try {
       const resp = await fetch(`${API_BASE}/api/suggest-company`, {
