@@ -645,7 +645,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ========== 企业信息搜索 ==========
-const FAST_MODEL = process.env.FAST_MODEL || 'claude-haiku-4-5-20251001';
+const FAST_MODEL = process.env.FAST_MODEL || 'claude-sonnet-4-20250514';
 app.post('/api/suggest-company', async (req, res) => {
   try {
     const query = req.body.query || req.body.filename || '';
