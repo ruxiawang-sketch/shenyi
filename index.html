@@ -6225,11 +6225,7 @@ function checkReportReadiness() {
   const totalIssues = issues.red.length + issues.yellow.length;
   const allGood = totalIssues === 0;
 
-  let html = `<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:12px;">`;
-  html += `<span style="font-size:20px;">${allGood ? '✅' : (issues.red.length > 0 ? '🚨' : '⚠️')}</span>`;
-  html += `<div><div style="font-size:14px;font-weight:700;color:${allGood ? '#166534' : (issues.red.length > 0 ? '#991b1b' : '#92400e')};">审计就绪检查</div>`;
-  html += `<div style="font-size:11px;color:${allGood ? '#15803d' : (issues.red.length > 0 ? '#b91c1c' : '#b45309')};margin-top:2px;">${allGood ? '所有检查项均已通过，可以生成报告' : '发现 ' + totalIssues + ' 项需关注事项，建议确认后再生成报告'}</div></div></div>`;
-  html += '<div style="padding:0 16px;">';
+  let html = '<div style="padding:0;">';
   issues.red.forEach(item => {
     html += `<div style="display:flex;gap:10px;padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:8px;">`;
     html += `<span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">!</span>`;
