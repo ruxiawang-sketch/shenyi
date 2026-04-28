@@ -1832,6 +1832,28 @@ document.addEventListener('paste', (e) => {
 const API_BASE = window.location.origin;
 let uploadedFiles = [];
 
+// 服务唤醒：Render 免费版闲置会休眠，提前 ping 唤醒
+let _serverReady = false;
+async function ensureServerAwake(statusEl) {
+  if (_serverReady) return true;
+  const label = statusEl ? statusEl.textContent : '';
+  if (statusEl) { statusEl.textContent = '☁️ 正在唤醒服务...'; statusEl.style.color = 'var(--warning, #d97706)'; }
+  for (let i = 0; i < 3; i++) {
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 60000);
+      const r = await fetch(`${API_BASE}/api/health`, { signal: ctrl.signal });
+      clearTimeout(tid);
+      if (r.ok) { _serverReady = true; setTimeout(() => { _serverReady = false; }, 10 * 60 * 1000); return true; }
+    } catch {}
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  if (statusEl) { statusEl.textContent = label; }
+  return false;
+}
+// 页面加载时静默唤醒
+ensureServerAwake();
+
 // 文件类型图标
 function getFileIcon(docType) {
   const icons = { bank_receipt:'🏦', invoice:'🧾', bank_statement:'🏦', voucher:'📝', settlement:'📋', contract:'📃', expense:'🧾', auto:'📄' };
@@ -1934,28 +1956,51 @@ async function handleFiles(fileList) {
     }
 
     try {
+      // 首个文件识别前确保服务已唤醒
+      if (i === 0) {
+        const awake = await ensureServerAwake(statusEl);
+        if (!awake) {
+          statusEl.textContent = '✗ 服务未响应';
+          statusEl.style.color = 'var(--danger)';
+          statusEl.classList.remove('pulse');
+          document.getElementById(`file-${idx}`).dataset.status = 'done';
+          updateUploadLogEntry(file.name, 'error');
+          renderError({ error: '服务正在启动，请稍后重试' }, file, idx, resultsContainer);
+          continue;
+        }
+        statusEl.textContent = '⟳ 识别中...';
+        statusEl.style.color = 'var(--primary)';
+      }
+
       const formData = new FormData();
       formData.append('file', file);
       const docType = detectDocType(file.name);
       formData.append('docType', docType);
 
       let data;
-      for (let attempt = 0; attempt < 2; attempt++) {
+      const MAX_RETRIES = 3;
+      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
         try {
+          const ctrl = new AbortController();
+          const tid = setTimeout(() => ctrl.abort(), 90000);
           const resp = await fetch(`${API_BASE}/api/recognize`, {
             method: 'POST',
             body: formData,
+            signal: ctrl.signal,
           });
+          clearTimeout(tid);
           data = await resp.json();
           if (data.success) break;
-          if (attempt === 0) {
-            statusEl.textContent = '⟳ 重试中...';
-            await new Promise(r => setTimeout(r, 1000));
+          if (attempt < MAX_RETRIES - 1) {
+            statusEl.textContent = `⟳ 重试中(${attempt + 1}/${MAX_RETRIES - 1})...`;
+            await new Promise(r => setTimeout(r, 2000));
           }
         } catch (e) {
-          if (attempt === 1) throw e;
-          statusEl.textContent = '⟳ 重试中...';
-          await new Promise(r => setTimeout(r, 1000));
+          if (attempt === MAX_RETRIES - 1) throw e;
+          _serverReady = false;
+          statusEl.textContent = `⟳ 重试中(${attempt + 1}/${MAX_RETRIES - 1})...`;
+          await ensureServerAwake();
+          await new Promise(r => setTimeout(r, 2000));
         }
       }
 
