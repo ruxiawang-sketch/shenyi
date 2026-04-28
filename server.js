@@ -121,18 +121,38 @@ function formatInvoice(result) {
   return { fields, rows, raw: r };
 }
 
+// 字段名英文转中文映射
+const FIELD_NAME_MAP = {
+  receipt_number: '回单编号', trade_type: '交易类型', trade_date: '交易日期',
+  trade_time: '交易时间', payer_name: '付款方', payer_account: '付款账号',
+  payer_bank: '付款银行', payee_name: '收款方', payee_account: '收款账号',
+  payee_bank: '收款银行', amount: '金额', currency: '币种',
+  purpose: '用途/摘要', remark: '备注', status: '状态',
+  serial_number: '流水号', transaction_id: '交易流水号', ref_no: '参考号',
+  fee: '手续费', balance: '余额', summary: '摘要',
+  invoice_code: '发票代码', invoice_number: '发票号码', invoice_date: '开票日期',
+  buyer_name: '购买方', seller_name: '销售方', total_amount: '金额',
+  total_tax: '税额', price_tax_total: '价税合计', check_code: '校验码',
+  date: '日期', debit: '借方金额', credit: '贷方金额',
+  description: '描述', trade_amount: '交易金额', print_date: '打印日期',
+  voucher_no: '凭证号', abstract: '摘要',
+};
+
+function translateFieldLabel(label) {
+  return FIELD_NAME_MAP[label] || label.replace(/_/g, ' ');
+}
+
 // 格式化银行回单结果
 function formatBankReceipt(result) {
   if (!result || !result.result) return { fields: [], rows: [] };
   let r = result.result;
-  // TextIn 可能嵌套在 pages[0] 或 data 中
   if (r.pages && r.pages[0]) r = r.pages[0];
   if (r.data) r = r.data;
 
   // 尝试从 item_list (key-value pairs) 提取字段
   if (r.item_list && r.item_list.length > 0) {
     const fields = r.item_list.map(item => ({
-      label: item.key || item.description || item.name || '',
+      label: translateFieldLabel(item.key || item.description || item.name || ''),
       value: item.value || '',
     })).filter(f => f.label && f.value);
     if (fields.length > 0) return { fields, rows: [], raw: r };
@@ -144,7 +164,7 @@ function formatBankReceipt(result) {
     r.object_list.forEach(obj => {
       if (obj.item_list) {
         obj.item_list.forEach(item => {
-          const label = item.key || item.description || '';
+          const label = translateFieldLabel(item.key || item.description || '');
           const value = item.value || '';
           if (label && value) fields.push({ label, value });
         });
