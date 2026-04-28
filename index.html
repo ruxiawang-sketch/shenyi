@@ -1086,40 +1086,93 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
           </div>
         </div>
-        <!-- 顶部配置区 -->
+        <!-- 项目信息表单 -->
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:20px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-              <div style="display:flex;align-items:center;gap:10px;">
-                <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;">
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke="#fff" stroke-width="1.5"/><path d="M9 14l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div>
-                  <div style="font-size:16px;font-weight:700;color:var(--gray-800);">AI 审计计划</div>
-                  <div style="font-size:12px;color:var(--gray-400);">项目信息 + 企业公开资料 + 已有数据 → 智能生成可编辑的审计计划</div>
-                </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="const c=this.nextElementSibling;c.style.display=c.style.display==='none'?'':'none';this.querySelector('.collapse-arrow').textContent=c.style.display==='none'?'▶':'▼'">
+              <div style="font-size:14px;font-weight:700;color:var(--gray-800);">项目基本信息</div>
+              <span class="collapse-arrow" style="font-size:11px;color:var(--gray-400);">▶</span>
+            </div>
+            <div style="margin-top:16px;display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">项目名称</label>
+                <input id="planName" type="text" readonly style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;background:var(--gray-50);color:var(--gray-700);box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">被审计单位</label>
+                <input id="planClient" type="text" readonly style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;background:var(--gray-50);color:var(--gray-700);box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">审计期间</label>
+                <input id="planPeriod" type="text" readonly style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;background:var(--gray-50);color:var(--gray-700);box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">审计类型</label>
+                <input id="planType" type="text" readonly style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;background:var(--gray-50);color:var(--gray-700);box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">行业</label>
+                <input id="planIndustry" type="text" placeholder="如：信息技术、制造业、零售等" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">注册资本</label>
+                <input id="planCapital" type="text" placeholder="如：5000万元" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">营收规模</label>
+                <input id="planRevenue" type="text" placeholder="如：年营收约2亿元" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">已提取单据</label>
+                <input id="planDocCount" type="text" readonly style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;background:var(--gray-50);color:var(--gray-700);box-sizing:border-box;">
               </div>
             </div>
-            <div id="planProjectInfo" style="margin-bottom:14px;padding:12px 16px;background:var(--gray-50);border-radius:8px;font-size:12px;color:var(--gray-500);"></div>
-            <!-- 风险智能识别摘要 -->
-            <div id="planRiskSummary" style="display:none;margin-bottom:14px;"></div>
-            <!-- 企业搜索结果 -->
-            <div id="planSearchResult" style="display:none;margin-bottom:14px;">
-              <div style="padding:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;">
-                <div style="font-size:12px;font-weight:600;color:#1e40af;margin-bottom:6px;">企业公开信息</div>
-                <div id="planSearchContent" style="font-size:12px;color:var(--gray-600);line-height:1.6;"></div>
-              </div>
+            <div style="margin-bottom:14px;">
+              <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">主营业务 / 经营范围</label>
+              <textarea id="planBusiness" placeholder="描述公司主要业务、产品或服务" rows="2" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
             </div>
-            <div style="margin-bottom:12px;">
-              <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">补充说明（可选）</label>
-              <textarea id="planExtra" placeholder="审计重点关注、团队成员、特殊要求等" rows="2" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
+            <div style="margin-bottom:14px;">
+              <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px;">重点关注 / 已知风险</label>
+              <textarea id="planExtra" placeholder="如：关联交易频繁、去年审计发现收入确认问题、管理层变动等" rows="2" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;">
               <button class="btn btn-primary" onclick="generateAuditPlan()" id="planGenBtn">生成审计计划</button>
               <span id="planDataHint" style="font-size:11px;color:var(--gray-400);"></span>
             </div>
           </div>
         </div>
+        <!-- 生成过程展示（企业信息检索等步骤） -->
+        <div id="planStepsProgress" style="display:none;margin-bottom:16px;">
+          <div class="card">
+            <div class="card-body" style="padding:16px 20px;">
+              <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:12px;">⏳ 生成中...</div>
+              <div id="planStepsList">
+                <div class="plan-step-item" id="planStep1" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--gray-100);">
+                  <span class="plan-step-icon" style="font-size:14px;">⏳</span>
+                  <span style="font-size:12px;color:var(--gray-600);">检索企业公开信息（工商、行业、风险）</span>
+                </div>
+                <div class="plan-step-item" id="planStep2" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--gray-100);">
+                  <span class="plan-step-icon" style="font-size:14px;">⏳</span>
+                  <span style="font-size:12px;color:var(--gray-600);">分析已提取单据数据特征</span>
+                </div>
+                <div class="plan-step-item" id="planStep3" style="display:flex;align-items:center;gap:8px;padding:8px 0;">
+                  <span class="plan-step-icon" style="font-size:14px;">⏳</span>
+                  <span style="font-size:12px;color:var(--gray-600);">生成审计计划（范围、重点科目、时间安排）</span>
+                </div>
+              </div>
+              <div id="planSearchResult" style="display:none;margin-top:12px;">
+                <div style="padding:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;">
+                  <div style="font-size:12px;font-weight:600;color:#1e40af;margin-bottom:6px;">📋 企业公开信息</div>
+                  <div id="planSearchContent" style="font-size:12px;color:var(--gray-600);line-height:1.6;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="planProjectInfo" style="display:none;"></div>
+        <div id="planRiskSummary" style="display:none;"></div>
         <!-- 生成结果区 -->
         <div id="planResult" style="display:none;">
           <div class="card">
@@ -3871,15 +3924,7 @@ function runDataClean() {
             });
           }
         }
-        // 千分位逗号
-        if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) {
-          const num = s.replace(/,/g, '');
-          issues.push({ type: 'format', level: 'info', docIdx: idx, doc: record.filename,
-            detail: `第 ${ri+1} 行「${col}」含千分位：${s}`,
-            preview: `建议统一为纯数字：${num}`,
-            fix: { action: 'set_cell', rowIdx: ri, col, value: num }
-          });
-        }
+        // 千分位是标准财务格式，不报问题
         // 中文数字
         if (/[万亿]/.test(s) && /\d/.test(s)) {
           let num = s;
@@ -3958,7 +4003,7 @@ function runDataClean() {
         issues.push({ type: 'duplicate', level: 'warning', docIdx: j, doc: extracts[j].filename,
           detail: `与「${extracts[i].filename}」有 ${dupes} 行完全相同的数据`,
           preview: `同类型文档间发现重复，可能是重复上传`,
-          fix: null
+          fix: null, refDocIdx: i
         });
       }
     }
@@ -4052,6 +4097,7 @@ function runDataClean() {
             <div style="font-size:12px;color:var(--gray-700);">${iss.detail}</div>
             <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">${iss.preview}</div>
           </div>
+          ${iss.refDocIdx !== undefined ? `<button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openDetailDrawer(${iss.refDocIdx})" style="font-size:10px;padding:2px 8px;flex-shrink:0;">📄 查看对方</button>` : ''}
           ${iss.fix ? `<button class="btn btn-sm btn-outline" onclick="applySingleFix(${docIdx},${ii})" style="font-size:10px;padding:2px 8px;flex-shrink:0;color:#8b5cf6;border-color:#8b5cf6;">修复</button>` : ''}
         </div>`;
       });
@@ -5671,56 +5717,46 @@ function escHtml(s) {
 function buildCompanyInfoHtml(d) {
   if (!d) return '';
   let html = '';
-  if (d.basic) html += '<b>基本信息：</b>' + Object.entries(d.basic).map(([k,v]) => `${escHtml(k)}: ${escHtml(v)}`).join('；') + '<br>';
-  if (d.business) html += '<b>经营范围：</b>' + escHtml(d.business) + '<br>';
-  if (d.industry) html += '<b>行业分类：</b>' + escHtml(d.industry) + '<br>';
-  if (d.shareholders) html += '<b>股权结构：</b>' + escHtml(d.shareholders) + '<br>';
-  if (d.financials) html += '<b>财务概况：</b>' + escHtml(d.financials) + '<br>';
-  if (d.related) html += '<b>关联公司：</b>' + escHtml(d.related) + '<br>';
-  if (d.risks) html += '<b>风险信息：</b>' + escHtml(d.risks) + '<br>';
-  if (d.industryFocus) html += '<b>行业审计关注：</b>' + escHtml(d.industryFocus);
+  const notFound = v => !v || /^\[?未查到\]?$/.test(v.trim());
+  if (d.basic) {
+    const realEntries = Object.entries(d.basic).filter(([k,v]) => !notFound(v));
+    if (realEntries.length > 0) html += '<b>基本信息：</b>' + realEntries.map(([k,v]) => `${escHtml(k)}: ${escHtml(v)}`).join('；') + '<br>';
+  }
+  if (d.business && !notFound(d.business)) html += '<b>经营范围：</b>' + escHtml(d.business) + '<br>';
+  if (d.industry && !notFound(d.industry)) html += '<b>行业分类：</b>' + escHtml(d.industry) + '<br>';
+  if (d.shareholders && !notFound(d.shareholders)) html += '<b>股权结构：</b>' + escHtml(d.shareholders) + '<br>';
+  if (d.financials && !notFound(d.financials)) html += '<b>财务概况：</b>' + escHtml(d.financials) + '<br>';
+  if (d.related && !notFound(d.related)) html += '<b>关联公司：</b>' + escHtml(d.related) + '<br>';
+  if (d.risks && !notFound(d.risks)) html += '<b>风险信息：</b>' + escHtml(d.risks) + '<br>';
+  if (d.industryFocus && !notFound(d.industryFocus)) html += '<b>行业审计关注：</b>' + escHtml(d.industryFocus);
   return html;
 }
 
 function initAuditPlanPage() {
   const proj = currentProject();
-  document.getElementById('planProjectInfo').innerHTML = getProjectInfoHtml(proj);
+  const typeMap = { annual:'年度财务报表审计', special:'专项审计', internal:'内部审计', compliance:'合规审计', ipo:'IPO审计' };
   const ctx = gatherProjectContext();
+
+  // 填充表单
+  document.getElementById('planName').value = proj?.name || '';
+  document.getElementById('planClient').value = proj?.client || '';
+  document.getElementById('planPeriod').value = proj?.period ? formatPeriod(proj.period) : '';
+  document.getElementById('planType').value = typeMap[proj?.auditType] || proj?.auditType || '';
+  document.getElementById('planIndustry').value = proj?.industry || '';
+  document.getElementById('planCapital').value = proj?.capital || '';
+  document.getElementById('planRevenue').value = proj?.revenue || '';
+  document.getElementById('planBusiness').value = proj?.business || '';
+  document.getElementById('planExtra').value = proj?.risks || '';
+  document.getElementById('planDocCount').value = ctx.docCount > 0 ? `${ctx.docCount} 张` : '暂无';
+
   const hint = document.getElementById('planDataHint');
   if (hint) hint.textContent = ctx.docCount > 0 ? `已有 ${ctx.docCount} 张单据数据` : '可直接生成，无需先上传数据';
 
   if (!planSearchCache && proj?.companyInfo) {
     const d = proj.companyInfo.data;
     if (d) {
-      document.getElementById('planSearchContent').innerHTML = buildCompanyInfoHtml(d);
-      document.getElementById('planSearchResult').style.display = '';
       planSearchCache = proj.companyInfo.raw || JSON.stringify(d);
     }
-  }
-
-  // 风险智能识别摘要
-  const riskEl = document.getElementById('planRiskSummary');
-  if (ctx.anomalyFindings.length > 0 || ctx.reconResults.length > 0) {
-    const dangers = ctx.anomalyFindings.filter(f => f.includes('大额') || f.includes('关联') || f.includes('跨期'));
-    const diffs = ctx.reconResults.filter(r => r.startsWith('配对差异') || r.startsWith('未配对'));
-    let riskHtml = `<div style="padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;">
-      <div style="font-size:12px;font-weight:600;color:#991b1b;margin-bottom:8px;">🚨 AI 智能风险识别（基于已上传数据）</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px;">`;
-    if (dangers.length > 0) riskHtml += `<span style="background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:4px;">${dangers.length} 项高风险异常</span>`;
-    if (diffs.length > 0) riskHtml += `<span style="background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:4px;">${diffs.length} 项核对差异</span>`;
-    riskHtml += `<span style="background:var(--gray-100);color:var(--gray-600);padding:3px 8px;border-radius:4px;">${ctx.docCount} 张单据已分析</span>`;
-    riskHtml += `</div>`;
-    if (dangers.length > 0) {
-      riskHtml += `<div style="margin-top:8px;font-size:11px;color:#991b1b;line-height:1.6;">`;
-      dangers.slice(0, 5).forEach(d => { riskHtml += `<div style="margin-bottom:2px;">· ${d.slice(0, 80)}</div>`; });
-      if (dangers.length > 5) riskHtml += `<div style="color:var(--gray-400);">...共 ${dangers.length} 项</div>`;
-      riskHtml += `</div>`;
-    }
-    riskHtml += `</div>`;
-    riskEl.innerHTML = riskHtml;
-    riskEl.style.display = '';
-  } else {
-    riskEl.style.display = 'none';
   }
 
   const saved = loadGeneratedDoc('plan');
@@ -5834,9 +5870,48 @@ function generateAuditPlan() {
   const period = formatPeriod(proj?.period) || '2024年度';
   const auditType = proj?.auditType || 'annual';
   const extra = document.getElementById('planExtra').value.trim();
+  const industry = document.getElementById('planIndustry').value.trim() || proj?.industry || '';
+  const capital = document.getElementById('planCapital').value.trim() || proj?.capital || '';
+  const revenue = document.getElementById('planRevenue').value.trim() || proj?.revenue || '';
+  const business = document.getElementById('planBusiness').value.trim() || proj?.business || '';
   const ctx = gatherProjectContext();
 
   const typeMap = { annual:'年度财务报表审计', special:'专项审计', internal:'内部审计', compliance:'合规审计', ipo:'IPO审计' };
+
+  // 显示步骤进度
+  const progressEl = document.getElementById('planStepsProgress');
+  progressEl.style.display = '';
+  document.getElementById('planStep1').querySelector('.plan-step-icon').textContent = '🔄';
+  document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '⏳';
+  document.getElementById('planStep3').querySelector('.plan-step-icon').textContent = '⏳';
+
+  // 模拟步骤1完成（企业信息检索）
+  setTimeout(() => {
+    document.getElementById('planStep1').querySelector('.plan-step-icon').textContent = '✅';
+    document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '🔄';
+    if (planSearchCache || proj?.companyInfo?.data) {
+      const d = proj?.companyInfo?.data;
+      if (d) {
+        const html = buildCompanyInfoHtml(d);
+        const hasReal = html && !/全部.*未查到/.test(html) && (html.replace(/\[未查到\]/g, '').replace(/<[^>]+>/g, '').trim().length > 50);
+        if (hasReal) {
+          document.getElementById('planSearchContent').innerHTML = html;
+          document.getElementById('planSearchResult').style.display = '';
+        }
+      }
+    }
+  }, 800);
+  // 步骤2：如果有单据数据则分析，否则跳过
+  setTimeout(() => {
+    if (ctx.docCount > 0) {
+      document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '✅';
+    } else {
+      document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '⏭️';
+      document.getElementById('planStep2').querySelector('span:last-child').textContent = '分析已提取单据数据特征（暂无数据，跳过）';
+    }
+    document.getElementById('planStep3').querySelector('.plan-step-icon').textContent = '🔄';
+  }, 1500);
+  // 步骤3完成在AI生成完后
 
   const companyInfoStr = planSearchCache || proj?.companyInfo?.raw || '';
 
@@ -5851,12 +5926,11 @@ function generateAuditPlan() {
 - 被审计单位：${company}
 - 审计期间：${period}
 - 审计类型：${typeMap[auditType] || auditType}
-${proj?.industry ? '- 所属行业：' + proj.industry : ''}
-${proj?.capital ? '- 注册资本：' + proj.capital : ''}
-${proj?.revenue ? '- 营收规模：' + proj.revenue : ''}
-${proj?.business ? '- 主营业务：' + proj.business : ''}
-${proj?.risks ? '- 已知风险/关注点：' + proj.risks : ''}
-${extra ? '- 补充说明：' + extra : ''}
+${industry ? '- 所属行业：' + industry : ''}
+${capital ? '- 注册资本：' + capital : ''}
+${revenue ? '- 营收规模：' + revenue : ''}
+${business ? '- 主营业务：' + business : ''}
+${extra ? '- 重点关注/已知风险：' + extra : ''}
 
 ${companyInfoStr ? '## 企业公开信息（天眼查/工商信息）\n' + companyInfoStr : ''}
 `;
@@ -5964,6 +6038,8 @@ ${ctx.anomalyFindings.length > 0 ? '- 已发现的异常项（基于初步数据
   resultEl.style.display = '';
   streamAiToElement(prompt, contentEl, btn, '生成审计计划', (md) => {
     saveGeneratedDoc('plan', md);
+    document.getElementById('planStep3').querySelector('.plan-step-icon').textContent = '✅';
+    document.getElementById('planStepsProgress').querySelector('[style*="font-size:13px"]').textContent = '✅ 生成完成';
   });
 }
 
