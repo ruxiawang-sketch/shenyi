@@ -320,7 +320,7 @@ async function aiStructure(ocrText) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         messages: [
           { role: 'system', content: AI_STRUCTURE_PROMPT },
           { role: 'user', content: `以下是 OCR 识别出的文本，请提取结构化数据：\n\n${ocrText}` },
@@ -354,6 +354,7 @@ async function aiStructure(ocrText) {
 // Claude 配置（环境变量优先，本地回退内网代理）
 const CLAUDE_BASE = process.env.CLAUDE_BASE || 'http://deepseek-work.intsig.net/proxy/aws/claude/v1';
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY || '019d2e6dd2b876d6992df679e3730917';
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 
 // ========== API 路由 ==========
 
@@ -541,7 +542,7 @@ app.post('/api/chat', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         messages: apiMessages,
         max_tokens: 4096,
         stream: true,
@@ -590,7 +591,7 @@ app.post('/api/suggest-company', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         messages: [
           { role: 'system', content: '你是企业名称联想助手。根据用户输入的部分公司名，返回最可能匹配的知名企业。只返回JSON数组，不要解释。如果不确定，返回空数组。' },
           { role: 'user', content: `用户正在输入公司名："${query}"，请返回最多5个最可能匹配的知名企业，每个包含公司全称、简称、行业、注册资本。格式：
@@ -660,7 +661,7 @@ ${extra ? '补充信息：' + extra : ''}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         messages: [
           { role: 'system', content: '你是企业信息研究助手。基于你的训练数据中的公开企业信息进行整理。如果不确定，标注[未查到]，绝不编造。' },
           { role: 'user', content: searchPrompt },
