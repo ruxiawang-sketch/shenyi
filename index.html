@@ -1512,14 +1512,16 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
       <div class="modal-close" onclick="closeProjectModal()">&times;</div>
     </div>
     <div class="modal-body" style="overflow-y:auto;flex:1;">
-      <div style="margin-bottom:14px;">
-        <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">项目名称 *</label>
-        <input type="text" id="projName" placeholder="如：星辰科技 2024 年度审计" autocomplete="off" style="width:100%;padding:9px 12px;border:1px solid var(--gray-300);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-300)'">
-      </div>
-      <div style="margin-bottom:14px;position:relative;">
-        <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">被审计单位 * <span id="projClientLoading" style="display:none;font-weight:400;color:var(--gray-400);font-size:11px;">搜索中...</span></label>
-        <input type="text" id="projClient" placeholder="输入公司名自动联想" autocomplete="off" style="width:100%;padding:9px 12px;border:1px solid var(--gray-300);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="setTimeout(()=>{this.style.borderColor='var(--gray-300)';document.getElementById('projClientSuggest').style.display='none';},200)">
-        <div id="projClientSuggest" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--gray-200);border-radius:10px;box-shadow:var(--shadow-lg);z-index:10;overflow:hidden;max-height:260px;overflow-y:auto;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">项目名称 *</label>
+          <input type="text" id="projName" placeholder="如：星辰科技 2024 年度审计" autocomplete="off" style="width:100%;padding:9px 12px;border:1px solid var(--gray-300);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-300)'">
+        </div>
+        <div style="position:relative;">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">被审计单位 * <span id="projClientLoading" style="display:none;font-weight:400;color:var(--gray-400);font-size:11px;">搜索中...</span></label>
+          <input type="text" id="projClient" placeholder="输入公司名自动联想" autocomplete="off" style="width:100%;padding:9px 12px;border:1px solid var(--gray-300);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="setTimeout(()=>{this.style.borderColor='var(--gray-300)';document.getElementById('projClientSuggest').style.display='none';},200)">
+          <div id="projClientSuggest" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--gray-200);border-radius:10px;box-shadow:var(--shadow-lg);z-index:10;overflow:hidden;max-height:260px;overflow-y:auto;"></div>
+        </div>
       </div>
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">审计期间</label>
