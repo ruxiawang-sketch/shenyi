@@ -1639,7 +1639,7 @@ async function _loadAllServerState() {
   try {
     const resp = await fetch('/api/state');
     const { keys } = await resp.json();
-    const filteredKeys = (keys || []).filter(k => !_localOnlyLoadPrefixes.some(p => k.startsWith(p)));
+    const filteredKeys = (keys || []).filter(k => !_localOnlyLoadPrefixes.some(p => k.startsWith(p)) && !k.startsWith('img_'));
     if (filteredKeys.length > 0) {
       const batchResp = await fetch('/api/state/batch-get', {
         method: 'POST',
@@ -1655,6 +1655,7 @@ async function _loadAllServerState() {
       }
     }
   } catch (e) { console.warn('服务器数据加载失败，使用本地缓存', e); }
+  try { Object.keys(localStorage).filter(k => k.startsWith('img_')).forEach(k => _origRemoveItem(k)); } catch {}
   _serverDataLoaded = true;
 }
 
