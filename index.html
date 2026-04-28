@@ -1121,13 +1121,19 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
               <textarea id="planExtra" placeholder="如：关联交易频繁、去年审计发现收入确认问题、管理层变动等" rows="2" style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--gray-200)'"></textarea>
             </div>
             </div>
+            <div id="planSearchResult" style="display:none;margin-top:14px;">
+              <div style="padding:10px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;font-size:11px;color:var(--gray-600);line-height:1.5;">
+                <span style="font-weight:600;color:#1e40af;">📋 企业信息：</span><span id="planSearchContent"></span>
+              </div>
+            </div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;">
               <button class="btn btn-primary" onclick="generateAuditPlan()" id="planGenBtn">生成审计计划</button>
+              <button class="btn" style="border:1px solid var(--gray-200);background:#fff;color:var(--gray-700);font-size:12px;" onclick="searchCompanyForPlan(false)" id="planSearchBtn">检索企业信息</button>
               <span id="planDataHint" style="font-size:11px;color:var(--gray-400);"></span>
             </div>
           </div>
         </div>
-        <!-- 生成过程展示（企业信息检索等步骤） -->
+        <!-- 生成过程展示（步骤） -->
         <div id="planStepsProgress" style="display:none;margin-bottom:12px;">
           <div style="padding:10px 16px;background:#f8fafc;border:1px solid var(--gray-200);border-radius:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <span style="font-size:12px;font-weight:600;color:var(--gray-600);" id="planProgressLabel">⏳ 生成中</span>
@@ -1135,11 +1141,6 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
               <span class="plan-step-item" id="planStep1" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>检索企业信息</span></span>
               <span class="plan-step-item" id="planStep2" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>分析单据数据</span></span>
               <span class="plan-step-item" id="planStep3" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>生成审计计划</span></span>
-            </div>
-          </div>
-          <div id="planSearchResult" style="display:none;margin-top:8px;">
-            <div style="padding:8px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;font-size:11px;color:var(--gray-600);line-height:1.5;">
-              <span style="font-weight:600;color:#1e40af;">📋 企业信息：</span><span id="planSearchContent"></span>
             </div>
           </div>
         </div>
