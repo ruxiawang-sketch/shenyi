@@ -1133,17 +1133,8 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
           </div>
         </div>
-        <!-- 生成过程展示（步骤） -->
-        <div id="planStepsProgress" style="display:none;margin-bottom:12px;">
-          <div style="padding:10px 16px;background:#f8fafc;border:1px solid var(--gray-200);border-radius:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <span style="font-size:12px;font-weight:600;color:var(--gray-600);" id="planProgressLabel">⏳ 生成中</span>
-            <div id="planStepsList" style="display:flex;align-items:center;gap:6px;">
-              <span class="plan-step-item" id="planStep1" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>检索企业信息</span></span>
-              <span class="plan-step-item" id="planStep2" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>分析单据数据</span></span>
-              <span class="plan-step-item" id="planStep3" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>生成审计计划</span></span>
-            </div>
-          </div>
-        </div>
+        <!-- 生成过程展示（步骤）— 隐藏，仅保留DOM供JS引用 -->
+        <div id="planStepsProgress" style="display:none;margin-bottom:12px;"></div>
         <div id="planProjectInfo" style="display:none;"></div>
         <div id="planRiskSummary" style="display:none;"></div>
         <!-- 生成结果区 -->
@@ -2983,7 +2974,7 @@ function runAutoReconcile(confirmed) {
         <div style="display:flex;gap:8px;" onclick="event.stopPropagation()">
           <button class="btn btn-sm btn-outline" onclick="exportReconcileCSV('${runId}')">📥 导出</button>
           <button class="btn btn-sm btn-primary" onclick="saveReconcileResult(this)">💾 保存</button>
-          <button class="btn btn-sm btn-ghost" onclick="deleteReconRun('${runId}')" style="color:var(--danger);">🗑️</button>
+          <button class="btn btn-sm btn-ghost" onclick="deleteReconRun('${runId}')" style="color:var(--danger);font-size:11px;">删除此次核对</button>
         </div>
         <span class="recon-run-chevron" style="font-size:10px;color:var(--gray-400);transition:transform .2s;transform:rotate(180deg);">▾</span>
       </div>
@@ -5870,40 +5861,20 @@ function generateAuditPlan() {
 
   const typeMap = { annual:'年度财务报表审计', special:'专项审计', internal:'内部审计', compliance:'合规审计', ipo:'IPO审计' };
 
-  // 显示步骤进度
-  const progressEl = document.getElementById('planStepsProgress');
-  progressEl.style.display = '';
-  document.getElementById('planStep1').querySelector('.plan-step-icon').textContent = '🔄';
-  document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '⏳';
-  document.getElementById('planStep3').querySelector('.plan-step-icon').textContent = '⏳';
-
-  // 模拟步骤1完成（企业信息检索）
-  setTimeout(() => {
-    document.getElementById('planStep1').querySelector('.plan-step-icon').textContent = '✅';
-    document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '🔄';
-    if (planSearchCache || proj?.companyInfo?.data) {
-      const d = proj?.companyInfo?.data;
-      if (d) {
-        const html = buildCompanyInfoHtml(d);
-        const hasReal = html && !/全部.*未查到/.test(html) && (html.replace(/\[未查到\]/g, '').replace(/<[^>]+>/g, '').trim().length > 50);
-        if (hasReal) {
-          document.getElementById('planSearchContent').innerHTML = html;
-          document.getElementById('planSearchResult').style.display = '';
-        }
+  // 展示企业信息（如有缓存）
+  if (planSearchCache || proj?.companyInfo?.data) {
+    const d = proj?.companyInfo?.data;
+    if (d) {
+      const html = buildCompanyInfoHtml(d);
+      const hasReal = html && !/全部.*未查到/.test(html) && (html.replace(/\[未查到\]/g, '').replace(/<[^>]+>/g, '').trim().length > 50);
+      if (hasReal) {
+        const el = document.getElementById('planSearchContent');
+        const wrap = document.getElementById('planSearchResult');
+        if (el) el.innerHTML = html;
+        if (wrap) wrap.style.display = '';
       }
     }
-  }, 800);
-  // 步骤2：如果有单据数据则分析，否则跳过
-  setTimeout(() => {
-    if (ctx.docCount > 0) {
-      document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '✅';
-    } else {
-      document.getElementById('planStep2').querySelector('.plan-step-icon').textContent = '⏭️';
-      document.getElementById('planStep2').querySelector('span:last-child').textContent = '分析已提取单据数据特征（暂无数据，跳过）';
-    }
-    document.getElementById('planStep3').querySelector('.plan-step-icon').textContent = '🔄';
-  }, 1500);
-  // 步骤3完成在AI生成完后
+  }
 
   const companyInfoStr = planSearchCache || proj?.companyInfo?.raw || '';
 
@@ -6030,8 +6001,8 @@ ${ctx.anomalyFindings.length > 0 ? '- 已发现的异常项（基于初步数据
   resultEl.style.display = '';
   streamAiToElement(prompt, contentEl, btn, '生成审计计划', (md) => {
     saveGeneratedDoc('plan', md);
-    document.getElementById('planStep3').querySelector('.plan-step-icon').textContent = '✅';
-    document.getElementById('planStepsProgress').querySelector('[style*="font-size:13px"]').textContent = '✅ 生成完成';
+    const s3 = document.getElementById('planStep3');
+    if (s3) s3.querySelector('.plan-step-icon').textContent = '✅';
   });
 }
 
