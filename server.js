@@ -63,7 +63,7 @@ function detectDocType(filename) {
 function getEndpoint(docType) {
   const endpoints = {
     'invoice': '/ai/service/v2/recognize/vat_invoice',
-    'bank_receipt': '/ai/service/v2/recognize/bank_receipt',
+    'bank_receipt': '/ai/service/v1/bank_receipt',
     'bank_statement': '/ai/service/v2/recognize/bank_statement',
     'voucher': '/ai/service/v2/recognize/accounting_voucher',
     'auto': '/ai/service/v2/recognize/table',  // 通用表格+文字识别
@@ -351,9 +351,9 @@ async function aiStructure(ocrText) {
   }
 }
 
-// Claude 配置（提前声明，供 AI 结构化和聊天共用）
-const CLAUDE_BASE = 'http://deepseek-work.intsig.net/proxy/aws/claude/v1';
-const CLAUDE_API_KEY = '019d2e6dd2b876d6992df679e3730917';
+// Claude 配置（环境变量优先，本地回退内网代理）
+const CLAUDE_BASE = process.env.CLAUDE_BASE || 'http://deepseek-work.intsig.net/proxy/aws/claude/v1';
+const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY || '019d2e6dd2b876d6992df679e3730917';
 
 // ========== API 路由 ==========
 
