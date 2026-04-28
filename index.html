@@ -44,17 +44,18 @@ a{text-decoration:none;color:inherit;}
 .sidebar-logo .logo-text{font-size:16px;font-weight:700;color:var(--gray-900);}
 .sidebar-logo .logo-text small{display:block;font-size:10px;font-weight:400;color:var(--gray-400);letter-spacing:.5px;}
 
-.sidebar-nav{flex:1;padding:8px;overflow-y:auto;}
-.nav-section{margin-bottom:2px;}
-.nav-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);padding:12px 10px 6px;display:flex;align-items:center;gap:6px;}
-.nav-step-num{width:16px;height:16px;border-radius:50%;background:var(--gray-200);color:var(--gray-500);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.sidebar-nav{flex:1;padding:8px 6px;overflow-y:auto;}
+.nav-section{margin-bottom:0;}
+.nav-section-title{font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--gray-400);padding:14px 10px 4px;display:flex;align-items:center;gap:5px;}
+.nav-section:first-child .nav-section-title{padding-top:4px;}
+.nav-step-num{width:14px;height:14px;border-radius:50%;background:var(--primary);color:#fff;font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .nav-item{
-  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
-  cursor:pointer;transition:var(--transition);color:var(--gray-600);font-size:13px;position:relative;
+  display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;
+  cursor:pointer;transition:var(--transition);color:var(--gray-600);font-size:12.5px;position:relative;
 }
 .nav-item:hover{background:var(--gray-100);color:var(--gray-800);}
 .nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
-.nav-item .nav-icon{width:18px;text-align:center;font-size:15px;flex-shrink:0;}
+.nav-item .nav-icon{width:16px;text-align:center;font-size:13px;flex-shrink:0;}
 .qs-btn{padding:8px 14px;background:var(--bg);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--c);transition:all .15s;border:1px solid transparent;white-space:nowrap;}
 .qs-btn:hover{transform:translateY(-1px);border-color:var(--c);box-shadow:0 2px 8px rgba(0,0,0,.06);}
 .nav-item .nav-badge{
@@ -503,24 +504,24 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
     <div class="nav-section">
       <div class="nav-section-title"><span class="nav-step-num">2</span>收集资料</div>
       <div class="nav-item" data-page="extract"><span class="nav-icon">📄</span>扫描 / 上传 / OCR</div>
-      <div class="nav-item" data-page="clean"><span class="nav-icon">🧹</span>数据质量检查</div>
+      <div class="nav-item" data-page="clean"><span class="nav-icon">✓</span>数据质量检查</div>
     </div>
     <div class="nav-section">
       <div class="nav-section-title"><span class="nav-step-num">3</span>交叉核对</div>
-      <div class="nav-item" data-page="reconcile"><span class="nav-icon">🔗</span>银行 / 往来核对</div>
+      <div class="nav-item" data-page="reconcile"><span class="nav-icon">⇄</span>银行 / 往来核对</div>
     </div>
     <div class="nav-section">
       <div class="nav-section-title"><span class="nav-step-num">4</span>发现问题</div>
-      <div class="nav-item" data-page="anomaly"><span class="nav-icon">🔍</span>异常检测</div>
+      <div class="nav-item" data-page="anomaly"><span class="nav-icon">⚠</span>异常检测</div>
       <div class="nav-item" data-page="analysis"><span class="nav-icon">📈</span>分析性复核</div>
     </div>
     <div class="nav-section">
       <div class="nav-section-title"><span class="nav-step-num">5</span>出具结论</div>
-      <div class="nav-item" data-page="adjust"><span class="nav-icon">📝</span>问题调整</div>
-      <div class="nav-item" data-page="auditreport"><span class="nav-icon">📑</span>生成报告</div>
+      <div class="nav-item" data-page="adjust"><span class="nav-icon">✎</span>调整分录</div>
+      <div class="nav-item" data-page="auditreport"><span class="nav-icon">📑</span>审计报告</div>
     </div>
-    <div class="nav-section" style="margin-top:auto;border-top:1px solid var(--gray-200);padding-top:8px;">
-      <div class="nav-item" data-page="ai"><span class="nav-icon">🤖</span>AI 助手</div>
+    <div class="nav-section" style="margin-top:auto;border-top:1px solid var(--gray-100);padding-top:6px;">
+      <div class="nav-item" data-page="ai"><span class="nav-icon">✦</span>AI 助手</div>
     </div>
     <div class="nav-item" data-page="confirm" style="display:none;"><span class="nav-icon">📨</span>函证管理</div>
     <div class="nav-item" data-page="archive" style="display:none;"><span class="nav-icon">📦</span>归档</div>
@@ -766,7 +767,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
         <div class="es-icon">🧹</div>
         <div class="es-title">数据清洗</div>
         <div class="es-desc">请先在「AI 资料提取」中上传并提取数据</div>
-        <div style="font-size:12px;color:var(--gray-400);margin-top:8px;max-width:400px;line-height:1.6;">上传数据后，系统将自动检查 OCR 识别结果中的重复行、缺失字段、格式不统一等问题，确保后续异常检测和核对基于高质量数据</div>
+        <div style="font-size:12px;color:var(--gray-400);margin:8px auto 0;max-width:400px;line-height:1.6;text-align:center;">上传数据后，系统将自动检查 OCR 识别结果中的重复行、缺失字段、格式不统一等问题，确保后续异常检测和核对基于高质量数据</div>
         <button class="btn btn-primary mt-12" onclick="switchPage('extract')">去上传资料</button>
       </div>
       <div id="clean-content" style="display:none;">
@@ -1138,30 +1139,18 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
           </div>
         </div>
         <!-- 生成过程展示（企业信息检索等步骤） -->
-        <div id="planStepsProgress" style="display:none;margin-bottom:16px;">
-          <div class="card">
-            <div class="card-body" style="padding:16px 20px;">
-              <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:12px;">⏳ 生成中...</div>
-              <div id="planStepsList">
-                <div class="plan-step-item" id="planStep1" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--gray-100);">
-                  <span class="plan-step-icon" style="font-size:14px;">⏳</span>
-                  <span style="font-size:12px;color:var(--gray-600);">检索企业公开信息（工商、行业、风险）</span>
-                </div>
-                <div class="plan-step-item" id="planStep2" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--gray-100);">
-                  <span class="plan-step-icon" style="font-size:14px;">⏳</span>
-                  <span style="font-size:12px;color:var(--gray-600);">分析已提取单据数据特征</span>
-                </div>
-                <div class="plan-step-item" id="planStep3" style="display:flex;align-items:center;gap:8px;padding:8px 0;">
-                  <span class="plan-step-icon" style="font-size:14px;">⏳</span>
-                  <span style="font-size:12px;color:var(--gray-600);">生成审计计划（范围、重点科目、时间安排）</span>
-                </div>
-              </div>
-              <div id="planSearchResult" style="display:none;margin-top:12px;">
-                <div style="padding:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;">
-                  <div style="font-size:12px;font-weight:600;color:#1e40af;margin-bottom:6px;">📋 企业公开信息</div>
-                  <div id="planSearchContent" style="font-size:12px;color:var(--gray-600);line-height:1.6;"></div>
-                </div>
-              </div>
+        <div id="planStepsProgress" style="display:none;margin-bottom:12px;">
+          <div style="padding:10px 16px;background:#f8fafc;border:1px solid var(--gray-200);border-radius:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:600;color:var(--gray-600);" id="planProgressLabel">⏳ 生成中</span>
+            <div id="planStepsList" style="display:flex;align-items:center;gap:6px;">
+              <span class="plan-step-item" id="planStep1" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>检索企业信息</span></span>
+              <span class="plan-step-item" id="planStep2" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>分析单据数据</span></span>
+              <span class="plan-step-item" id="planStep3" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gray-500);padding:2px 8px;background:#fff;border:1px solid var(--gray-200);border-radius:4px;"><span class="plan-step-icon">⏳</span><span>生成审计计划</span></span>
+            </div>
+          </div>
+          <div id="planSearchResult" style="display:none;margin-top:8px;">
+            <div style="padding:8px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;font-size:11px;color:var(--gray-600);line-height:1.5;">
+              <span style="font-weight:600;color:#1e40af;">📋 企业信息：</span><span id="planSearchContent"></span>
             </div>
           </div>
         </div>
