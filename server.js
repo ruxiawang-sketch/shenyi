@@ -724,8 +724,13 @@ app.get('/api/state/:key', (req, res) => {
 });
 
 // 写入某个 key 的数据
+const LOCAL_ONLY_PREFIXES = ['audit_doc_plan_', 'audit_doc_analysis_', 'audit_doc_adjust_', 'audit_doc_report_'];
 app.put('/api/state/:key', (req, res) => {
-  const file = path.join(DATA_DIR, safeKey(req.params.key) + '.json');
+  const key = req.params.key;
+  if (LOCAL_ONLY_PREFIXES.some(p => key.startsWith(p))) {
+    return res.json({ ok: true, skipped: true });
+  }
+  const file = path.join(DATA_DIR, safeKey(key) + '.json');
   try {
     fs.writeFileSync(file, JSON.stringify(req.body.value), 'utf8');
     res.json({ ok: true });

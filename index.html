@@ -420,6 +420,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
 .fade-up{animation:fadeUp .3s ease;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;}
+@keyframes aiPulse{0%,100%{box-shadow:0 4px 14px rgba(124,58,237,0.3);}50%{box-shadow:0 6px 20px rgba(124,58,237,0.5);}}
 
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px;height:6px;}
@@ -788,7 +789,6 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
                 </div>
               </div>
               <div style="display:flex;gap:8px;">
-                <button class="btn btn-sm btn-outline" onclick="rescanDataClean()" id="cleanScanBtn">🔄 重新扫描</button>
                 <button class="btn btn-sm btn-primary" onclick="applyAllFixes()" id="cleanFixAllBtn" style="display:none;background:linear-gradient(135deg,#8b5cf6,#a78bfa);">✨ 一键修复全部</button>
               </div>
             </div>
@@ -826,7 +826,6 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
           <div style="display:flex;gap:6px;">
             <button id="samplingBtn" class="btn btn-sm btn-outline" onclick="showSamplingSuggestion()" style="border-color:#8b5cf6;color:#8b5cf6;">🎯 智能抽样建议</button>
             <button class="btn btn-sm btn-outline" onclick="exportAnomalyExcel()">📊 导出 Excel</button>
-            <button class="btn btn-sm btn-primary" onclick="runAnomalyDetection()">🔄 重新扫描</button>
           </div>
         </div>
         <div id="anomalyNormalSection" style="margin-bottom:16px;"></div>
@@ -1284,7 +1283,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
                 </div>
               </div>
               <div style="display:flex;gap:8px;">
-                <button class="btn btn-sm btn-primary" onclick="generateAiAnalysis()" id="analysisAiBtn" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);">✨ AI 深度分析</button>
+                <button class="btn btn-primary" onclick="generateAiAnalysis()" id="analysisAiBtn" style="background:linear-gradient(135deg,#7c3aed,#0ea5e9);padding:8px 20px;font-size:14px;font-weight:700;border-radius:8px;box-shadow:0 4px 14px rgba(124,58,237,0.3);animation:aiPulse 2s ease-in-out infinite;">✨ AI 深度分析</button>
               </div>
             </div>
             <div id="analysisStats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;"></div>
@@ -1625,15 +1624,17 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
 const _serverCache = {};
 let _serverDataLoaded = false;
 
+const _localOnlyLoadPrefixes = ['audit_doc_plan_', 'audit_doc_analysis_', 'audit_doc_adjust_', 'audit_doc_report_'];
 async function _loadAllServerState() {
   try {
     const resp = await fetch('/api/state');
     const { keys } = await resp.json();
-    if (keys && keys.length > 0) {
+    const filteredKeys = (keys || []).filter(k => !_localOnlyLoadPrefixes.some(p => k.startsWith(p)));
+    if (filteredKeys.length > 0) {
       const batchResp = await fetch('/api/state/batch-get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ keys })
+        body: JSON.stringify({ keys: filteredKeys })
       });
       const data = await batchResp.json();
       for (const [k, v] of Object.entries(data)) {
@@ -1665,8 +1666,10 @@ const _origSetItem = localStorage.setItem.bind(localStorage);
 const _origGetItem = localStorage.getItem.bind(localStorage);
 const _origRemoveItem = localStorage.removeItem.bind(localStorage);
 
+const _localOnlyPrefixes = ['audit_doc_plan_', 'audit_doc_analysis_', 'audit_doc_adjust_', 'audit_doc_report_'];
 localStorage.setItem = function(key, value) {
   _origSetItem(key, value);
+  if (_localOnlyPrefixes.some(p => key.startsWith(p))) return;
   try {
     const parsed = JSON.parse(value);
     _syncToServer(key, parsed);
@@ -1677,6 +1680,7 @@ localStorage.setItem = function(key, value) {
 
 localStorage.removeItem = function(key) {
   _origRemoveItem(key);
+  if (_localOnlyPrefixes.some(p => key.startsWith(p))) return;
   _deleteFromServer(key);
 };
 
@@ -7691,14 +7695,16 @@ function initAnalysisPage() {
     document.getElementById('analysisContent').innerHTML = renderedHtml;
     document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--gray-400);">已保存于 ${new Date(saved.time).toLocaleString('zh-CN')}</span>`;
     extractKeyFindings(renderedHtml);
-    aiBtn.textContent = '👁 查看 AI 深度分析';
-    aiBtn.onclick = function() { document.getElementById('analysisAiResult').scrollIntoView({ behavior:'smooth', block:'start' }); };
+    aiBtn.textContent = '🔄 重新生成 AI 分析';
+    aiBtn.style.animation = 'none';
+    aiBtn.onclick = generateAiAnalysis;
   } else {
     document.getElementById('analysisAiResult').style.display = 'none';
     document.getElementById('analysisContent').innerHTML = '';
     document.getElementById('analysisSavedInfo').innerHTML = '';
     document.getElementById('analysisKeyFindings').style.display = 'none';
     aiBtn.textContent = '✨ AI 深度分析';
+    aiBtn.style.animation = 'aiPulse 2s ease-in-out infinite';
     aiBtn.onclick = generateAiAnalysis;
   }
 }
@@ -7848,7 +7854,7 @@ function runAnalyticalReview() {
   if (indicators.length === 0) {
     indicatorsEl.innerHTML = '<div class="card" style="padding:20px;text-align:center;color:var(--gray-400);">数据量不足，无法生成分析指标。请上传更多资料。</div>';
   } else {
-    let html = '<div class="card"><div class="card-body" style="padding:14px 20px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:13px;font-weight:600;color:var(--gray-700);">📊 财务指标分析</span><button class="btn btn-sm btn-outline" onclick="runAnalyticalReview()" style="font-size:11px;">🔄 重新分析</button></div>';
+    let html = '<div class="card"><div class="card-body" style="padding:14px 20px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:13px;font-weight:600;color:var(--gray-700);">📊 财务指标分析</span></div>';
     indicators.forEach(ind => {
       const colors = { success: '#10b981', warning: '#f59e0b', danger: '#ef4444' };
       const bgs = { success: '#f0fdf4', warning: '#fffbeb', danger: '#fef2f2' };
@@ -7939,10 +7945,11 @@ ${dataSummary.length > 50 ? '\n...(更多数据省略)' : ''}
   document.getElementById('analysisAiResult').style.display = '';
   streamAiToElement(prompt, el, btn, '✨ AI 深度分析', (markdown) => {
     saveGeneratedDoc('analysis', markdown);
-    document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--success);">✓ 已自动保存</span>`;
+    document.getElementById('analysisSavedInfo').innerHTML = `<span style="font-size:11px;color:var(--success);">✓ 已自动保存（仅本地）</span>`;
     extractKeyFindings(el.innerHTML);
-    btn.textContent = '👁 查看 AI 深度分析';
-    btn.onclick = function() { document.getElementById('analysisAiResult').scrollIntoView({ behavior:'smooth', block:'start' }); };
+    btn.textContent = '🔄 重新生成 AI 分析';
+    btn.style.animation = 'none';
+    btn.onclick = generateAiAnalysis;
   });
 }
 
