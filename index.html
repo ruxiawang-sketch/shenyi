@@ -1635,18 +1635,24 @@ const _serverCache = {};
 let _serverDataLoaded = false;
 
 const _localOnlyLoadPrefixes = ['audit_doc_plan_', 'audit_doc_analysis_', 'audit_doc_adjust_', 'audit_doc_report_'];
+function _fetchWithTimeout(url, options, timeoutMs) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
+
 async function _loadAllServerState() {
   try { Object.keys(localStorage).filter(k => k.startsWith('img_')).forEach(k => _origRemoveItem(k)); } catch {}
   try {
-    const resp = await fetch('/api/state');
+    const resp = await _fetchWithTimeout('/api/state', {}, 15000);
     const { keys } = await resp.json();
     const filteredKeys = (keys || []).filter(k => !_localOnlyLoadPrefixes.some(p => k.startsWith(p)) && !k.startsWith('img_'));
     if (filteredKeys.length > 0) {
-      const batchResp = await fetch('/api/state/batch-get', {
+      const batchResp = await _fetchWithTimeout('/api/state/batch-get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ keys: filteredKeys })
-      });
+      }, 10000);
       const data = await batchResp.json();
       for (const [k, v] of Object.entries(data)) {
         if (v !== null) {
@@ -1655,7 +1661,7 @@ async function _loadAllServerState() {
         }
       }
     }
-  } catch (e) { console.warn('服务器数据加载失败，使用本地缓存', e); }
+  } catch (e) { console.warn('服务器数据同步超时或失败，使用本地缓存', e); }
   _serverDataLoaded = true;
 }
 
@@ -8114,18 +8120,29 @@ function _doInit() {
   }
 }
 
-// 先从服务器加载数据，再初始化页面
 function _hideLoading() {
   const el = document.getElementById('appLoading');
   if (el) { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }
 }
 
-_loadAllServerState().then(() => {
+// 立即用 localStorage 缓存渲染页面，不等服务器
+try {
   ensureDefaultProject();
   appState = getProjectState(getCurrentProjectId());
   _doInit();
-  _hideLoading();
-}).catch(() => { _doInit(); _hideLoading(); });
+} catch(e) { console.error('本地初始化异常:', e); }
+_hideLoading();
+
+// 后台静默同步服务器数据，到达后刷新页面状态
+_loadAllServerState().then(() => {
+  try {
+    ensureDefaultProject();
+    appState = getProjectState(getCurrentProjectId());
+    _doInit();
+  } catch(e) { console.error('同步后刷新异常:', e); }
+}).catch((e) => {
+  console.warn('服务器数据同步失败，继续使用本地缓存', e);
+});
 </script>
 </body>
 </html>
