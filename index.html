@@ -1224,6 +1224,10 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
           </div>
         </div>
         <div id="reportReadinessPanel">
+          <div id="reportReadinessLoading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:#6b7280;">
+            <div style="width:32px;height:32px;border:3px solid #e5e7eb;border-top-color:#4f46e5;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px;"></div>
+            <div style="font-size:13px;">正在检查审计就绪状态...</div>
+          </div>
           <div id="reportReadiness"></div>
         </div>
         <div id="reportResult" style="display:none;">
@@ -6276,6 +6280,8 @@ function checkReportReadiness() {
   html += '</div></div>';
   el.innerHTML = html;
   el.style.display = '';
+  const loadingEl = document.getElementById('reportReadinessLoading');
+  if (loadingEl) loadingEl.style.display = 'none';
 }
 
 function generateAuditReport() {
