@@ -1181,10 +1181,10 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
           </div>
         </div>
         <div class="page-tabs" style="margin-bottom:16px;">
-          <div class="page-tab active" onclick="switchReportSubTab('reportGenerate')">生成报告</div>
-          <div class="page-tab" onclick="switchReportSubTab('reportReadiness')">审计就绪检查</div>
+          <div class="page-tab active" onclick="switchReportSubTab('reportReadiness')">审计就绪检查</div>
+          <div class="page-tab" onclick="switchReportSubTab('reportGenerate')">生成报告</div>
         </div>
-        <div id="reportGeneratePanel">
+        <div id="reportGeneratePanel" style="display:none;">
           <div class="card" style="margin-bottom:16px;">
             <div class="card-body" style="padding:20px;">
               <div id="reportProjectInfo" style="display:none;"></div>
@@ -1213,7 +1213,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
           </div>
         </div>
-        <div id="reportReadinessPanel" style="display:none;">
+        <div id="reportReadinessPanel">
           <div id="reportReadiness"></div>
         </div>
         <div id="reportResult" style="display:none;">
@@ -1257,6 +1257,7 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
             </div>
           </div>
         </div>
+        <div id="analysisIndicators" style="margin-bottom:16px;"></div>
         <div class="card" style="margin-bottom:16px;">
           <div class="card-body" style="padding:16px 20px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -1268,14 +1269,12 @@ td.confidence-low{background:#fef9c3;border-left:3px solid var(--warning);}
                 </div>
               </div>
               <div style="display:flex;gap:8px;">
-                <button class="btn btn-sm btn-outline" onclick="runAnalyticalReview()" id="analysisRunBtn">🔄 重新分析</button>
                 <button class="btn btn-sm btn-primary" onclick="generateAiAnalysis()" id="analysisAiBtn" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);">✨ AI 深度分析</button>
               </div>
             </div>
             <div id="analysisStats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;"></div>
           </div>
         </div>
-        <div id="analysisIndicators" style="margin-bottom:16px;"></div>
         <div id="analysisAiResult" style="display:none;">
           <div id="analysisKeyFindings" class="card" style="margin-bottom:16px;border:1.5px solid #fbbf24;background:linear-gradient(135deg,#fffbeb,#fef3c7);display:none;">
             <div class="card-body" style="padding:16px 20px;">
@@ -7711,7 +7710,7 @@ function runAnalyticalReview() {
   if (indicators.length === 0) {
     indicatorsEl.innerHTML = '<div class="card" style="padding:20px;text-align:center;color:var(--gray-400);">数据量不足，无法生成分析指标。请上传更多资料。</div>';
   } else {
-    let html = '<div class="card"><div class="card-body" style="padding:14px 20px;"><div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--gray-700);">📊 财务指标分析</div>';
+    let html = '<div class="card"><div class="card-body" style="padding:14px 20px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:13px;font-weight:600;color:var(--gray-700);">📊 财务指标分析</span><button class="btn btn-sm btn-outline" onclick="runAnalyticalReview()" style="font-size:11px;">🔄 重新分析</button></div>';
     indicators.forEach(ind => {
       const colors = { success: '#10b981', warning: '#f59e0b', danger: '#ef4444' };
       const bgs = { success: '#f0fdf4', warning: '#fffbeb', danger: '#fef2f2' };
